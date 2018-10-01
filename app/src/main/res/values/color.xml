@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="toolbar_title">#FFFFFF</color>
+    <color name="toolbar_text">#FFFFFF</color>
+    <color name="green">#00FF00</color>
+    <color name="red">#FF0000</color>
+    <color name="edittext_line">#1E4D79</color>
+
+
+</resources>

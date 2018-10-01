@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item android:id="@+id/action_manualCounts" android:title="@string/manual_counts"
+        android:orderInCategory="1" />
+
+    <item android:id="@+id/action_endSession" android:title="@string/end_session"
+    android:orderInCategory="2" />
+
+
+</menu>

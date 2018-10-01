@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="staininglist">
+    <item>@string/stainingmethod1</item>
+    <item>@string/stainingmethod2</item>
+    </string-array>
+
+    <!-- Language select dialog -->
+    <string-array name="lang_select">
+        <item>英文</item>
+        <item>泰语</item>
+        <item>简体中文</item>
+    </string-array>
+
+    <!-- String array for SummarySheet -->
+    <string-array name="patient_item">
+        <item>病人序列号</item>
+        <item>姓名首字母</item>
+        <item>性别</item>
+        <item>年龄</item>
+    </string-array>
+
+    <string-array name="slide_item">
+        <item>细胞总数</item>
+        <item>受感染细胞数</item>
+        <item>寄生虫衡量指数</item>
+    </string-array>
+
+    <string-array name="more_item">
+        <item>切片序列号</item>
+        <item>日期</item>
+        <item>时间</item>
+        <item>地点</item>
+        <item>切片准备人员</item>
+        <item>显微镜技术员</item>
+        <item>切片染色方法</item>
+        <item>红细胞比容（HCT）</item>
+        <item>细胞总数人工计数</item>
+        <item>受感染细胞人工计数</item>
+    </string-array>
+
+    <string-array name="count_item">
+        <item>当前</item>
+        <item>总计</item>
+
+    </string-array>
+
+</resources>

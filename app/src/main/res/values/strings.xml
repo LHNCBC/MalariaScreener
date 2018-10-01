@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">NLM Malaria Screener</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_tutorial">User Manual</string>
+    <string name="action_diagram">System Diagram</string>
+    <string name="action_about">About</string>
+    <string name="search_title">Search</string>
+    <string name="search_hint">search patient</string>
+    <string name="begin_capture">Start a New Session</string>
+    <string name="app_name_bar">&#160;NLM Malaria Screener</string>
+    <string name="title_patient_info">Patient Info</string>
+    <string name="title_slide_info">Slide Info</string>
+    <string name="title_database">Database</string>
+    <string name="title_summary">Summary Report</string>
+    <string name="title_result">Result</string>
+    <string name="title_patient_graph">Graph</string>
+    <string name="title_slide_infoDB">Slide Info</string>
+    <string name="title_slide_logDB">Slides</string>
+    <string name="title_setting">Settings</string>
+    <string name="title_tutorial">User Manual</string>
+    <string name="title_about">About</string>
+    <string name="title_dropbox">Upload</string>
+    <string name="title_register">Register</string>
+    <string name="title_image_view">Slide Images</string>
+    <string name="title_manual_counts">Manual Counts</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Patient ID</string>
+    <string name="prompt_password">Gender</string>
+    <string name="action_sign_in">Complete</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+
+    <!--Strings for staining methods -->
+    <string name="stainingmethod1">Giemsa</string>
+    <string name="stainingmethod2">Field\'s</string>
+
+    <!--Strings for setting -->
+    <string name="category1">CAMERA</string>
+    <string name="whitebalance">White Balance</string>
+    <string name="classifier">Classifier Type</string>
+    <string name="classifierT">Deep Learning</string>
+    <string name="wbsum">Auto</string>
+    <string name="imagequality">Compression Level</string>
+    <string name="imgquality">Set the compression level of the image data from camera. It can be from 0 to 9. A higher value means a smaller size and longer compression time. Default value is 3.</string>
+    <string name="exposure">Exposure Compensation</string>
+    <string name="EC">Increase or decrease the light exposure level</string>
+
+    <string name="category2">OTHERS</string>
+    <string name="SVM_Th">Sensitivity Level</string>
+    <string name="SVM_Th_summary">Adjust classifier sensitivity level. Default value:35</string>
+    <string name="celltotal">Total Cells Needed</string>
+    <string name="celltotal_summary">Number of Cells that should be counted for each patient. Default value: 1000</string>
+
+    <!-- Strings for user manual-->
+    <string name="home">Step 1. Start a new session</string>
+    <string name="camera">Step 2. Capture blood film image</string>
+    <string name="preview">Step 3. Review the captured image</string>
+    <string name="result">Step 4. Review result</string>
+    <string name="input">Step 5. Input patient and slide info</string>
+    <string name="summary">Step 6. Final step: Review summary</string>
+    <string name="database1">Database</string>
+    <string name="database2">Database: Patient page</string>
+    <string name="database3">Database: Slide page</string>
+    <string name="manual_counts_1">Enter manual counts - Option 1: During a session</string>
+    <string name="manual_counts_2">Enter manual counts - Option 1: During a session</string>
+    <string name="manual_counts_3">Enter manual counts - Option 2: In database</string>
+    <string name="manual_counts_4">Enter manual counts - Option 2: In database</string>
+    <string name="manual_counts_5">Enter manual counts - Option 2: In database</string>
+    <string name="upload_1">Upload - Step 1. Enter upload page</string>
+    <string name="upload_2">Upload - Step 2. Consent registration</string>
+    <string name="upload_3">Upload - Step 3. Registration</string>
+    <string name="upload_4">Upload - Step 4. Upload and Finish</string>
+    <string name="setting">Others: Settings</string>
+    <string name="crash">Others: Unsaved files</string>
+
+    <!-- Strings for about-->
+
+    <string name="version">Version 1.3-beta</string>
+
+    <string name="description">NLM Malaria Screener is an R&amp;D project of the Lister Hill National Center of Biomedical Communications, a division of the National
+    Library of Medicine (NLM), part of the National Institutes of Health (NIH), in collaboration with Mahidol University, University of Oxford, and University of Missouri.</string>
+
+    <!-- Strings for personnel-->
+    <string name="personnel"><b>NIH Researchers:</b>\nStefan Jaeger (Project Lead)\nHang Yu\nSema Candemir\nMike Chung\nSameer Antani\nGeorge Thoma (Project Sponsor, NLM)\nAbhisheka Bansal (NIAID)
+        \nRick Fairhurst (NIAID)\n\n<b>Extramural Researchers:</b>\nKamolrat Silamut (Mahidol University, Thailand)\nRichard Maude (University of Oxford, UK)
+        \nKannappan Palaniappan (University of Missouri)\nIlker Ersoy (University of Missouri)\nMahdieh Poostchi (University of Missouri)
+        \n\n<b>NLM Interns:</b>\nAndrew Powell\nKatie McMenamin\nNila Palaniappan\nWilson Lin\nPaul LoBuglio</string>
+
+    <!-- Strings for thanks-->
+    <string name="thanks">We would like to thank the Laboratory of Malaria and Vector Research at the National Institute of Allergy and Infectious Diseases
+        for their help and support. In particular, we would like to thank Chanaki Amaratunga, Louis Miller, and Thomas Wellems. We also appreciate the help of
+        Emile Gordon and Susan Pierce at the Laboratory of Immunogenetics.</string>
+
+    <string name="contact"><b>Contact</b>\nEmail: stefan.jaeger@nih.gov\n</string>
+
+    <!-- Strings for delete-->
+    <string name="delete"><font fgcolor="#e64444">Confirm Delete...</font></string>
+    <string name="abort"><font fgcolor="#e64444">Confirm Abort...</font></string>
+    <string name="warning"><font fgcolor="#e64444">CAUTION</font></string>
+
+    <string name="gender">Gender <font fgcolor="#e64444">Gender can not be empty!</font></string>
+
+    <!-- Strings for dropbox-->
+    <string name="update"><font fgcolor="#e64444">Update</font></string>
+
+    <!-- Strings for language setting dialog-->
+    <string name="language_setting">Language</string>
+    <string name="language_dialog_title">Language Setting</string>
+    <string name="language_dialog_message">Select your language</string>
+
+    <!-- Strings for app permissions-->
+    <string name="perm_denied">Permission denied</string>
+
+    <!-- Strings for MainActivity unsaved dialog-->
+    <string name="unsaved_title">Move unsaved files to Extras...</string>
+    <string name="unsaved_message">You have unsaved files, click YES to move files to Extras folder, click NO to delete</string>
+    <string name="unsaved_moved">Files moved to Extras folder</string>
+    <string name="unsaved_deleted">Unsaved files removed</string>
+
+    <!-- Strings for CameraActivity-->
+    <string name="smear_type">Smear Type: Thin</string>
+    <string name="image_count">Images: </string>
+    <string name="cell_count">Cells: </string>
+    <string name="infected_count">Infected Cells: </string>
+
+    <string name="image_process1">Running...</string>
+    <string name="image_process2">Please wait</string>
+
+    <string name="seg_failed">Segmentation failed due to bad image quality, please recapture another image!</string>
+
+    <string name="no_cam">No camera found on this device!</string>
+
+    <!-- Strings for SummarySheet-->
+    <string name="patient_info">Patient Info</string>
+    <string name="slide_info">Slide Info</string>
+    <string name="more_info">More Info</string>
+
+    <!-- Strings for SlideInfo-->
+    <string name="slide_id_exist">Slide ID already exists!</string>
+
+    <string name="slide_id_empty">Slide ID can not be empty!</string>
+    <string name="date_empty">Date can not be empty!</string>
+    <string name="time_empty">Time can not be empty!</string>
+    <string name="site_empty">Site can not be empty!</string>
+
+    <string name="slide_pre_empty">Slide preparer can not be empty!</string>
+    <string name="microscopist_empty">Microscopist can not be empty!</string>
+    <string name="hct_empty">HCT can not be empty!</string>
+
+    <string name="slide_id">Slide ID</string>
+    <string name="date">Date</string>
+    <string name="time">Time</string>
+    <string name="site">Site</string>
+
+    <string name="slide_pre">Slide Preparer</string>
+    <string name="microscopist">Microscopist</string>
+    <string name="staining">Staining method</string>
+    <string name="hct">HCT(%)</string>
+    <string name="infected_manual">Infected Cells Manual Count(optional)</string>
+    <string name="total_manual">Total Cells Manual Count(optional)</string>
+
+    <!-- Strings for PatientInfo-->
+    <string name="gender1">Gender</string>
+    <string name="male">male</string>
+    <string name="female">female</string>
+
+    <string name="patient_id_empty">Patient ID can not be empty!</string>
+    <string name="initial_empty">Initial can not be empty!</string>
+    <string name="age_empty">Age can not be empty!</string>
+
+    <string name="pid_exist">Patient ID already exists!</string>
+
+    <string name="initial_are_letters">Initial has to be letters!</string>
+
+    <string name="no_resultDB">No result from database.</string>
+
+    <string name="patient_id">Patient ID</string>
+    <string name="initial">Initials</string>
+    <string name="age">Age</string>
+
+    <!-- Strings for getResultNdisplay-->
+    <string name="continue_button">Continue</string>
+    <string name="finish_button">Finish</string>
+    <string name="enough_cells">Enough cells collected for this patient.</string>
+    <string name="original_image_switch">Tap for original image</string>
+    <string name="result_image_switch">Tap for result image</string>
+
+    <string name="cells">Cells</string>
+    <string name="infectedcells">Infected Cells</string>
+
+    <!-- Strings for DatabasePage-->
+    <string name="register">Register</string>
+    <string name="register_message">You need to register with NIH before using the Upload function. Do you want to register?</string>
+    <string name="register_cancel">Register canceled</string>
+
+    <string name="deleteDB_message">This button is used to delete the entire database!</string>
+    <string name="deleteDB_message1">Are you sure you want delete the entire database?</string>
+    <string name="db_empty">Database empty</string>
+
+    <string name="delete_all_images">Are you sure you want to remove all the images from the \'NLM_Malaria_Screener\' folder?</string>
+    <string name="delete_image_message">There are images that haven\'t been uploaded yet, do you want to proceed?</string>
+    <string name="image_all_deleted">All images removed</string>
+
+    <!-- Strings for Dropbox-->
+    <string name="upload_succeeded">Last upload succeeded!</string>
+    <string name="upload_failed">Last upload failed!</string>
+    <string name="uploading">Please do not close the app while uploading.</string>
+    <string name="upload_finished">Upload finished.</string>
+    <string name="no_internet">Can\'t connect to server, check internet connection.</string>
+
+    <!-- Strings for ImageGallery-->
+    <string name="long_press">Long press on image thumbnails to enter manual counts.</string>
+    <string name="image">Image </string>
+    <string name="original"> original</string>
+    <string name="res"> result</string>
+    <string name="total_cell_count">Auto counts - Total: </string>
+    <string name="infected_cell_count">  Infected: </string>
+    <string name="total_cell_count_GT">Manual counts - Total: </string>
+    <string name="infected_cell_count_GT">  Infected: </string>
+
+    <!-- Strings for list_item_imagedb-->
+    <string name="original1">Original</string>
+    <string name="result1">Result</string>
+
+    <!-- Strings for Register-->
+    <string name="register_error">There is an error, please check your input!</string>
+    <string name="first_name">Please enter valid first name!</string>
+    <string name="last_name">Please enter valid last name!</string>
+    <string name="email">Please enter valid email address!</string>
+    <string name="organization">Please enter valid organization name!</string>
+    <string name="department">Please enter valid department name!</string>
+    <string name="address">Please enter valid address!</string>
+    <string name="city">Please enter valid city name!</string>
+    <string name="zip_code">Please enter valid zip code!</string>
+    <string name="country">Please enter valid country name!</string>
+
+    <string name="fill_in">Fill in the following fields (* - mandatory). Scroll down for more fields.</string>
+    <string name="first_name1">First Name *</string>
+    <string name="last_name1">Last Name *</string>
+    <string name="email1">Email Address *</string>
+    <string name="organization1">Organization *</string>
+    <string name="department1">Department *</string>
+    <string name="address1">Address line 1 *</string>
+    <string name="address2">Address line 2</string>
+    <string name="city1">City *</string>
+    <string name="zip_code1">Zip Code *</string>
+    <string name="country1">Country *</string>
+
+    <!-- Strings for Upload-->
+    <string name="start_upload">Starting to upload...</string>
+    <string name="image_empty">Image folder is empty, nothing to upload</string>
+
+    <!-- Strings for CustomAdapter_ImageGalleryDB-->
+    <string name="total"> - Auto counts - Total: </string>
+    <string name="infected">  Infected: </string>
+    <string name="manual_total">Manual counts - Total: </string>
+
+    <!-- Strings for patient graph-->
+    <string name="parasitemia">Parasitemia</string>
+    <string name="slide_index">Slides Index (sort by time)</string>
+
+    <!-- Strings for database_slide_page-->
+    <string name="scroll_down">Scroll down for more fields.</string>
+    <string name="view_image">View Images</string>
+
+    <!-- Strings for database_slide_log_page-->
+    <string name="show_graph">Show Graph</string>
+
+    <!-- Strings for database_manage-->
+    <string name="id">ID</string>
+    <string name="delete_db">DELETE DATABASE</string>
+    <string name="delete_all_images_db">DELETE ALL IMAGES</string>
+
+    <!-- Strings shared for dialog-->
+    <string name="quit_session_message">Are you sure you want quit the current session?</string>
+    <string name="quit_session_aborted">Session aborted</string>
+    <string name="click_no">You clicked on NO</string>
+    <string name="reject_image">Are you sure you want reject this image?</string>
+    <string name="image_deleted">User rejects result, image files deleted.</string>
+    <string name="click_cancel">You clicked on Cancel</string>
+    <string name="delete_patient">Are you sure you want delete this patient?</string>
+    <string name="p_deleted">Patient deleted from database</string>
+    <string name="delete_slide">Are you sure you want delete this slide?</string>
+    <string name="s_deleted">Slide deleted from database</string>
+    <string name="yes">YES</string>
+    <string name="no">NO</string>
+    <string name="change">Change</string>
+    <string name="cancel">Cancel</string>
+    <string name="proceed">Proceed</string>
+
+    <string name="next">next</string>
+    <string name="skip">skip</string>
+
+    <!-- Strings for first open tutorial-->
+    <string name="new_session_btn_title">Welcome to NLM Malaria Screener</string>
+    <string name="new_session_btn">Press the button below to start a new session</string>
+    <string name="capture_btn_title">Capture a blood smear image</string>
+    <string name="capture_btn">1. Attach your mobile device to the eyepiece of the microscope.\n\n2. Adjust the microscope to bring a clear view of the cells in the camera preview.\n\n3. Press the capture button to take a picture.\n</string>
+    <string name="setting_btn_title">Amount of cells needed</string>
+    <string name="setting_btn">Go to settings to adjust the amount of cells needed for each session</string>
+
+    <!-- Strings for skip input info-->
+    <string name="skip_title">Skip input pages</string>
+    <string name="skip_message">Click OK to skip the following input pages. Images will be saved in folder \'Test\'.</string>
+    <string name="skip_moved">Images saved</string>
+
+    <!-- Strings for image preview yes and no-->
+    <string name="accept">Accept</string>
+    <string name="reject">Reject</string>
+
+    <!-- Strings for test dialog-->
+    <string name="test">Please enter Slide ID:</string>
+    <string name="ok">OK</string>
+
+    <string name="end_session">End Session</string>
+
+    <!-- Strings for upload-->
+    <string name="upload_dropbox">Upload</string>
+    <string name="upload_server">Upload to Server</string>
+
+    <!-- Strings for manual counts -->
+    <string name="manual_counts">Enter Manual Counts</string>
+    <string name="manual_cell_count">Enter cell counts:</string>
+    <string name="manual_count_infected">Enter infected cell counts:</string>
+    <string name="press_and_hold">Press list item to edit</string>
+
+    <!-- Strings for images in test folder/test patient -->
+    <string name="no_graph">No graph for test patient.</string>
+
+</resources>

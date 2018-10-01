@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="gov.nih.nlm.malaria_screener.frontEnd.PatientGraph">
+
+    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/navigate_bar_graph"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentStart="true"
+        android:background="#1F568a"
+        android:textAlignment="center"></android.support.v7.widget.Toolbar>
+
+    <gov.nih.nlm.malaria_screener.custom.VerticalTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/parasitemia"
+        android:id="@+id/textView_YAxisTitle"
+        android:textStyle="bold"
+        android:layout_centerVertical="true"
+        android:layout_alignParentStart="true"
+        android:gravity="bottom"
+        android:layout_marginLeft="5dp"/>
+
+    <com.jjoe64.graphview.GraphView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/graphView"
+        android:layout_below="@+id/navigate_bar_graph"
+        android:layout_above="@+id/textView_XAxisTitle"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="27dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="10dp"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/slide_index"
+        android:id="@+id/textView_XAxisTitle"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:textStyle="bold"/>
+
+
+</RelativeLayout>

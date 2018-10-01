@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    android:fitsSystemWindows="true"
+    tools:context="gov.nih.nlm.malaria_screener.frontEnd.PatientInfo">
+
+    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/navigate_bar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentStart="true"
+        android:background="#1F568a"
+        android:textAlignment="center"></android.support.v7.widget.Toolbar>
+    <!-- android:background="#1F568a" -->
+
+    <TableLayout
+        android:id="@+id/tableLayout"
+        android:layout_width="210dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true">
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/layout_patientID"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="104dp">
+
+            <EditText
+                android:id="@+id/editText_patientID"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_below="@+id/navigate_bar"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/edit_text_border"
+                android:clickable="true"
+                android:hint="@string/patient_id"
+                android:inputType="text"
+                android:textColor="#73757b" />
+        </android.support.design.widget.TextInputLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView_genderString"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/gender1"
+                android:textSize="11dp" />
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <CheckBox
+                    android:id="@+id/checkBox_male"
+                    android:layout_width="wrap_content"
+                    android:layout_height="45dp"
+                    android:layout_alignStart="@+id/editText_patientID"
+                    android:layout_below="@+id/editText_patientID"
+                    android:checked="false"
+                    android:text="@string/male" />
+
+                <CheckBox
+                    android:id="@+id/checkBox_female"
+                    android:layout_width="wrap_content"
+                    android:layout_height="45dp"
+                    android:layout_below="@+id/editText_patientID"
+                    android:checked="false"
+                    android:text="@string/female" />
+            </TableRow>
+
+        </LinearLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/layout_initial"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/editText_initials"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:hint="@string/initial"
+                android:inputType="textCapCharacters" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/layout_age"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/editText_age"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:hint="@string/age"
+                android:imeOptions="actionDone"
+                android:inputType="number" />
+        </android.support.design.widget.TextInputLayout>
+
+    </TableLayout>
+
+    <!--<Button
+        android:id="@+id/button_continue"
+        android:layout_width="wrap_content"
+        android:layout_height="45dp"
+        android:layout_alignEnd="@+id/tableLayout"
+        android:layout_alignStart="@+id/tableLayout"
+        android:layout_below="@+id/tableLayout"
+        android:layout_marginTop="51dp"
+        android:background="@drawable/button_selector"
+        android:text="Next"
+        android:textColor="#ffffff"
+        android:textSize="17dp" /> -->
+
+</RelativeLayout>
+
+

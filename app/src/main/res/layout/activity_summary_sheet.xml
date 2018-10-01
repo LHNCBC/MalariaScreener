@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="gov.nih.nlm.malaria_screener.frontEnd.SummarySheet">
+
+    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/navigate_bar_summary"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentStart="true"
+        android:background="#1F568a"
+        android:textAlignment="center"></android.support.v7.widget.Toolbar>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="70dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/patientInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/patient_info" />
+
+            <ListView
+                android:id="@+id/listView_patient"
+                android:layout_width="wrap_content"
+                android:layout_height="183dp"
+                android:background="#FFFFFF" />
+
+            <TextView
+                android:id="@+id/textView_slide"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="27dp"
+                android:text="@string/slide_info" />
+
+            <ListView
+                android:id="@+id/listView_slide"
+                android:layout_width="match_parent"
+                android:layout_height="137dp"
+                android:background="#FFFFFF" />
+
+            <TextView
+                android:id="@+id/textView_more"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="27dp"
+                android:text="@string/more_info" />
+
+            <ListView
+                android:id="@+id/listView_more"
+                android:layout_width="match_parent"
+                android:layout_height="461dp"
+                android:background="#FFFFFF" />
+
+            <Button
+                android:id="@+id/button_finish"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="35dp"
+                android:textColor="#FFFFFF"
+                android:background="#d95891ec"
+                android:text="@string/finish_button"
+                android:textSize="17dp" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+</RelativeLayout>

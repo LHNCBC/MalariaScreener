@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="gov.nih.nlm.malaria_screener.database.DatabaseSlideInfoPage">
+
+    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/navigate_bar_slideDB"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:background="#1F568a"
+        android:textAlignment="center"></android.support.v7.widget.Toolbar>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/scroll_down"
+        android:id="@+id/textView_scroll"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/navigate_bar_slideDB"/>
+
+    <ListView
+        android:id="@+id/listView_slide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/button_imagegallery"
+        android:layout_below="@+id/textView_scroll"/>
+
+    <Button
+        android:id="@+id/button_imagegallery"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:background="#d95891ec"
+        android:text="@string/view_image"
+        android:textColor="#FFFFFF"
+        android:textSize="17dp"
+        android:layout_alignParentBottom="true"/>
+
+</RelativeLayout>

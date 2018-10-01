@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="gov.nih.nlm.malaria_screener.database.DatabasePage">
+
+    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/navigate_bar_database"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:background="#1F568a"
+        android:textAlignment="center"></android.support.v7.widget.Toolbar>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/navigate_bar_database"
+        android:layout_above="@+id/button_dropbox"
+        android:orientation="vertical">
+
+        <ListView
+            android:id="@+id/listView_allPatient"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:background="#FFFFFF"
+            android:layout_marginBottom="5dp"/>
+
+        <ListView
+            android:id="@+id/listView_testPatient"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:background="#FFFFFF"
+            android:layout_marginBottom="10dp"/>
+
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/textView_titleID"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/navigate_bar_database"
+        android:layout_marginStart="22dp"
+        android:layout_marginTop="7dp"
+        android:text="@string/id"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView_titleInitial"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/navigate_bar_database"
+        android:layout_marginStart="90dp"
+        android:layout_marginTop="7dp"
+        android:text="@string/initial"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView_titleGender"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/navigate_bar_database"
+        android:layout_marginStart="160dp"
+        android:layout_marginTop="7dp"
+        android:text="@string/gender1"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView_titleAge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/navigate_bar_database"
+        android:layout_marginStart="250dp"
+        android:layout_marginTop="7dp"
+        android:text="@string/age"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/button_dropbox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#d95891ec"
+        android:text="@string/title_dropbox"
+        android:textColor="#FFFFFF"
+        android:textSize="15dp"
+        android:layout_marginBottom="15dp"
+        android:layout_above="@+id/button_delete"
+         />
+
+    <Button
+        android:id="@+id/button_delete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#d95891ec"
+        android:text="@string/delete_db"
+        android:textColor="#FFFFFF"
+        android:textSize="15dp"
+        android:layout_marginBottom="15dp"
+        android:layout_alignParentBottom="true"/>
+
+    <!--<Button
+        android:id="@+id/button_delete_all_images"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#d95891ec"
+        android:text="@string/delete_all_images_db"
+        android:textColor="#FFFFFF"
+        android:textSize="15dp"
+        android:layout_marginBottom="15dp"
+        android:layout_alignParentBottom="true" /> -->
+
+</RelativeLayout>

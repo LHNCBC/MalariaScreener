@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_image_gallery"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="gov.nih.nlm.malaria_screener.database.ImageGallery">
+
+    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/navigate_bar_imageview"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:background="#1F568a"
+        android:textAlignment="center"></android.support.v7.widget.Toolbar>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerview_imagegallery"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/navigate_bar_imageview" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#000000"
+        android:id="@+id/pagerLayout">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar_full"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#000000" />
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/textView_imageTitle"
+            android:layout_below="@+id/toolbar_full"
+            android:layout_marginBottom="3dp" />
+
+        <TextView
+            android:id="@+id/textView_imageTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/textView_imageInfo"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="10dp"
+            android:background="#000000"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textView_imageInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:background="#000000"
+            android:textColor="#D3D3D3"
+            android:textStyle="bold"
+            android:layout_above="@+id/textView_imageInfoGT"/>
+
+        <TextView
+            android:id="@+id/textView_imageInfoGT"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="7dp"
+            android:layout_marginLeft="10dp"
+            android:background="#000000"
+            android:textColor="#D3D3D3"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

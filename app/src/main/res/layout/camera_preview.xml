@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#ffffff"
+    >
+
+    <FrameLayout
+        android:id="@+id/camera_preview"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        />
+    <!--android:layout_above="@+id/include_bottom"-->
+
+    <include
+        layout="@layout/app_bar_cam"
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:id="@+id/include" />
+
+     <ImageButton
+        android:id="@+id/button_gallery"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+         android:layout_marginEnd="31dp"
+         android:layout_alignTop="@+id/settingButton"
+         android:layout_alignParentEnd="true"
+         android:background="@drawable/button_gallery_selector"/>
+
+    <!-- To auto-complete the email text field in the login form with the user's emails -->
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar"
+        android:layout_below="@+id/include"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:max="1000"
+        android:background="#121f568a"
+        android:indeterminate="false" />
+    <!--android:background="#90f7f7f7"-->
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:id="@+id/textView_progress"
+        android:layout_above="@+id/progressBar"
+        android:layout_alignParentEnd="true"
+        android:textColor="#ffffff" />
+
+    <!--<include
+        layout="@layout/bottombar"
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:id="@+id/include_bottom"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true">
+
+    </include>-->
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/settingButton"
+        android:background="@drawable/button_setting_selector"
+        android:layout_marginTop="20dp"
+        android:layout_alignTop="@+id/button_capture"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="31dp" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/button_capture"
+        android:background="@drawable/capturebuttonstyle"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+
+    <!--<ImageButton
+        android:id="@+id/button_bluetooth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="31dp"
+        android:background="@drawable/ic_bluetooth_white_24dp"
+        android:layout_toEndOf="@+id/settingButton"
+        android:layout_alignTop="@+id/settingButton" /> -->
+
+    <!--<ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/backButton"
+        android:layout_marginStart="30dp"
+        android:layout_alignTop="@+id/settingButton"
+        android:layout_alignParentStart="true"
+        android:background="@drawable/ic_arrow_back_white_24dp"/> -->
+
+</RelativeLayout>

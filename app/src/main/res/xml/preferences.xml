@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:key="category1_key"
+        android:title="@string/category1">
+        <ListPreference
+            android:defaultValue="0"
+            android:key="whitebalance"
+            android:summary="@string/wbsum"
+            android:title="@string/whitebalance" />
+
+        <!--<com.example.hang.malaria.custom.SeekBarPreference_4CellNeeded
+            android:defaultValue="3"
+            android:key="imagequality"
+            android:summary="@string/imgquality"
+            android:title="@string/imagequality" /> -->
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="category2_key"
+        android:title="@string/category2">
+        <ListPreference
+            android:defaultValue="1"
+            android:key="classifier"
+            android:summary="@string/classifierT"
+            android:title="@string/classifier" />
+
+        <gov.nih.nlm.malaria_screener.custom.SeekBarPreference
+            android:defaultValue="35"
+            android:key="SVM_Th"
+            android:summary="@string/SVM_Th_summary"
+            android:title="@string/SVM_Th"/>
+
+        <gov.nih.nlm.malaria_screener.custom.SeekBarPreference_4CellNeeded
+            android:defaultValue="1000"
+            android:key="celltotal"
+            android:summary="@string/celltotal_summary"
+            android:title="@string/celltotal"/>
+
+    </PreferenceCategory>
+
+
+</PreferenceScreen>
