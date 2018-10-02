@@ -5,16 +5,12 @@ import android.graphics.Bitmap;
 import android.os.Environment;
 import android.util.Log;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
-import java.util.concurrent.TimeUnit;
 
 import org.opencv.android.Utils;
 import org.opencv.core.Core;
@@ -26,11 +22,11 @@ import org.opencv.core.MatOfPoint;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
-import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
 import gov.nih.nlm.malaria_screener.custom.UtilsCustom;
-import gov.nih.nlm.malaria_screener.findmarkers.TensorFlowClassifier;
+import gov.nih.nlm.malaria_screener.imageProcessing.SVM_Classifier;
+import gov.nih.nlm.malaria_screener.imageProcessing.TensorFlowClassifier;
 
 
 public class Cells {
@@ -43,9 +39,8 @@ public class Cells {
 
     public String locationStr;
     public Mat featureTable = new Mat();
-    public Vector<Mat> FTchannels;
 
-    private ArrayList<Mat> cellChip;
+    private ArrayList<Mat> cellChip = new ArrayList<>();
 
     int CCAreaTh = 2500;
     int chipIndex = 1;
@@ -54,6 +49,7 @@ public class Cells {
     double ori_width = 5312;
 
     TensorFlowClassifier tensorFlowClassifier;
+    SVM_Classifier svm_classifier;
 
     int height = 44;
     int width = 44;
@@ -64,13 +60,11 @@ public class Cells {
 
     int ccNum;
 
-    long startTimeNN;
 
-    public Cells(Mat mask, Mat oriSizeImage, Context context, Mat WBC_Mask, int whichClassifier) {
+    public void runCells(Mat mask, Mat oriSizeImage, Mat WBC_Mask) {
 
         this.tensorFlowClassifier = UtilsCustom.tensorFlowClassifier;
-
-        cellChip = new ArrayList<>();
+        this.svm_classifier = UtilsCustom.svm_classifier;
 
         //------------------------------------
 
@@ -81,9 +75,7 @@ public class Cells {
 
         double scale = (ori_height * ori_width) / (new_height * new_width);
 
-        //blow up the mask to original size
-//        Mat resizedMask = new Mat();
-//        Imgproc.resize(mask, resizedMask, new Size(oriSizeImage.cols(), oriSizeImage.rows()), 0, 0, Imgproc.INTER_NEAREST);
+        //blow up the mask to original size----------------------------------------------
 
         // turn mask from 0-255 to 0-1
         Core.divide(mask, mask, mask);
@@ -103,6 +95,7 @@ public class Cells {
         }
 
         Core.subtract(newMask, contour, newMask);
+        //----------------------------------------------------------------------------------
 
         Mat labels = new Mat();
         Mat stats = new Mat();
@@ -114,7 +107,7 @@ public class Cells {
         int stats_JP[] = new int[(int) stats.total()];
         stats.get(0, 0, stats_JP);
 
-        // WBC--------------------------------------------------------------
+        // WBC: pick out WBC regions--------------------------------------------------------------
         Mat labels_small = new Mat();
         Mat labelC = labels.clone();
         labelC.convertTo(labelC, WBC_Mask.type());
@@ -147,7 +140,7 @@ public class Cells {
 
         for (int i = 1; i < ccNum; i++) { //start at 1 because first rect in stats is whole image
 
-            if (OverlapwWBC_index[i - 1] == 1) {
+            if (OverlapwWBC_index[i - 1] == 1) { // skip WBC region
                 continue;
             } else {
 
@@ -234,14 +227,38 @@ public class Cells {
         scaleMat.setTo(new Scalar(scale));
         Core.multiply(featureTable, scaleMat, featureTable);
 
-        FTchannels = new Vector<Mat>();
-        Core.split(featureTable, FTchannels);
-        UtilsCustom.featureTable = featureTable;
-        UtilsCustom.FTchannels = FTchannels;
+        runClassification();
 
-        startTimeNN = System.currentTimeMillis();
+//        if (picFile!=null) {
+//            forSave.convertTo(forSave, CvType.CV_8U);
+//            bitmap = Bitmap.createBitmap(forSave.cols(), forSave.rows(), Bitmap.Config.ARGB_8888);
+//            UtilsCustom.matToBitmap(forSave, bitmap);
+//
+//        }
 
-        if (whichClassifier == 0) {
+        //release memory
+        newMask.release();
+        maskCopy.release();
+        contour.release();
+        labels.release();
+        labelC.release();
+        stats.release();
+        centroids.release();
+        labels_small.release();
+        numMat.release();
+        singleCellMask.release();
+        And_res.release();
+        cellChip.clear();
+
+
+    }
+
+    private void runClassification(){
+
+        if (UtilsCustom.whichClassifier == 0) { // Deep Learning
+
+            long startTimeNN = System.currentTimeMillis();
+
             UtilsCustom.results_NN.clear();
 
             float[] floatPixels = new float[width * height * 3 * batchSize];
@@ -265,14 +282,7 @@ public class Cells {
                     floatPixels = putInPixels(i, n, floatPixels);
                 }
 
-                long startTime_rec = System.currentTimeMillis();
-
                 tensorFlowClassifier.recongnize_batch(floatPixels,  batchSize);
-
-                long endTime_rec = System.currentTimeMillis();
-                long totalTime_rec = endTime_rec - startTime_rec;
-                Log.d(TAG, "recongnize Time: " + totalTime_rec);
-
 
             }
 
@@ -284,35 +294,15 @@ public class Cells {
 
             tensorFlowClassifier.recongnize_batch(floatPixels_last, lastBatchSize);
 
-
             long endTime_NN = System.currentTimeMillis();
             long totalTime_NN = endTime_NN - startTimeNN;
             Log.d(TAG, "Deep learning Time: " + totalTime_NN);
             //--------------------------------------------------------
 
+        } else if (UtilsCustom.whichClassifier==1){ // SVM
+            svm_classifier.run(featureTable);
+
         }
-
-//        if (picFile!=null) {
-//            forSave.convertTo(forSave, CvType.CV_8U);
-//            bitmap = Bitmap.createBitmap(forSave.cols(), forSave.rows(), Bitmap.Config.ARGB_8888);
-//            UtilsCustom.matToBitmap(forSave, bitmap);
-//
-//        }
-
-        //release memory
-        newMask.release();
-        maskCopy.release();
-        contour.release();
-        labels.release();
-        labelC.release();
-        stats.release();
-        centroids.release();
-        labels_small.release();
-        numMat.release();
-        singleCellMask.release();
-        And_res.release();
-        cellChip.clear();
-
 
     }
 

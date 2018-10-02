@@ -1,6 +1,5 @@
-package gov.nih.nlm.malaria_screener.findmarkers;
+package gov.nih.nlm.malaria_screener.imageProcessing;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Process;
 import android.util.Log;
@@ -20,8 +19,6 @@ import org.opencv.core.Mat;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-
-import gov.nih.nlm.malaria_screener.custom.UtilsCustom;
 
 /**
  * Created by yuh5 on 12/14/2017.

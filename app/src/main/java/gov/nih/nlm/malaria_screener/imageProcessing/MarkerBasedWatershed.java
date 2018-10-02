@@ -1,4 +1,4 @@
-package gov.nih.nlm.malaria_screener.findmarkers;
+package gov.nih.nlm.malaria_screener.imageProcessing;
 
 import android.util.Log;
 
@@ -30,7 +30,7 @@ public class MarkerBasedWatershed {
     public Mat output_WBCMask; // white blood cell mask
     public Mat watershed_result;
 
-    public MarkerBasedWatershed(Mat mat_img, float resizeValue) {
+    public void runMarkerBasedWatershed(Mat mat_img, float resizeValue) {
 
         Vector<Mat> channels = new Vector<Mat>();
         Core.split(mat_img, channels); // b g r
@@ -259,7 +259,8 @@ public class MarkerBasedWatershed {
             //Core.divide(mask_border, mask_border, mask_border);
 
             // -----------------run Otsu --------------------------------------------
-            OtsuThreshold otsuThreshold = new OtsuThreshold(norm_im, mask_border);
+            OtsuThreshold otsuThreshold = new OtsuThreshold();
+            otsuThreshold.runOtsuThreshold(norm_im, mask_border);
             double Th = otsuThreshold.threshold / 255;
             otsuThreshold = null;
 
@@ -447,7 +448,8 @@ public class MarkerBasedWatershed {
 
             // segment watershed
             //SegmentWatershed segmentWatershed = new SegmentWatershed(oneThird, out_mask_alpha_Resized, out_markers_Resized);
-            SegmentWatershed segmentWatershed = new SegmentWatershed(mat_img, mask_alpha, markers);
+            SegmentWatershed segmentWatershed = new SegmentWatershed();
+            segmentWatershed.runSegmentWatershed(mat_img, mask_alpha, markers);
 
             long et = System.currentTimeMillis();
             long tT = et - st;
@@ -516,23 +518,11 @@ public class MarkerBasedWatershed {
         Mat centers = histCenters(array, 256); //self written function
         array.release();
 
-//        List<Mat> imageList = new ArrayList<>();
-//        imageList.add(green);
-//
-//        MatOfInt channel = new MatOfInt(0);
-//        MatOfInt histSize = new MatOfInt(256);
-//        Mat hist = new Mat();
-//        MatOfFloat range = new MatOfFloat(0,256);
-//        Imgproc.calcHist(imageList, channel, new Mat(), hist, histSize, range);
-        //Mat h = reshape2D(hist,hist.rows());
-
-        Histogram histogram = new Histogram(green, 256);
+        Histogram histogram = new Histogram();
+        histogram.runHistogram(green, 256);
         Mat h = histogram.getHistMat().clone();
         boolean retakeFlag = histogram.getRetakeFlag();
         histogram = null;
-
-        //Log.d(TAG, "h: " + h);
-        //OutputTextFile outputTextFile = new OutputTextFile(h);
 
         if (retakeFlag) {
             retakeIm = true;

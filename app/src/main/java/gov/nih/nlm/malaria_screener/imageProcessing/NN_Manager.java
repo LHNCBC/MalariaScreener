@@ -1,18 +1,15 @@
-package gov.nih.nlm.malaria_screener.findmarkers;
+package gov.nih.nlm.malaria_screener.imageProcessing;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
 
 import org.datavec.image.loader.BaseImageLoader;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.opencv.core.Mat;
 
-import java.io.ByteArrayInputStream;
 import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;

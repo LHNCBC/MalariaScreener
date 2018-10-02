@@ -8,7 +8,8 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Vector;
 
-import gov.nih.nlm.malaria_screener.findmarkers.TensorFlowClassifier;
+import gov.nih.nlm.malaria_screener.imageProcessing.SVM_Classifier;
+import gov.nih.nlm.malaria_screener.imageProcessing.TensorFlowClassifier;
 
 /**
  * Created by yuh5 on 2/8/2018.
@@ -17,12 +18,14 @@ import gov.nih.nlm.malaria_screener.findmarkers.TensorFlowClassifier;
 public final class UtilsCustom {
 
     public static TensorFlowClassifier tensorFlowClassifier;
+    public static SVM_Classifier svm_classifier;
+
+    public static int whichClassifier = 1; // 0 is DL, 1 is SVM
+    public static double SVM_Th = 0.65;
 
     // Cell global variables
     public static ArrayList<Integer> results_NN = new ArrayList<>();
     public static int[][] cellLocation;
-    public static Mat featureTable;
-    public static Vector<Mat> FTchannels;
     public static int cellCount = 0;
 
     public static String getThreadSignature()

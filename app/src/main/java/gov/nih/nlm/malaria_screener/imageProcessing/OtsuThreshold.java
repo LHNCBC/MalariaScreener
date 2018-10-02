@@ -1,4 +1,4 @@
-package gov.nih.nlm.malaria_screener.findmarkers;
+package gov.nih.nlm.malaria_screener.imageProcessing;
 
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
@@ -11,7 +11,7 @@ public class OtsuThreshold {
 
     double threshold;
 
-    public OtsuThreshold(Mat image, Mat mask){
+    public void runOtsuThreshold(Mat image, Mat mask){
 
         int[] histData = new int[256];
 

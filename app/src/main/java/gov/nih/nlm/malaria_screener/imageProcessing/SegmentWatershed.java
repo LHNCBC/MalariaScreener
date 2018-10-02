@@ -1,4 +1,4 @@
-package gov.nih.nlm.malaria_screener.findmarkers;
+package gov.nih.nlm.malaria_screener.imageProcessing;
 
 import android.util.Log;
 
@@ -22,7 +22,7 @@ public class SegmentWatershed {
 
     Mat result;
 
-    public SegmentWatershed(Mat image, Mat mask, Mat marker) {
+    public void runSegmentWatershed(Mat image, Mat mask, Mat marker) {
 
         Vector<Mat> channels = new Vector<Mat>();
         Core.split(image, channels); // b g r

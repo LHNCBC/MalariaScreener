@@ -1,4 +1,4 @@
-package gov.nih.nlm.malaria_screener.findmarkers;
+package gov.nih.nlm.malaria_screener.imageProcessing;
 
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
@@ -14,7 +14,7 @@ public class Histogram {
 
     private boolean retakeIm = false;
 
-    public Histogram(Mat im, int bins){
+    public void runHistogram(Mat im, int bins){
 
         int[] hist = new int[bins];
 

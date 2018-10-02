@@ -1,6 +1,5 @@
-package gov.nih.nlm.malaria_screener.findmarkers;
+package gov.nih.nlm.malaria_screener.imageProcessing;
 
-import android.content.Context;
 import android.util.Log;
 
 import org.datavec.image.loader.BaseImageLoader;
@@ -8,7 +7,6 @@ import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.opencv.core.Mat;
 
-import java.io.ByteArrayInputStream;
 import java.lang.ref.WeakReference;
 
 import gov.nih.nlm.malaria_screener.Cells;
