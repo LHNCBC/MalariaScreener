@@ -20,6 +20,8 @@ public final class UtilsCustom {
     public static TensorFlowClassifier tensorFlowClassifier;
     public static SVM_Classifier svm_classifier;
 
+    public static Mat oriSizeMat;
+
     public static int whichClassifier = 1; // 0 is DL, 1 is SVM
     public static double SVM_Th = 0.65;
 

@@ -212,7 +212,6 @@ public class SVM_Classifier {
                 Core.add(Xnew_col, new Scalar(shift2[i]), Xnew_col);
                 Core.multiply(Xnew_col, new Scalar(scaleFactor2[i]), Xnew_col);
                 all_Xnew.add(Xnew_col);
-
             }
 
             Core.hconcat(all_Xnew, Xnew);

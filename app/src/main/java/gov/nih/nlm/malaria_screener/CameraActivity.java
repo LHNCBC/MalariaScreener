@@ -157,8 +157,8 @@ public class CameraActivity extends AppCompatActivity {
     private String cellEachImageGT;
     private String infectedEachImageGT;
 
-    Mat oriSizeMat;
-    Mat resizedMat;
+    //Mat oriSizeMat;
+    Mat resizedMat = new Mat();
     Mat watershed_mask;
 
     File pictureFileCopy;
@@ -258,10 +258,13 @@ public class CameraActivity extends AppCompatActivity {
                 @Override
                 public void run() {
 
+                    long startTime_w = System.currentTimeMillis();
+
                     // load TF model
                     try {
 
                         UtilsCustom.tensorFlowClassifier = TensorFlowClassifier.create(context.getAssets(), "malaria_thinsmear_44.h5.pb", 44, "conv2d_20_input", "output_node0");
+                        //UtilsCustom.tensorFlowClassifier = TensorFlowClassifier.create(context.getAssets(), "malaria_thinsmear.h5.pb", 100, "input_2", "output_node0");
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -273,6 +276,10 @@ public class CameraActivity extends AppCompatActivity {
                     for (int index = 0; index < classNum; index++) {
                         UtilsCustom.svm_classifier.readSVMTextFile(index);
                     }
+
+                    long endTime_w = System.currentTimeMillis();
+                    long totalTime_w = endTime_w - startTime_w;
+                    Log.d(TAG, "Read Classifier Time: " + totalTime_w);
 
                 }
             };
@@ -790,14 +797,14 @@ public class CameraActivity extends AppCompatActivity {
                 @Override
                 public void run() {
 
-                    oriSizeMat = Imgcodecs.imread(picturePath, Imgcodecs.CV_LOAD_IMAGE_COLOR);
-                    Imgproc.cvtColor(oriSizeMat, oriSizeMat, Imgproc.COLOR_BGR2RGB);
+                    UtilsCustom.oriSizeMat = Imgcodecs.imread(picturePath, Imgcodecs.CV_LOAD_IMAGE_COLOR);
+                    Imgproc.cvtColor(UtilsCustom.oriSizeMat, UtilsCustom.oriSizeMat, Imgproc.COLOR_BGR2RGB);
 
-                    Log.d(TAG, "oriSizeMat: " + oriSizeMat);
+                    Log.d(TAG, "oriSizeMat: " + UtilsCustom.oriSizeMat);
 
                     resizeImage();
 
-                    ProcessThinSmearImage(oriSizeMat, resizedMat, RV);
+                    ProcessThinSmearImage();
                 }
             };
 
@@ -856,8 +863,8 @@ public class CameraActivity extends AppCompatActivity {
                     Mat jpegData = new Mat(1, data.length, CvType.CV_8UC1);
                     jpegData.put(0, 0, data);
 
-                    oriSizeMat = Imgcodecs.imdecode(jpegData, -1); // produce a 3 channel bgr image
-                    Imgproc.cvtColor(oriSizeMat, oriSizeMat, Imgproc.COLOR_BGR2RGB);
+                    UtilsCustom.oriSizeMat = Imgcodecs.imdecode(jpegData, -1); // produce a 3 channel bgr image
+                    Imgproc.cvtColor(UtilsCustom.oriSizeMat, UtilsCustom.oriSizeMat, Imgproc.COLOR_BGR2RGB);
 
                     resizeImage();
 
@@ -873,6 +880,33 @@ public class CameraActivity extends AppCompatActivity {
             //Log.d(TAG, "Camera safe to use again");
         }
     };
+
+    private void resizeImage(){
+
+        float ori_height = 2988;
+        float ori_width = 5312;
+        float cur_height = UtilsCustom.oriSizeMat.height();
+        float cur_width = UtilsCustom.oriSizeMat.width();
+
+        float scaleFactor = (float) Math.sqrt((ori_height * ori_width) / (cur_height * cur_width));  // size ratio between 5312/2988 and current images
+
+        RV = 6 / scaleFactor; // SF for the current images
+        //Log.d(TAG, "RV: " + RV);
+
+        int width = (int) ((float) UtilsCustom.oriSizeMat.cols() / RV);
+        int height = (int) ((float) UtilsCustom.oriSizeMat.rows() / RV);
+
+        Imgproc.resize(UtilsCustom.oriSizeMat, resizedMat, new Size(width, height), 0, 0, Imgproc.INTER_CUBIC);
+
+        // put resized image on canvas for drawing results after image processing
+        canvasBitmap = Bitmap.createBitmap(resizedMat.width(), resizedMat.height(), Bitmap.Config.RGB_565);
+        Utils.matToBitmap(resizedMat, canvasBitmap);
+
+        canvas = new Canvas(canvasBitmap);
+        paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paint.setStrokeWidth(5);
+        paint.setColor(Color.BLACK);
+    }
 
     private Handler messageHandler = new Handler() {
 
@@ -933,7 +967,7 @@ public class CameraActivity extends AppCompatActivity {
                             @Override
                             public void run() {
 
-                                ProcessThinSmearImage(oriSizeMat, resizedMat, RV);
+                                ProcessThinSmearImage();
                             }
                         };
 
@@ -958,67 +992,32 @@ public class CameraActivity extends AppCompatActivity {
 
     }
 
-    private void resizeImage(){
-
-        float ori_height = 2988;
-        float ori_width = 5312;
-        float cur_height = oriSizeMat.height();
-        float cur_width = oriSizeMat.width();
-
-        float scaleFactor = (float) Math.sqrt((ori_height * ori_width) / (cur_height * cur_width));  // size ratio between 5312/2988 and current images
-
-        RV = 6 / scaleFactor; // SF for the current images
-        //Log.d(TAG, "RV: " + RV);
-
-        int width = (int) ((float) oriSizeMat.cols() / RV);
-        int height = (int) ((float) oriSizeMat.rows() / RV);
-
-        resizedMat = new Mat();
-        Imgproc.resize(oriSizeMat, resizedMat, new Size(width, height), 0, 0, Imgproc.INTER_CUBIC);
-
-        // put resized image on canvas for drawing results after image processing
-        canvasBitmap = Bitmap.createBitmap(resizedMat.width(), resizedMat.height(), Bitmap.Config.RGB_565);
-        Utils.matToBitmap(resizedMat, canvasBitmap);
-
-        canvas = new Canvas(canvasBitmap);
-        paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setStrokeWidth(5);
-        paint.setColor(Color.BLACK);
-    }
-
-    private void ProcessThinSmearImage(Mat oriSizeMat, Mat resizedMat, float resizeValue) {
+    private void ProcessThinSmearImage() {
 
         long startTime_w = System.currentTimeMillis();
 
         MarkerBasedWatershed watershed = new MarkerBasedWatershed();
-        watershed.runMarkerBasedWatershed(resizedMat, resizeValue);
-
-        boolean reTakeFlag = watershed.getRetakeFlag();
-        Mat WBC_Mask = watershed.output_WBCMask.clone();
-        Mat watershed_result = watershed.watershed_result.clone();
+        watershed.runMarkerBasedWatershed(resizedMat, RV);
+        resizedMat.release();
 
         long endTime_w = System.currentTimeMillis();
         long totalTime_w = endTime_w - startTime_w;
         Log.d(TAG, "Watershed Time: " + totalTime_w);
 
-        if (reTakeFlag) { // take care of the case (avoid crash) when segmentation failed due to a plain black image was taken
+        if (watershed.getRetakeFlag()) { // take care of the case (avoid crash) when segmentation failed due to a plain black image was taken
             inProgress.dismiss();
             retakeHandler.sendEmptyMessage(0);
         } else {
 
             watershed_mask = watershed.watershed_result.clone(); //when segmentation is successful, copy seg mask to later save it in worker thread
-            watershed = null;
-            System.gc();
-            Runtime.getRuntime().gc();
 
             long startTime_C = System.currentTimeMillis();
 
             Cells c = new Cells();
-            c.runCells(watershed_result, oriSizeMat, WBC_Mask);
+            c.runCells(watershed.watershed_result, watershed.output_WBCMask);
 
+            watershed = null;
             c = null;
-            System.gc();
-            Runtime.getRuntime().gc();
 
             long endTime_C = System.currentTimeMillis();
             long totalTime_C = endTime_C - startTime_C;
@@ -1031,6 +1030,10 @@ public class CameraActivity extends AppCompatActivity {
             goToNextActivity();
 
         }
+
+        long endTime = System.currentTimeMillis();
+        long totalTime = endTime - startTime_w;
+        Log.d(TAG, "Single Image Processing Time: " + totalTime);
 
         System.gc();
         Runtime.getRuntime().gc();
@@ -1046,10 +1049,10 @@ public class CameraActivity extends AppCompatActivity {
         } else {
 
             //save image to file
+            saveOriImage(); // taken out of handler, otherwise original image not saved before needed in next activity. 09/26/2017
             //if (takenFromCam) {
             saveImageHandler.sendEmptyMessage(0);
             //}
-            saveOriImage(); // taken out of handler, otherwise original image not saved before needed in next activity. 09/26/2017
 
             cellLocation = UtilsCustom.cellLocation;
 
@@ -1132,8 +1135,6 @@ public class CameraActivity extends AppCompatActivity {
         canvasBitmap.recycle();
         byte[] resImageByteArray = stream2.toByteArray();
         intent.putExtra("resImage", resImageByteArray);
-
-        resizedMat.release();
 
 //        String auto = String.valueOf(autoSVMThres);
 //        intent.putExtra(EXTRA_AUTO, auto);
@@ -1218,23 +1219,15 @@ public class CameraActivity extends AppCompatActivity {
         long startTime = System.currentTimeMillis();
 
         String file_name = pictureFileCopy.toString();
-        Imgproc.cvtColor(oriSizeMat, oriSizeMat, Imgproc.COLOR_RGB2BGR);
+        Imgproc.cvtColor(UtilsCustom.oriSizeMat, UtilsCustom.oriSizeMat, Imgproc.COLOR_RGB2BGR);
 
-//        MatOfInt params = new MatOfInt();
-//        params.alloc(Imgcodecs.CV_IMWRITE_PNG_COMPRESSION);
-//        params.alloc(ImgQ);
-//        Log.d(TAG, "ImgQ: " + ImgQ);
-
-        Imgcodecs.imwrite(file_name, oriSizeMat);
+        Imgcodecs.imwrite(file_name, UtilsCustom.oriSizeMat);
 
         long endTime = System.currentTimeMillis();
         long totalTime = endTime - startTime;
         Log.d(TAG, "save Pic Time: " + totalTime);
 
-        oriSizeMat.release();
-        System.gc();
-        Runtime.getRuntime().gc();
-
+        UtilsCustom.oriSizeMat.release();
     }
 
     public void saveMaskImage() {
@@ -1247,7 +1240,7 @@ public class CameraActivity extends AppCompatActivity {
         }
 
         Imgcodecs.imwrite(file_name, watershed_mask);
-
+        watershed_mask.release();
     }
 
 

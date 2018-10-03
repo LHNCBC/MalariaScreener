@@ -29,6 +29,7 @@ public class OtsuThreshold {
 
         mask.get(0,0, mask_JP);
         newImage.get(0,0, newImage_JP);
+        newImage.release();
 
         for (int i=0;i<newImage_JP.length;i++){
             if (mask_JP[i]==1){
@@ -75,10 +76,7 @@ public class OtsuThreshold {
         }
 
         //release memory
-        newImage.release();
+
     }
 
-    public double getThreshold() {
-        return threshold;
-    }
 }

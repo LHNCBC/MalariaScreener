@@ -22,13 +22,13 @@ public class Histogram {
 
         Core.MinMaxLocResult res = Core.minMaxLoc(im);
 
-        Mat im_new = im.clone();
+        //Mat im_new = im.clone();
         Mat setVauleMat = Mat.zeros(im.rows(), im.cols(), CvType.CV_64FC1);
 
         double setValue = (res.maxVal - res.minVal)/255;
         setVauleMat.setTo(new Scalar(setValue));
 
-        Core.multiply(im_new, setVauleMat, im_new);
+        //Core.multiply(im_new, setVauleMat, im_new);
 
         double range = (res.maxVal - res.minVal)/256;
 
@@ -53,7 +53,7 @@ public class Histogram {
         histMat.convertTo(histMat, CvType.CV_32F);
 
         //release memory
-        im_new.release();
+        //im_new.release();
         setVauleMat.release();
     }
 

@@ -32,6 +32,9 @@ public class SegmentWatershed {
 
         Mat Imin = new Mat();
         Core.min(green, blue, Imin);
+        channels.clear();
+        green.release();
+        blue.release();
 
         Imin.convertTo(Imin, CvType.CV_64F); // same as matlab
 
@@ -55,6 +58,8 @@ public class SegmentWatershed {
         Mat g = new Mat();
         Core.add(dx, dy, g); // make sure no saturation occurred
         Core.sqrt(g, g);
+        dx.release();
+        dy.release();
 
         Mat kernel = Imgproc.getStructuringElement(Imgproc.CV_SHAPE_RECT, new Size(9, 9));
         Mat mask_dilated = new Mat();
@@ -64,12 +69,14 @@ public class SegmentWatershed {
         Mat ones = Mat.ones(mask_dilated.rows(), mask_dilated.cols(), CvType.CV_64FC1);
         Mat BG = new Mat();
         Core.subtract(ones, mask_dilated, BG);
+        mask_dilated.release();
 
         //get BG>0 mask
         Mat all0 = Mat.zeros(BG.rows(), BG.cols(), CvType.CV_64FC1);
         Mat BG_compare = new Mat();
         Core.compare(BG, all0, BG_compare, Core.CMP_GT);
         Core.divide(BG_compare, BG_compare, BG_compare);
+        all0.release();
 
         // make BG>0 all zeors, and BG<0 remain same values
         BG_compare.convertTo(BG_compare, CvType.CV_64F);
@@ -78,6 +85,8 @@ public class SegmentWatershed {
         Core.multiply(BG_compare_invert, BG, BG);
         // add together
         Core.add(BG, BG_compare, BG);
+        BG_compare.release();
+        BG_compare_invert.release();
 
         // get BG|marker
         Mat MarkOrBG = new Mat();
@@ -86,6 +95,7 @@ public class SegmentWatershed {
         marker.convertTo(marker, CvType.CV_32F);
         BG.convertTo(BG, CvType.CV_32F);
         Core.bitwise_or(BG, marker, MarkOrBG);
+        BG.release();
 
         //Core.normalize(MarkOrBG, MarkOrBG, 0, 255, Core.NORM_MINMAX);
         Mat In_MarkOrBG = new Mat();
@@ -104,14 +114,20 @@ public class SegmentWatershed {
         Mat NegOnes = Mat.zeros(In_MarkOrBG.size(), In_MarkOrBG.type());
         NegOnes.setTo(new Scalar(-1));
         Core.multiply(In_MarkOrBG, NegOnes, In_MarkOrBG);
+        NegOnes.release();
 
         Mat InfMask = new Mat();
         Core.add(MarkOrBG, In_MarkOrBG, InfMask);
         Core.multiply(InfMask, PosInf, fm);
         ones.convertTo(ones, fm.type());
+        MarkOrBG.release();
+        In_MarkOrBG.release();
+        InfMask.release();
+        PosInf.release();
 
         Mat allOne = Mat.ones(fm.size(), fm.type());
         Core.subtract(allOne, fm, fm); // has werid holes
+        allOne.release();
 
         Core.MinMaxLocResult res = Core.minMaxLoc(g);
         double range = res.maxVal - res.minVal;
@@ -128,25 +144,27 @@ public class SegmentWatershed {
         Mat hMat = Mat.ones(g.rows(), g.cols(), g.type());
         hMat.setTo(new Scalar(h));
         Core.add(g, hMat, fp1);
+        g.release();
+        hMat.release();
 
         Core.min(fp1, fm, Imin);
+        fp1.release();
 
         ones.convertTo(ones, fm.type());
         Mat in_fm = new Mat();
         Core.subtract(ones, fm, in_fm);
         Mat in_Imin = new Mat();
         Core.subtract(ones, Imin, in_Imin);
-
-        long startTime1 = System.currentTimeMillis();
+        Imin.release();
+        fm.release();
 
         //imreconstruct
         Mat J = morphReconstruct(in_fm, in_Imin);
+        in_fm.release();
+        in_Imin.release();
 
         Core.subtract(ones, J, J);
-
-        long endTime1 = System.currentTimeMillis();
-        long totalTime1 = endTime1 - startTime1;
-        Log.d(TAG, "imreconstruct Time: " + totalTime1);
+        ones.release();
 
         double J_JP[] = new double[(int) J.total()];
         J.get(0, 0, J_JP);
@@ -166,44 +184,19 @@ public class SegmentWatershed {
         ArrayList<MatOfPoint> markers_contours = new ArrayList<MatOfPoint>();
         marker_copy.convertTo(marker_copy, CvType.CV_8U);
         Imgproc.findContours(marker_copy, markers_contours, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_NONE);
+        marker_copy.release();
         for (int contourIdx = 0; contourIdx < markers_contours.size(); contourIdx++) {
             Imgproc.drawContours(marker, markers_contours, contourIdx, new Scalar(contourIdx + 1), -1);
         }
+        markers_contours.clear();
 
         marker.convertTo(marker, J.type());
         Core.add(marker, J, J);
+        marker.release();
 
         result = J;
 
         //release memory
-        channels.clear();
-        green.release();
-        blue.release();
-        Imin.release();
-        dx.release();
-        dy.release();
-        g.release();
-        mask_dilated.release();
-        ones.release();
-        BG.release();
-        all0.release();
-        BG_compare.release();
-        BG_compare_invert.release();
-        MarkOrBG.release();
-        In_MarkOrBG.release();
-        InfMask.release();
-        fm.release();
-        PosInf.release();
-        NegOnes.release();
-        allOne.release();
-        hMat.release();
-        fp1.release();
-        in_fm.release();
-        in_Imin.release();
-        marker_copy.release();
-        markers_contours.clear();
-
-
     }
 
     public Mat morphReconstruct(Mat marker, Mat mask) {
@@ -217,6 +210,7 @@ public class SegmentWatershed {
 
         Mat temp1 = Mat.zeros(marker.size(), CvType.CV_8UC1);
         Mat temp2 = Mat.zeros(marker.size(), CvType.CV_8UC1);
+        marker.release();
 
         do {
             dst.copyTo(temp1);
@@ -225,6 +219,9 @@ public class SegmentWatershed {
             Core.compare(temp1, dst, temp2, Core.CMP_NE);
 
         } while (Core.sumElems(temp2).val[0] != 0);
+        mask.release();
+        temp1.release();
+        temp2.release();
 
         return dst;
     }
