@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 import gov.nih.nlm.malaria_screener.imageProcessing.SVM_Classifier;
+import gov.nih.nlm.malaria_screener.imageProcessing.TFClassifier_Lite;
 import gov.nih.nlm.malaria_screener.imageProcessing.TensorFlowClassifier;
 
 /**
@@ -18,6 +19,7 @@ import gov.nih.nlm.malaria_screener.imageProcessing.TensorFlowClassifier;
 public final class UtilsCustom {
 
     public static TensorFlowClassifier tensorFlowClassifier;
+    public static TFClassifier_Lite tfClassifier_lite;
     public static SVM_Classifier svm_classifier;
 
     public static Mat oriSizeMat;
@@ -30,6 +32,10 @@ public final class UtilsCustom {
     public static int[][] cellLocation;
     public static int cellCount = 0;
 
+    public static int TF_input_size = 100;
+    public static int batch_size = 1;
+
+    //-----------------------------------------------------------------------------------------
     public static String getThreadSignature()
     {
         Thread t = Thread.currentThread();

@@ -3,6 +3,7 @@ package gov.nih.nlm.malaria_screener;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Environment;
+import android.os.SystemClock;
 import android.util.Log;
 
 import java.io.File;
@@ -26,6 +27,7 @@ import org.opencv.imgproc.Imgproc;
 
 import gov.nih.nlm.malaria_screener.custom.UtilsCustom;
 import gov.nih.nlm.malaria_screener.imageProcessing.SVM_Classifier;
+import gov.nih.nlm.malaria_screener.imageProcessing.TFClassifier_Lite;
 import gov.nih.nlm.malaria_screener.imageProcessing.TensorFlowClassifier;
 
 
@@ -51,15 +53,16 @@ public class Cells {
     TensorFlowClassifier tensorFlowClassifier;
     SVM_Classifier svm_classifier;
 
-    int height = 44;
-    int width = 44;
+    TFClassifier_Lite tfClassifier_lite;
+
+    int height = UtilsCustom.TF_input_size;
+    int width = UtilsCustom.TF_input_size;
     int channels = 3;
-    int batchSize = 32;
+    int batchSize = UtilsCustom.batch_size;
 
     int[] intPixels = new int[width * height];
 
     int ccNum;
-
 
     public void runCells(Mat mask, Mat WBC_Mask) {
 
@@ -67,6 +70,8 @@ public class Cells {
 
         this.tensorFlowClassifier = UtilsCustom.tensorFlowClassifier;
         this.svm_classifier = UtilsCustom.svm_classifier;
+
+        this.tfClassifier_lite = UtilsCustom.tfClassifier_lite;
 
         //------------------------------------
 
@@ -258,7 +263,16 @@ public class Cells {
         Core.multiply(featureTable, scaleMat, featureTable);
 
 
-        runClassification();
+        //runClassification();
+        long startTimeNN = System.currentTimeMillis();
+
+
+        tfClassifier_lite.process_by_batch(cellChip);
+
+        long endTime_NN = System.currentTimeMillis();
+        long totalTime_NN = endTime_NN - startTimeNN;
+        Log.d(TAG, "Deep learning Time, TF Lite: " + totalTime_NN);
+
 
 //        if (picFile!=null) {
 //            forSave.convertTo(forSave, CvType.CV_8U);
@@ -315,7 +329,7 @@ public class Cells {
 
             long endTime_NN = System.currentTimeMillis();
             long totalTime_NN = endTime_NN - startTimeNN;
-            Log.d(TAG, "Deep learning Time: " + totalTime_NN);
+            Log.d(TAG, "Deep learning Time, TF mobile: " + totalTime_NN);
             //--------------------------------------------------------
 
         } else if (UtilsCustom.whichClassifier==1){ // SVM

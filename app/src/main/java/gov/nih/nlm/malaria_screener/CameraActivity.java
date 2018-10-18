@@ -50,6 +50,7 @@ import gov.nih.nlm.malaria_screener.custom.TouchImageView;
 import gov.nih.nlm.malaria_screener.custom.UtilsCustom;
 import gov.nih.nlm.malaria_screener.imageProcessing.MarkerBasedWatershed;
 import gov.nih.nlm.malaria_screener.imageProcessing.SVM_Classifier;
+import gov.nih.nlm.malaria_screener.imageProcessing.TFClassifier_Lite;
 import gov.nih.nlm.malaria_screener.imageProcessing.TensorFlowClassifier;
 import gov.nih.nlm.malaria_screener.frontEnd.SettingsActivity;
 import gov.nih.nlm.malaria_screener.frontEnd.getResultNdisplay;
@@ -263,8 +264,10 @@ public class CameraActivity extends AppCompatActivity {
                     // load TF model
                     try {
 
-                        UtilsCustom.tensorFlowClassifier = TensorFlowClassifier.create(context.getAssets(), "malaria_thinsmear_44.h5.pb", 44, "conv2d_20_input", "output_node0");
-                        //UtilsCustom.tensorFlowClassifier = TensorFlowClassifier.create(context.getAssets(), "malaria_thinsmear.h5.pb", 100, "input_2", "output_node0");
+                        //UtilsCustom.tensorFlowClassifier = TensorFlowClassifier.create(context.getAssets(), "malaria_thinsmear_44.h5.pb", UtilsCustom.TF_input_size, "conv2d_20_input", "output_node0");
+                        UtilsCustom.tensorFlowClassifier = TensorFlowClassifier.create(context.getAssets(), "malaria_thinsmear.h5.pb", UtilsCustom.TF_input_size, "input_2", "output_node0");
+                        UtilsCustom.tfClassifier_lite = TFClassifier_Lite.create(context.getAssets(), "thinSmear_100_quantized.tflite", UtilsCustom.TF_input_size);
+
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

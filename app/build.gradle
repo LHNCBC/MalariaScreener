@@ -39,6 +39,9 @@ android {
                 }
             }
         }
+        aaptOptions {
+            noCompress "tflite"
+        }
     }
 
     dependencies {
@@ -52,6 +55,7 @@ android {
         compile files('libs/flickrj-android-2.0.0.jar')
         compile project(':openCVLibrary340')
         implementation 'org.tensorflow:tensorflow-android:+'
+        compile 'org.tensorflow:tensorflow-lite:0.0.0-nightly'
 
         compile 'com.android.support:support-v13:27.1.0'
         compile 'com.android.support:cardview-v7:27.1.0'
