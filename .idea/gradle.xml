@@ -10,7 +10,7 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/mysql-connector-java-5.1.43-bin" />
-            <option value="$PROJECT_DIR$/openCVLibrary340" />
+            <option value="$PROJECT_DIR$/openCVLibrary342" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

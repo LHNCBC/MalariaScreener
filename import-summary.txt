@@ -7,6 +7,7 @@ The following files were *not* copied into the new Gradle project; you
 should evaluate whether these are still needed in your project and if
 so manually move them:
 
+* java.iml
 * javadoc\
 * javadoc\allclasses-frame.html
 * javadoc\allclasses-noframe.html
@@ -18,13 +19,19 @@ so manually move them:
 * javadoc\org\opencv\
 * javadoc\org\opencv\android\
 * javadoc\org\opencv\android\BaseLoaderCallback.html
+* javadoc\org\opencv\android\Camera2Renderer.html
 * javadoc\org\opencv\android\CameraBridgeViewBase.CvCameraViewFrame.html
 * javadoc\org\opencv\android\CameraBridgeViewBase.CvCameraViewListener.html
 * javadoc\org\opencv\android\CameraBridgeViewBase.CvCameraViewListener2.html
 * javadoc\org\opencv\android\CameraBridgeViewBase.ListItemAccessor.html
 * javadoc\org\opencv\android\CameraBridgeViewBase.html
+* javadoc\org\opencv\android\CameraGLRendererBase.html
+* javadoc\org\opencv\android\CameraGLSurfaceView.CameraTextureListener.html
+* javadoc\org\opencv\android\CameraGLSurfaceView.html
+* javadoc\org\opencv\android\CameraRenderer.html
 * javadoc\org\opencv\android\FpsMeter.html
 * javadoc\org\opencv\android\InstallCallbackInterface.html
+* javadoc\org\opencv\android\JavaCamera2View.html
 * javadoc\org\opencv\android\JavaCameraView.JavaCameraSizeAccessor.html
 * javadoc\org\opencv\android\JavaCameraView.html
 * javadoc\org\opencv\android\LoaderCallbackInterface.html
@@ -86,10 +93,6 @@ so manually move them:
 * javadoc\org\opencv\dnn\package-frame.html
 * javadoc\org\opencv\dnn\package-summary.html
 * javadoc\org\opencv\dnn\package-tree.html
-* javadoc\org\opencv\engine\
-* javadoc\org\opencv\engine\package-frame.html
-* javadoc\org\opencv\engine\package-summary.html
-* javadoc\org\opencv\engine\package-tree.html
 * javadoc\org\opencv\features2d\
 * javadoc\org\opencv\features2d\AKAZE.html
 * javadoc\org\opencv\features2d\AgastFeatureDetector.html
@@ -220,11 +223,11 @@ Moved Files:
 Android Gradle projects use a different directory structure than ADT
 Eclipse projects. Here's how the projects were restructured:
 
-* AndroidManifest.xml => openCVLibrary340\src\main\AndroidManifest.xml
-* lint.xml => openCVLibrary340\lint.xml
-* res\ => openCVLibrary340\src\main\res\
-* src\ => openCVLibrary340\src\main\java\
-* src\org\opencv\engine\OpenCVEngineInterface.aidl => openCVLibrary340\src\main\aidl\org\opencv\engine\OpenCVEngineInterface.aidl
+* AndroidManifest.xml => openCVLibrary342\src\main\AndroidManifest.xml
+* lint.xml => openCVLibrary342\lint.xml
+* res\ => openCVLibrary342\src\main\res\
+* src\ => openCVLibrary342\src\main\java\
+* src\org\opencv\engine\OpenCVEngineInterface.aidl => openCVLibrary342\src\main\aidl\org\opencv\engine\OpenCVEngineInterface.aidl
 
 Next Steps:
 -----------

@@ -12,7 +12,7 @@
         <item>Chinese</item>
     </string-array>
 
-    <!-- String array for SummarySheet -->
+    <!-- String array for SummarySheetActivity -->
     <string-array name="patient_item">
         <item>Patient ID</item>
         <item>Initials</item>
@@ -23,6 +23,12 @@
     <string-array name="slide_item">
         <item>Total cell count</item>
         <item>Infected cell count</item>
+        <item>Parasitemia</item>
+    </string-array>
+
+    <string-array name="slide_item_thick">
+        <item>White blood cell count</item>
+        <item>Parasite count</item>
         <item>Parasitemia</item>
     </string-array>
 
@@ -54,6 +60,23 @@
         <item>Parasitemia ( manual )</item>
     </string-array>
 
+    <string-array name="slide_item_db_thick">
+        <item>Slide ID</item>
+        <item>Date</item>
+        <item>Time</item>
+        <item>Site</item>
+        <item>Slide Preparer</item>
+        <item>Microscopist</item>
+        <item>Staining method</item>
+        <item>HCT</item>
+        <item>Total WBC count ( auto )</item>
+        <item>Parasite count ( auto )</item>
+        <item>Parasitemia ( auto )</item>
+        <item>Total WBC count ( manual )</item>
+        <item>Parasite count ( manual )</item>
+        <item>Parasitemia ( manual )</item>
+    </string-array>
+
     <string-array name="count_item">
         <item>Current</item>
         <item>Total</item>
@@ -62,6 +85,11 @@
     <string-array name="manual_counts">
         <item>Total cell count</item>
         <item>Infected cell count</item>
+    </string-array>
+
+    <string-array name="manual_counts_thick">
+        <item>Total WBC count</item>
+        <item>Parasite count</item>
     </string-array>
 
 </resources>

@@ -23,8 +23,8 @@
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     -->
     <application
-        android:hardwareAccelerated="true"
         android:allowBackup="true"
+        android:hardwareAccelerated="true"
         android:icon="@drawable/appicon"
         android:label="@string/app_name"
         android:largeHeap="true"
@@ -63,7 +63,7 @@
             android:parentActivityName=".CameraActivity"
             android:screenOrientation="fullSensor" />
         <activity
-            android:name=".frontEnd.PatientInfo"
+            android:name=".frontEnd.PatientInfoActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_patient_info"
             android:launchMode="singleTop"
@@ -81,12 +81,12 @@
             -->
         </activity>
         <activity
-            android:name=".frontEnd.SlideInfo"
+            android:name=".frontEnd.SlideInfoActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="fullSensor"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".frontEnd.SummarySheet"
+            android:name=".frontEnd.SummarySheetActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="fullSensor" />
         <activity
@@ -98,7 +98,7 @@
             android:configChanges="orientation|screenSize"
             android:screenOrientation="fullSensor" />
         <activity
-            android:name=".database.DatabaseSlideInfoPage"
+            android:name=".database.DB_SlideInfoActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="fullSensor" />
         <activity
@@ -138,8 +138,28 @@
             android:name=".database.ImageGallery"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="fullSensor" />
-        <activity android:name=".frontEnd.EnterManualCounts" />
-        <activity android:name=".tutorial.Diagram"></activity>
+        <activity android:name=".frontEnd.EnterManualCounts"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="fullSensor"/>
+        <activity android:name=".tutorial.Diagram" />
+        <activity
+            android:name=".frontEnd.ResultDisplayer_thickSmear"
+            android:configChanges="orientation|screenSize"
+            android:label="Results"
+            android:parentActivityName=".CameraActivity"
+            android:screenOrientation="fullSensor" />
+        <activity android:name=".frontEnd.SummarySheetActivity_thick"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="fullSensor"/>
+        <activity android:name=".database.DB_SlideInfoActivity_thick"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="fullSensor" />
+        <activity android:name=".database.ImageGalleryActivity_thick"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="fullSensor" />
+        <activity android:name=".frontEnd.EnterManualCounts_thick"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="fullSensor"/>
     </application>
 
 </manifest>

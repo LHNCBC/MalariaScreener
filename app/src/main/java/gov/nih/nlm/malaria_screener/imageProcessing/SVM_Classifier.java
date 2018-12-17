@@ -16,8 +16,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import gov.nih.nlm.malaria_screener.Cells;
-import gov.nih.nlm.malaria_screener.custom.UtilsCustom;
+import gov.nih.nlm.malaria_screener.custom.Utils.UtilsCustom;
 
 public class SVM_Classifier {
 

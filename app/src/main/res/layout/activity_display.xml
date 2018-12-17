@@ -14,7 +14,7 @@
         android:textAlignment="center"></android.support.v7.widget.Toolbar>
 
     <ListView
-        android:id="@+id/listView_cells"
+        android:id="@+id/listView_counts"
         android:layout_width="wrap_content"
         android:layout_height="95dp"
         android:layout_alignParentStart="true"

@@ -60,6 +60,9 @@
     <string name="celltotal">Total Cells Needed</string>
     <string name="celltotal_summary">Number of Cells that should be counted for each patient. Default value: 1000</string>
 
+    <string name="wbc_required">Total WBC Needed</string>
+    <string name="wbc_required_summary">Number of white blood cells that should be counted for each patient. Default value: 200</string>
+
     <!-- Strings for user manual-->
     <string name="home">Step 1. Start a new session</string>
     <string name="camera">Step 2. Capture blood film image</string>
@@ -128,9 +131,12 @@
 
     <!-- Strings for CameraActivity-->
     <string name="smear_type">Smear Type: Thin</string>
+    <string name="smear_type1">Smear Type: Thick</string>
     <string name="image_count">Images: </string>
     <string name="cell_count">Cells: </string>
     <string name="infected_count">Infected Cells: </string>
+    <string name="parasite_count">Parasites: </string>
+    <string name="wbc_count">WBCs: </string>
 
     <string name="image_process1">Running...</string>
     <string name="image_process2">Please wait</string>
@@ -139,12 +145,12 @@
 
     <string name="no_cam">No camera found on this device!</string>
 
-    <!-- Strings for SummarySheet-->
+    <!-- Strings for SummarySheetActivity-->
     <string name="patient_info">Patient Info</string>
     <string name="slide_info">Slide Info</string>
     <string name="more_info">More Info</string>
 
-    <!-- Strings for SlideInfo-->
+    <!-- Strings for SlideInfoActivity-->
     <string name="slide_id_exist">Slide ID already exists!</string>
 
     <string name="slide_id_empty">Slide ID can not be empty!</string>
@@ -168,7 +174,7 @@
     <string name="infected_manual">Infected Cells Manual Count(optional)</string>
     <string name="total_manual">Total Cells Manual Count(optional)</string>
 
-    <!-- Strings for PatientInfo-->
+    <!-- Strings for PatientInfoActivity-->
     <string name="gender1">Gender</string>
     <string name="male">male</string>
     <string name="female">female</string>
@@ -191,11 +197,15 @@
     <string name="continue_button">Continue</string>
     <string name="finish_button">Finish</string>
     <string name="enough_cells">Enough cells collected for this patient.</string>
+    <string name="enough_wbcs">Enough WBCs collected for this patient.</string>
     <string name="original_image_switch">Tap for original image</string>
     <string name="result_image_switch">Tap for result image</string>
 
     <string name="cells">Cells</string>
     <string name="infectedcells">Infected Cells</string>
+
+    <string name="parasites">Parasites</string>
+    <string name="wbcs">WBCs</string>
 
     <!-- Strings for DatabasePage-->
     <string name="register">Register</string>
@@ -226,6 +236,11 @@
     <string name="infected_cell_count">  Infected: </string>
     <string name="total_cell_count_GT">Manual counts - Total: </string>
     <string name="infected_cell_count_GT">  Infected: </string>
+
+    <string name="wbc_count_1">Auto counts - WBC: </string>
+    <string name="parasite_count_1">  Parasite: </string>
+    <string name="wbc_count_GT_1">Manual counts - WBC: </string>
+
 
     <!-- Strings for list_item_imagedb-->
     <string name="original1">Original</string>
@@ -263,6 +278,11 @@
     <string name="total"> - Auto counts - Total: </string>
     <string name="infected">  Infected: </string>
     <string name="manual_total">Manual counts - Total: </string>
+
+    <!-- Strings for CustomAdapter_ImageGalleryDB_thicksmear-->
+    <string name="wbc"> - Auto counts - WBC: </string>
+    <string name="parasite">  Parasite: </string>
+    <string name="manual_wbc">Manual counts - WBC: </string>
 
     <!-- Strings for patient graph-->
     <string name="parasitemia">Parasitemia</string>
@@ -304,9 +324,9 @@
     <string name="new_session_btn_title">Welcome to NLM Malaria Screener</string>
     <string name="new_session_btn">Press the button below to start a new session</string>
     <string name="capture_btn_title">Capture a blood smear image</string>
-    <string name="capture_btn">1. Attach your mobile device to the eyepiece of the microscope.\n\n2. Adjust the microscope to bring a clear view of the cells in the camera preview.\n\n3. Press the capture button to take a picture.\n</string>
-    <string name="setting_btn_title">Amount of cells needed</string>
-    <string name="setting_btn">Go to settings to adjust the amount of cells needed for each session</string>
+    <string name="capture_btn">1. Attach your mobile device to the eyepiece of the microscope.\n\n2. Adjust the microscope to bring a clear view of the count1 in the camera preview.\n\n3. Press the capture button to take a picture.\n</string>
+    <string name="setting_btn_title">Amount of count1 needed</string>
+    <string name="setting_btn">Go to settings to adjust the amount of count1 needed for each session</string>
 
     <!-- Strings for skip input info-->
     <string name="skip_title">Skip input pages</string>
@@ -333,7 +353,13 @@
     <string name="manual_count_infected">Enter infected cell counts:</string>
     <string name="press_and_hold">Press list item to edit</string>
 
+    <string name="manual_wbc_count">Enter WBC counts:</string>
+    <string name="manual_parasite_infected">Enter parasite counts:</string>
+
     <!-- Strings for images in test folder/test patient -->
     <string name="no_graph">No graph for test patient.</string>
+
+    <string name="thin">Thin</string>
+    <string name="thick">Thick</string>
 
 </resources>

@@ -13,14 +13,6 @@
         android:background="#1F568a"
         android:textAlignment="center"></android.support.v7.widget.Toolbar>
 
-    <ListView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/listView_slideLog"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/textView"
-        android:layout_above="@+id/buttonGraph" />
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -48,10 +40,49 @@
         android:text="@string/date"
         android:id="@+id/textView6"
         android:layout_marginEnd="35dp"
-        android:layout_above="@+id/listView_slideLog"
+        android:layout_below="@+id/navigate_bar_slide_logDB"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="7dp"
         android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/textView_thin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:text="@string/thin"
+        android:layout_below="@+id/textView"
+        android:layout_marginTop="5dp"
+        android:textStyle="bold|italic"
+        />
+
+    <ListView
+        android:id="@+id/listView_slideLog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/textView_thin"
+        android:layout_marginTop="5dp"
+        />
+
+    <TextView
+        android:id="@+id/textView_thick"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:text="@string/thick"
+        android:layout_below="@+id/listView_slideLog"
+        android:layout_marginTop="50dp"
+        android:textStyle="bold|italic"/>
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/listView_slideLog_thick"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/textView_thick"
+        android:layout_above="@+id/buttonGraph"
+        android:layout_marginTop="5dp"/>
 
     <Button
         android:layout_width="match_parent"
@@ -63,6 +94,5 @@
         android:background="#d95891ec"
         android:textColor="#FFFFFF"
         android:textSize="17dp"/>
-
 
 </RelativeLayout>

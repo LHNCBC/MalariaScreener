@@ -20,10 +20,8 @@ import java.nio.ByteOrder;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
-import gov.nih.nlm.malaria_screener.custom.UtilsCustom;
+import gov.nih.nlm.malaria_screener.custom.Utils.UtilsCustom;
 
 public class TFClassifier_Lite {
 

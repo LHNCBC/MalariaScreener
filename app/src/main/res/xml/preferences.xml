@@ -10,7 +10,7 @@
             android:summary="@string/wbsum"
             android:title="@string/whitebalance" />
 
-        <!--<com.example.hang.malaria.custom.SeekBarPreference_4CellNeeded
+        <!--<com.example.hang.malaria.custom.SeekBarPreference_CellNeeded
             android:defaultValue="3"
             android:key="imagequality"
             android:summary="@string/imgquality"
@@ -32,7 +32,7 @@
             android:summary="@string/SVM_Th_summary"
             android:title="@string/SVM_Th"/>
 
-        <gov.nih.nlm.malaria_screener.custom.SeekBarPreference_4CellNeeded
+        <gov.nih.nlm.malaria_screener.custom.SeekBarPreference_CellNeeded
             android:defaultValue="1000"
             android:key="celltotal"
             android:summary="@string/celltotal_summary"

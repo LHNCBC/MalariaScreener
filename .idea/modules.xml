@@ -5,7 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/MalariaScreener.iml" filepath="$PROJECT_DIR$/MalariaScreener.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/mysql-connector-java-5.1.43-bin/mysql-connector-java-5.1.43-bin.iml" filepath="$PROJECT_DIR$/mysql-connector-java-5.1.43-bin/mysql-connector-java-5.1.43-bin.iml" />
-      <module fileurl="file://$PROJECT_DIR$/openCVLibrary340/openCVLibrary340.iml" filepath="$PROJECT_DIR$/openCVLibrary340/openCVLibrary340.iml" />
+      <module fileurl="file://$PROJECT_DIR$/openCVLibrary342/openCVLibrary342.iml" filepath="$PROJECT_DIR$/openCVLibrary342/openCVLibrary342.iml" />
     </modules>
   </component>
 </project>

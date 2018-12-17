@@ -1,2 +1,3 @@
-Q:/Malaria/AndroidProject/NLM_Malaria_Screener/app/.externalNativeBuild/cmake/release/x86_64/CMakeFiles/edit_cache.dir
-Q:/Malaria/AndroidProject/NLM_Malaria_Screener/app/.externalNativeBuild/cmake/release/x86_64/CMakeFiles/rebuild_cache.dir
+Q:/Malaria/AndroidProject/MalariaScreener/app/.externalNativeBuild/cmake/release/x86_64/CMakeFiles/native-lib.dir
+Q:/Malaria/AndroidProject/MalariaScreener/app/.externalNativeBuild/cmake/release/x86_64/CMakeFiles/edit_cache.dir
+Q:/Malaria/AndroidProject/MalariaScreener/app/.externalNativeBuild/cmake/release/x86_64/CMakeFiles/rebuild_cache.dir

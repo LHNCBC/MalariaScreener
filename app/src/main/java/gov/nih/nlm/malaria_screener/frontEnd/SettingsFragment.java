@@ -8,7 +8,6 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 
 import gov.nih.nlm.malaria_screener.R;
-import gov.nih.nlm.malaria_screener.custom.UtilsCustom;
 
 /**
  * Created by yuh5 on 11/8/2016.

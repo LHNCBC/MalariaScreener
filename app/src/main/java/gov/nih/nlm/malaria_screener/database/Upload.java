@@ -202,10 +202,6 @@ public class Upload extends AsyncTask<Void, Integer, Boolean> {
                                     }
                                 }
 
-                                if (folder_list[index].getName().lastIndexOf("_") != -1) { // if folder is not "Extra" or "Test", then mark their upload flag
-                                    markAsUploaded(folder_list[index]);
-                                }
-
                             }
 
                         } else {
@@ -270,16 +266,6 @@ public class Upload extends AsyncTask<Void, Integer, Boolean> {
         editor.putInt(DROPBOX_PROGRESS, 0);
         editor.putInt(DROPBOX_UPDATE_STATE, 1);
         editor.commit();
-
-    }
-
-    private void markAsUploaded(File file) {
-
-        String FolderName = file.getName();
-
-        String PatientIDStr = FolderName.substring(0, FolderName.lastIndexOf("_"));
-        String SlideIDStr = FolderName.substring(FolderName.lastIndexOf("_") + 1);
-        dbHandler.updateUploadedFlag(PatientIDStr, SlideIDStr);
 
     }
 

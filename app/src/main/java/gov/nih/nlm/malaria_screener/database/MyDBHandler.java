@@ -7,7 +7,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
-import android.util.Log;
 
 import java.util.HashMap;
 
@@ -21,7 +20,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "patients.db";
 
-    // columns of patients table
+    // columns of patient table
     public static final String TABLE_PATIENTS = "patients";
     public static final String COLUMN_AUTO_ID = "autoID"; // think about how to change this without breaking the current code since this identifier maybe used somewhere for query
     public static final String COLUMN_ID = "_id";
@@ -29,7 +28,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
     public static final String COLUMN_INITIAL = "initial";
     public static final String COLUMN_AGE = "age";
 
-    // columns of slides table
+    // columns of slide table
     public static final String TABLE_SLIDES = "slides";
     public static final String COLUMN_PATIENT_ID = "patient_id";
     public static final String COLUMN_SLIDE_ID = "slideID";
@@ -40,10 +39,10 @@ public class MyDBHandler extends SQLiteOpenHelper {
     public static final String COLUMN_OPERATOR = "operator";
     public static final String COLUMN_STAINING = "stainingMethod";
     public static final String COLUMN_HCT = "hct";
-    public static final String COLUMN_PARASITEMIA = "parasitemia";
-    public static final String COLUMN_UPLOADED = "uploaded";
+    public static final String COLUMN_PARASITEMIA_THIN = "parasitemia_thin";
+    public static final String COLUMN_PARASITEMIA_THICK = "parasitemia_thick";
 
-    // columns of slides images
+    // columns of image table (thin smear)
     public static final String TABLE_IMAGES = "images";
     public static final String COLUMN_IMAGE_PATIENT_ID = "patient_id";
     public static final String COLUMN_IMAGE_SLIDE_ID = "slide_id";
@@ -52,6 +51,16 @@ public class MyDBHandler extends SQLiteOpenHelper {
     public static final String COLUMN_INFECTED_COUNT = "infected_count";
     public static final String COLUMN_CELL_COUNT_GT = "cell_count_gt";
     public static final String COLUMN_INFECTED_COUNT_GT = "infected_count_gt";
+
+    // columns of image table (thick smear)
+    public static final String TABLE_IMAGES_THICK = "images_thick";
+    public static final String COLUMN_IMAGE_PATIENT_ID_THICK = "patient_id_thick";
+    public static final String COLUMN_IMAGE_SLIDE_ID_THICK = "slide_id_thick";
+    public static final String COLUMN_IMAGE_ID_THICK = "image_id_thick";
+    public static final String COLUMN_PARASITE_COUNT = "parasite_count";
+    public static final String COLUMN_WBC_COUNT = "wbc_count";
+    public static final String COLUMN_PARASITE_COUNT_GT = "parasite_count_gt";
+    public static final String COLUMN_WBC_COUNT_GT = "wbc_count_gt";
 
     private Context context;
 
@@ -99,14 +108,14 @@ public class MyDBHandler extends SQLiteOpenHelper {
                 COLUMN_OPERATOR + " TEXT, " +
                 COLUMN_STAINING + " TEXT, " +
                 COLUMN_HCT + " TEXT, " +
-                COLUMN_PARASITEMIA + " TEXT, " +
-                COLUMN_UPLOADED + " TEXT, " +
+                COLUMN_PARASITEMIA_THIN + " TEXT, " +
+                COLUMN_PARASITEMIA_THICK + " TEXT, " +
                 "PRIMARY KEY (" + COLUMN_PATIENT_ID + ", " + COLUMN_SLIDE_ID + ")" +
                 ");";
 
         db.execSQL(createSlideTable);
 
-        // create image table
+        // create image table (thin smear)
         String createImageTable = " CREATE TABLE " + TABLE_IMAGES + "(" +
                 COLUMN_IMAGE_PATIENT_ID + " TEXT NOT NULL, " +
                 COLUMN_IMAGE_SLIDE_ID + " TEXT NOT NULL, " +
@@ -120,6 +129,20 @@ public class MyDBHandler extends SQLiteOpenHelper {
 
         db.execSQL(createImageTable);
 
+        // create image table (thick smear)
+        String createImageTable_thick = " CREATE TABLE " + TABLE_IMAGES_THICK + "(" +
+                COLUMN_IMAGE_PATIENT_ID_THICK + " TEXT NOT NULL, " +
+                COLUMN_IMAGE_SLIDE_ID_THICK + " TEXT NOT NULL, " +
+                COLUMN_IMAGE_ID_THICK + " TEXT NOT NULL, " +
+                COLUMN_PARASITE_COUNT + " TEXT, " +
+                COLUMN_WBC_COUNT + " TEXT, " +
+                COLUMN_PARASITE_COUNT_GT + " TEXT, " +
+                COLUMN_WBC_COUNT_GT + " TEXT, " +
+                "PRIMARY KEY (" + COLUMN_IMAGE_PATIENT_ID_THICK + ", " + COLUMN_IMAGE_SLIDE_ID_THICK + ", " + COLUMN_IMAGE_ID_THICK + ")" +
+                ");";
+
+        db.execSQL(createImageTable_thick);
+
     }
 
     @Override
@@ -127,6 +150,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         db.execSQL(" DROP TABLE IF EXISTS " + TABLE_PATIENTS);
         db.execSQL(" DROP TABLE IF EXISTS " + TABLE_SLIDES);
         db.execSQL(" DROP TABLE IF EXISTS " + TABLE_IMAGES);
+        db.execSQL(" DROP TABLE IF EXISTS " + TABLE_IMAGES_THICK);
         onCreate(db);
     }
 
@@ -154,14 +178,14 @@ public class MyDBHandler extends SQLiteOpenHelper {
         values.put(COLUMN_OPERATOR, slides.get_operator());
         values.put(COLUMN_STAINING, slides.get_staining());
         values.put(COLUMN_HCT, slides.get_hct());
-        values.put(COLUMN_PARASITEMIA, slides.get_parasitemia());
-        values.put(COLUMN_UPLOADED, false);
+        values.put(COLUMN_PARASITEMIA_THIN, slides.get_parasitemia());
+        values.put(COLUMN_PARASITEMIA_THICK, slides.get_parasitemia_thick());
         SQLiteDatabase db = getWritableDatabase();
         db.insert(TABLE_SLIDES, null, values);
         db.close();
     }
 
-    // Add a new row to image table
+    // Add a new row to image table (thin smear)
     public void addImage(Images images){
         ContentValues values = new ContentValues();
         values.put(COLUMN_IMAGE_PATIENT_ID, images.get_idPatient());
@@ -176,13 +200,28 @@ public class MyDBHandler extends SQLiteOpenHelper {
         db.close();
     }
 
+    // Add a new row to image table (thin smear)
+    public void addImage_thick(Images_thick images){
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_IMAGE_PATIENT_ID_THICK, images.get_idPatient());
+        values.put(COLUMN_IMAGE_SLIDE_ID_THICK, images.get_idSlide());
+        values.put(COLUMN_IMAGE_ID_THICK, images.get_idImage());
+        values.put(COLUMN_PARASITE_COUNT, images.get_parasiteCount());
+        values.put(COLUMN_WBC_COUNT, images.get_wbcCount());
+        values.put(COLUMN_PARASITE_COUNT_GT, images.get_parasiteCountGT());
+        values.put(COLUMN_WBC_COUNT_GT, images.get_wbcCountGT());
+        SQLiteDatabase db = getWritableDatabase();
+        db.insert(TABLE_IMAGES_THICK, null, values);
+        db.close();
+    }
+
     // add results of slides into database
 //    public void addSlideResults(String id, String totalCell, String infectedCell, String parasitemia){
 //        SQLiteDatabase db = getWritableDatabase();
 //        ContentValues contentValues = new ContentValues();
 //        contentValues.put(COLUMN_TOTAL_CELL, totalCell);
 //        contentValues.put(COLUMN_INFECTED_CELL, infectedCell);
-//        contentValues.put(COLUMN_PARASITEMIA, parasitemia);
+//        contentValues.put(COLUMN_PARASITEMIA_THIN, parasitemia);
 //
 //        db.update(TABLE_SLIDES, contentValues, "slideID = ?", new String[]{id});
 //    }
@@ -289,12 +328,36 @@ public class MyDBHandler extends SQLiteOpenHelper {
         return cursorImage;
     }
 
+    // return image from image table
+    public Cursor returnSlideImage_thick(String PIDStr, String SIDStr, String imageName){
+
+        SQLiteDatabase db = getWritableDatabase();
+
+        String queryImage = "SELECT * FROM " + TABLE_IMAGES_THICK + " WHERE " + COLUMN_IMAGE_PATIENT_ID_THICK + " = \"" + PIDStr + "\"" + " AND " + COLUMN_IMAGE_SLIDE_ID_THICK + " = \"" + SIDStr + "\"" + " AND " + COLUMN_IMAGE_ID_THICK + " = \"" + imageName + "\"";
+        Cursor cursorImage = db.rawQuery(queryImage, null);
+        cursorImage.moveToFirst();
+
+        return cursorImage;
+    }
+
     // return all images of a slide from image talble
     public Cursor returnAllSlideImages(String PIDStr, String SIDStr){
 
         SQLiteDatabase db = getWritableDatabase();
 
         String queryImage = "SELECT * FROM " + TABLE_IMAGES + " WHERE " + COLUMN_IMAGE_PATIENT_ID + " = \"" + PIDStr + "\"" + " AND " + COLUMN_IMAGE_SLIDE_ID + " = \"" + SIDStr + "\"";
+        Cursor cursorImages = db.rawQuery(queryImage, null);
+        cursorImages.moveToFirst();
+
+        return cursorImages;
+    }
+
+    // return all images of a slide from image talble
+    public Cursor returnAllSlideImages_thick(String PIDStr, String SIDStr){
+
+        SQLiteDatabase db = getWritableDatabase();
+
+        String queryImage = "SELECT * FROM " + TABLE_IMAGES_THICK + " WHERE " + COLUMN_IMAGE_PATIENT_ID_THICK + " = \"" + PIDStr + "\"" + " AND " + COLUMN_IMAGE_SLIDE_ID_THICK + " = \"" + SIDStr + "\"";
         Cursor cursorImages = db.rawQuery(queryImage, null);
         cursorImages.moveToFirst();
 
@@ -386,6 +449,9 @@ public class MyDBHandler extends SQLiteOpenHelper {
         db.execSQL(" DELETE FROM " + TABLE_IMAGES);
         db.execSQL(" DELETE FROM SQLITE_SEQUENCE WHERE NAME='" + TABLE_IMAGES + "'; " );
 
+        db.execSQL(" DELETE FROM " + TABLE_IMAGES_THICK);
+        db.execSQL(" DELETE FROM SQLITE_SEQUENCE WHERE NAME='" + TABLE_IMAGES_THICK + "'; " );
+
     }
 
     //Print out database
@@ -459,18 +525,6 @@ public class MyDBHandler extends SQLiteOpenHelper {
         return dbLength;
     }
 
-    public void updateUploadedFlag(String PID, String SID){
-
-        SQLiteDatabase db = getWritableDatabase();
-
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(COLUMN_UPLOADED, true);
-
-        String where = COLUMN_PATIENT_ID + "='" + PID + "' " + " AND " + COLUMN_SLIDE_ID + " = '" + SID + "'";
-
-        db.update(TABLE_SLIDES, contentValues, where, null);
-    }
-
     public void updateImageManulCounts(String PID, String SID, String ImageID, String cellCountGT, String infectedCountGT){
 
         SQLiteDatabase db = getWritableDatabase();
@@ -482,6 +536,20 @@ public class MyDBHandler extends SQLiteOpenHelper {
         String where = COLUMN_IMAGE_PATIENT_ID + "='" + PID + "' " + " AND " + COLUMN_IMAGE_SLIDE_ID + " = '" + SID + "'" + " AND " + COLUMN_IMAGE_ID + " = '" + ImageID + "'";
 
         db.update(TABLE_IMAGES, contentValues, where, null);
+
+    }
+
+    public void updateImageManulCounts_thick(String PID, String SID, String ImageID, String wbcCountGT, String parasiteCountGT){
+
+        SQLiteDatabase db = getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COLUMN_WBC_COUNT_GT, wbcCountGT);
+        contentValues.put(COLUMN_PARASITE_COUNT_GT, parasiteCountGT);
+
+        String where = COLUMN_IMAGE_PATIENT_ID_THICK + "='" + PID + "' " + " AND " + COLUMN_IMAGE_SLIDE_ID_THICK + " = '" + SID + "'" + " AND " + COLUMN_IMAGE_ID_THICK + " = '" + ImageID + "'";
+
+        db.update(TABLE_IMAGES_THICK, contentValues, where, null);
 
     }
 

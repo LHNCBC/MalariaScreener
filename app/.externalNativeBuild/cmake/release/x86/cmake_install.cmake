@@ -1,4 +1,4 @@
-# Install script for directory: Q:/Malaria/AndroidProject/NLM_Malaria_Screener/app
+# Install script for directory: Q:/Malaria/AndroidProject/MalariaScreener/app
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -40,5 +40,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "Q:/Malaria/AndroidProject/NLM_Malaria_Screener/app/.externalNativeBuild/cmake/release/x86/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "Q:/Malaria/AndroidProject/MalariaScreener/app/.externalNativeBuild/cmake/release/x86/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

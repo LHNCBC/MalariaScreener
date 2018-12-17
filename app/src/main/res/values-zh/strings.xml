@@ -121,12 +121,12 @@
 
     <string name="no_cam">没有在此台设备上找到照相机</string>
 
-    <!-- Strings for SummarySheet-->
+    <!-- Strings for SummarySheetActivity-->
     <string name="patient_info">病人信息</string>
     <string name="slide_info">切片信息</string>
     <string name="more_info">更多</string>
 
-    <!-- Strings for SlideInfo-->
+    <!-- Strings for SlideInfoActivity-->
     <string name="slide_id_exist">此切片序列号已存在！</string>
 
     <string name="slide_id_empty">切片序列号不能为空！</string>
@@ -150,7 +150,7 @@
     <string name="infected_manual">受感染细胞人工计数（选填）</string>
     <string name="total_manual">细胞总数人工计数（选填）</string>
 
-    <!-- Strings for PatientInfo-->
+    <!-- Strings for PatientInfoActivity-->
     <string name="gender1">性别</string>
     <string name="male">男</string>
     <string name="female">女</string>
@@ -174,7 +174,7 @@
     <string name="finish_button">完成</string>
     <string name="enough_cells">已为当前病人收集了够足够数目的细胞。</string>
 
-    <string name="cells">细胞数</string>
+    <string name="count1">细胞数</string>
     <string name="infectedcells">受感染细胞数</string>
 
     <!-- Strings for DatabasePage-->

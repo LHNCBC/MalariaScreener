@@ -33,6 +33,7 @@ import android.view.Display;
 import android.view.KeyEvent;
 import android.view.Surface;
 import android.view.View;
+import android.view.ViewStub;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.widget.Button;
@@ -47,17 +48,20 @@ import android.widget.Toast;
 //import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
 import gov.nih.nlm.malaria_screener.custom.TouchImageView;
-import gov.nih.nlm.malaria_screener.custom.UtilsCustom;
+import gov.nih.nlm.malaria_screener.custom.Utils.UtilsCustom;
+import gov.nih.nlm.malaria_screener.custom.Utils.UtilsData;
+import gov.nih.nlm.malaria_screener.frontEnd.ResultDisplayer_thickSmear;
 import gov.nih.nlm.malaria_screener.imageProcessing.MarkerBasedWatershed;
 import gov.nih.nlm.malaria_screener.imageProcessing.SVM_Classifier;
-import gov.nih.nlm.malaria_screener.imageProcessing.TFClassifier_Lite;
 import gov.nih.nlm.malaria_screener.imageProcessing.TensorFlowClassifier;
 import gov.nih.nlm.malaria_screener.frontEnd.SettingsActivity;
 import gov.nih.nlm.malaria_screener.frontEnd.getResultNdisplay;
+import gov.nih.nlm.malaria_screener.imageProcessing.ThickSmearProcessor;
 
 import org.opencv.android.Utils;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfInt;
 import org.opencv.core.Size;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
@@ -69,6 +73,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -104,6 +109,8 @@ public class CameraActivity extends AppCompatActivity {
     private TextView fieldInfo;
     private TextView countInfo;
     private TextView infectedCountInfo;
+    private TextView parasiteInfo;
+    private TextView wbcInfo;
     //private String smearType = "Thick";
     private String smearType = "Thin"; // for now
     private ImageButton captureButton;
@@ -137,7 +144,6 @@ public class CameraActivity extends AppCompatActivity {
     private Paint paint;
     Bitmap canvasBitmap;
     //Bitmap smallOriBitmap;
-
 
     float RV = 6; //resize value
 
@@ -175,6 +181,7 @@ public class CameraActivity extends AppCompatActivity {
     Bundle bundle;
 
     int totalCellNeeded = 1000;
+    int totalWBCNeeded = 200;
 
     long processingTime = 0;
 
@@ -263,10 +270,14 @@ public class CameraActivity extends AppCompatActivity {
 
                     // load TF model
                     try {
+                        // thin smear
+                        UtilsCustom.tensorFlowClassifier_thin = TensorFlowClassifier.create(context.getAssets(), "malaria_thinsmear_44.h5.pb", UtilsCustom.TF_input_size, "conv2d_20_input", "output_node0");
+                        //UtilsCustom.tensorFlowClassifier_thin = TensorFlowClassifier.create(context.getAssets(), "malaria_thinsmear.h5.pb", UtilsCustom.TF_input_size, "input_2", "output_node0");
+                        //UtilsCustom.tfClassifier_lite = TFClassifier_Lite.create(context.getAssets(), "thinSmear_100_quantized.tflite", UtilsCustom.TF_input_size);
 
-                        //UtilsCustom.tensorFlowClassifier = TensorFlowClassifier.create(context.getAssets(), "malaria_thinsmear_44.h5.pb", UtilsCustom.TF_input_size, "conv2d_20_input", "output_node0");
-                        UtilsCustom.tensorFlowClassifier = TensorFlowClassifier.create(context.getAssets(), "malaria_thinsmear.h5.pb", UtilsCustom.TF_input_size, "input_2", "output_node0");
-                        UtilsCustom.tfClassifier_lite = TFClassifier_Lite.create(context.getAssets(), "thinSmear_100_quantized.tflite", UtilsCustom.TF_input_size);
+                        //thick smear
+                        UtilsCustom.tensorFlowClassifier_thick = TensorFlowClassifier.create(context.getAssets(), "ThickSmearModel.h5.pb", UtilsCustom.TF_input_size, "conv2d_1_input", "output_node0");
+
 
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -306,12 +317,30 @@ public class CameraActivity extends AppCompatActivity {
         String imgStr = getResources().getString(R.string.image_count);
         String cellCountStr = getResources().getString(R.string.cell_count);
         String infectedCountStr = getResources().getString(R.string.infected_count);
+        String parasiteCountStr = getResources().getString(R.string.parasite_count);
+        String wbcCountStr = getResources().getString(R.string.wbc_count);
         //pidInfo.setText("PID: " + patientId);
         //sidInfo.setText("SID: " + slideId);
-        typeInfo.setText(R.string.smear_type);
+
         fieldInfo.setText(imgStr + captureStr);
-        countInfo.setText(cellCountStr + cellTotal);
-        infectedCountInfo.setText(infectedCountStr + infectedTotal);
+
+        if (smearType.equals("Thin")) {
+            typeInfo.setText(R.string.smear_type);
+            countInfo.setText(cellCountStr + cellTotal);
+            infectedCountInfo.setText(infectedCountStr + infectedTotal);
+            //update progress bar
+            progressStatus = cellTotal;
+            progressBar.setProgress(progressStatus);
+            progressText.setText(cellTotal + "/" + totalCellNeeded);
+        } else if (smearType.equals("Thick")){
+            typeInfo.setText(R.string.smear_type1);
+            parasiteInfo.setText(parasiteCountStr + UtilsData.parasiteTotal);
+            wbcInfo.setText(wbcCountStr + UtilsData.WBCTotal);
+            //update progress bar
+            progressStatus = UtilsData.WBCTotal;
+            progressBar.setProgress(progressStatus);
+            progressText.setText(UtilsData.WBCTotal + "/" + totalWBCNeeded);
+        }
     }
 
     // Create a BroadcastReceiver for ACTION_FOUND.
@@ -331,20 +360,21 @@ public class CameraActivity extends AppCompatActivity {
     };
 
     public void initCam() {
+
         setContentView(R.layout.camera_preview); // set layout to camera preview
+        ViewStub stub = findViewById(R.id.stub);
 
-        Bundle extras = getIntent().getExtras();
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        // get SVM option
-//        String auto = extras.getString("autoSVM_Th");
-//        autoSVMThres = Boolean.valueOf(auto);
-//        Log.d(TAG, "autoSVM: " + autoSVMThres);
-//
-//        // get confidence threshold if auto SVM is false
-//        if (!autoSVMThres) {
-//            CThres = extras.getString("Confidence_Th");
-//            SVM_Th = Double.valueOf(CThres);
-//        }
+        // smear type
+        smearType = sharedPreferences.getString("smeartype", "Thin");
+
+        if (smearType.equals("Thin")){
+            stub.setLayoutResource(R.layout.app_bar_cam);
+        } else if (smearType.equals("Thick")){
+            stub.setLayoutResource(R.layout.app_bar_cam_thick);
+        }
+        stub.inflate();
 
         // set up toolbar
         //toolbar = (Toolbar) findViewById(R.id.app_bar_cam);
@@ -385,7 +415,7 @@ public class CameraActivity extends AppCompatActivity {
         typeInfo.setTextSize(textSize);
         typeInfo.setSingleLine(true);
         typeInfo.setTextColor(getResources().getColor(R.color.toolbar_text));
-        /*typeInfo.setOnClickListener(
+        typeInfo.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -393,7 +423,7 @@ public class CameraActivity extends AppCompatActivity {
                         prompt('t'); // toggle blood smear type
                     }
                 }
-        );*/
+        );
 
         // capture number
         fieldInfo = (TextView) findViewById(R.id.field);
@@ -410,12 +440,19 @@ public class CameraActivity extends AppCompatActivity {
                 }
         );*/
 
-        // set up count and infected count text views
-        countInfo = (TextView) findViewById(R.id.count);
-        countInfo.setSingleLine(true);
-        countInfo.setTextSize(textSize);
-        countInfo.setTextColor(getResources().getColor(R.color.toolbar_text));
-        //countInfo.setTextColor(getResources().getColor(R.color.red));
+        // set up progress bar
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        progressBar.setProgress(progressStatus);
+        progressText = (TextView) findViewById(R.id.textView_progress);
+
+
+        if (smearType.equals("Thin")) {
+            // set up count and infected count text views
+            countInfo = (TextView) findViewById(R.id.count);
+            countInfo.setSingleLine(true);
+            countInfo.setTextSize(textSize);
+            countInfo.setTextColor(getResources().getColor(R.color.toolbar_text));
+            //countInfo.setTextColor(getResources().getColor(R.color.red));
         /*countInfo.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -433,10 +470,25 @@ public class CameraActivity extends AppCompatActivity {
                 }
         );*/
 
-        infectedCountInfo = (TextView) findViewById(R.id.infected_count);
-        infectedCountInfo.setSingleLine(true);
-        infectedCountInfo.setTextSize(textSize);
-        infectedCountInfo.setTextColor(getResources().getColor(R.color.toolbar_text));
+            infectedCountInfo = (TextView) findViewById(R.id.infected_count);
+            infectedCountInfo.setSingleLine(true);
+            infectedCountInfo.setTextSize(textSize);
+            infectedCountInfo.setTextColor(getResources().getColor(R.color.toolbar_text));
+
+            progressBar.setMax(totalCellNeeded);
+        } else if (smearType.equals("Thick")){
+            parasiteInfo = (TextView) findViewById(R.id.parasite);
+            parasiteInfo.setSingleLine(true);
+            parasiteInfo.setTextSize(textSize);
+            parasiteInfo.setTextColor(getResources().getColor(R.color.toolbar_text));
+
+            wbcInfo = (TextView) findViewById(R.id.wbc);
+            wbcInfo.setSingleLine(true);
+            wbcInfo.setTextSize(textSize);
+            wbcInfo.setTextColor(getResources().getColor(R.color.toolbar_text));
+
+            progressBar.setMax(totalWBCNeeded);
+        }
 
 //        if (slideId.equals(""))
 //            prompt('s'); // prompt slide id
@@ -467,7 +519,7 @@ public class CameraActivity extends AppCompatActivity {
         bundle.putCharSequenceArray("WB_list", cs);
 
         // get setting from preference
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
         WB = sharedPreferences.getString("whitebalance", "0");
 
         UtilsCustom.whichClassifier = Integer.valueOf(sharedPreferences.getString("classifier", "0"));
@@ -477,10 +529,11 @@ public class CameraActivity extends AppCompatActivity {
 
         totalCellNeeded = sharedPreferences.getInt("celltotal", 1000);
 
+        totalWBCNeeded = sharedPreferences.getInt("wbc_th", 200);
+
         parameters.setWhiteBalance(whitelist.get(Integer.valueOf(WB)));
         //parameters.setJpegQuality(ImgQ);
         //parameters.setExposureCompensation(EC);
-
 
         cam.setParameters(parameters);
 
@@ -504,6 +557,8 @@ public class CameraActivity extends AppCompatActivity {
 //                    }
 //                }
 //        );
+
+
 
         updateToolbar();
 
@@ -663,14 +718,6 @@ public class CameraActivity extends AppCompatActivity {
                 }
         );*/
 
-        // set up progress bar
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        progressBar.setProgress(progressStatus);
-        progressBar.setMax(totalCellNeeded);
-
-        progressText = (TextView) findViewById(R.id.textView_progress);
-        progressText.setText(cellTotal + "/" + totalCellNeeded);
-
     }
 
     private class ConnectedThread extends Thread {
@@ -800,14 +847,23 @@ public class CameraActivity extends AppCompatActivity {
                 @Override
                 public void run() {
 
-                    UtilsCustom.oriSizeMat = Imgcodecs.imread(picturePath, Imgcodecs.CV_LOAD_IMAGE_COLOR);
+                    UtilsCustom.oriSizeMat = Imgcodecs.imread(picturePath, -1);
                     Imgproc.cvtColor(UtilsCustom.oriSizeMat, UtilsCustom.oriSizeMat, Imgproc.COLOR_BGR2RGB);
 
                     Log.d(TAG, "oriSizeMat: " + UtilsCustom.oriSizeMat);
 
                     resizeImage();
 
-                    ProcessThinSmearImage();
+                    if (smearType.equals("Thin")) {
+                        ProcessThinSmearImage();
+                    } else if (smearType.equals("Thick")){
+                        ThickSmearProcessor thickSmearProcessor = new ThickSmearProcessor(UtilsCustom.oriSizeMat);
+                        thickSmearProcessor.processImage();
+
+                        saveOriImage();
+
+                        goToNextActivity_thickSmear(thickSmearProcessor.getResultBitmap());
+                    }
                 }
             };
 
@@ -816,25 +872,31 @@ public class CameraActivity extends AppCompatActivity {
 
         } else if (requestCode == REQUEST_RESULTS && resultCode == Activity.RESULT_OK) {
 
-            cellCountManual = data.getStringExtra("cellsCountManual");
-            infectedCountManual = data.getStringExtra("infectedCountManual");
+            if (smearType.equals("Thin")) {
 
-            cellTotal = cellTotal + cellCurrent;
-            infectedTotal = infectedTotal + infectedCurrent;
+                cellCountManual = data.getStringExtra("cellsCountManual");
+                infectedCountManual = data.getStringExtra("infectedCountManual");
 
-            captureCount++;
+                cellTotal = cellTotal + cellCurrent;
+                infectedTotal = infectedTotal + infectedCurrent;
+
+                captureCount++;
+            } else if (smearType.equals("Thick")){
+
+            }
+
             updateToolbar();
-
-            //update progress bar
-            progressStatus = cellTotal;
-            progressBar.setProgress(progressStatus);
 
         } else if (requestCode == REQUEST_RESULTS && resultCode == Activity.RESULT_CANCELED) {
 
-            Log.d(TAG, "Reject");
-            cellEachImage = data.getStringExtra("cellCountEachImage");
-            infectedEachImage = data.getStringExtra("infectedCountEachImage");
-            nameEachImage = data.getStringExtra("nameStringEachImage");
+            if (smearType.equals("Thin")) {
+
+                cellEachImage = data.getStringExtra("cellCountEachImage");
+                infectedEachImage = data.getStringExtra("infectedCountEachImage");
+                nameEachImage = data.getStringExtra("nameStringEachImage");
+            } else if (smearType.equals("Thick")){
+
+            }
         }
 
     }
@@ -867,6 +929,7 @@ public class CameraActivity extends AppCompatActivity {
                     jpegData.put(0, 0, data);
 
                     UtilsCustom.oriSizeMat = Imgcodecs.imdecode(jpegData, -1); // produce a 3 channel bgr image
+                    Log.d(TAG, "UtilsCustom.oriSizeMat: " + UtilsCustom.oriSizeMat);
                     Imgproc.cvtColor(UtilsCustom.oriSizeMat, UtilsCustom.oriSizeMat, Imgproc.COLOR_BGR2RGB);
 
                     resizeImage();
@@ -927,9 +990,9 @@ public class CameraActivity extends AppCompatActivity {
         // preview image
         setContentView(R.layout.taken_image_preview);
 
-        imageViewTaken = (TouchImageView) findViewById(R.id.imageView_preview);
-        imageButton_NO = (ImageButton) findViewById(R.id.imageButton_no);
-        imageButton_YES = (ImageButton) findViewById(R.id.imageButton_yes);
+        imageViewTaken = findViewById(R.id.imageView_preview);
+        imageButton_NO = findViewById(R.id.imageButton_no);
+        imageButton_YES = findViewById(R.id.imageButton_yes);
 
         Bitmap rotatedBitmap = Bitmap.createBitmap(resizedMat.width(), resizedMat.height(), Bitmap.Config.RGB_565);
         //Mat temp4View = new Mat();
@@ -970,7 +1033,16 @@ public class CameraActivity extends AppCompatActivity {
                             @Override
                             public void run() {
 
-                                ProcessThinSmearImage();
+                                if (smearType.equals("Thin")) {
+                                    ProcessThinSmearImage();
+                                } else if (smearType.equals("Thick")){
+                                    ThickSmearProcessor thickSmearProcessor = new ThickSmearProcessor(UtilsCustom.oriSizeMat);
+                                    thickSmearProcessor.processImage();
+
+                                    saveOriImage();
+
+                                    goToNextActivity_thickSmear(thickSmearProcessor.getResultBitmap());
+                                }
                             }
                         };
 
@@ -1043,7 +1115,6 @@ public class CameraActivity extends AppCompatActivity {
 
     }
 
-
     public void doAFewThings() {
 
         if (UtilsCustom.cellLocation.length == 0) {  //take care of the case(avoid crash) when segmentation passed but no cell chips extracted
@@ -1103,7 +1174,7 @@ public class CameraActivity extends AppCompatActivity {
         }
     }
 
-    public void goToNextActivity() {
+    private void goToNextActivity() {
 
         inProgress.dismiss();
 
@@ -1138,12 +1209,6 @@ public class CameraActivity extends AppCompatActivity {
         canvasBitmap.recycle();
         byte[] resImageByteArray = stream2.toByteArray();
         intent.putExtra("resImage", resImageByteArray);
-
-//        String auto = String.valueOf(autoSVMThres);
-//        intent.putExtra(EXTRA_AUTO, auto);
-//        if (!autoSVMThres) {
-//            intent.putExtra(EXTRA_CONFIDENCE_T, CThres);
-//        }
 
         intent.putExtra("WB", cs[Integer.valueOf(WB)]);
         intent.putExtra("SVM_Th", String.valueOf(UtilsCustom.SVM_Th));
@@ -1196,6 +1261,55 @@ public class CameraActivity extends AppCompatActivity {
 
     }
 
+    private void goToNextActivity_thickSmear(Bitmap resultBitmap) {
+
+        inProgress.dismiss();
+
+        Intent intent = new Intent(context, ResultDisplayer_thickSmear.class);
+
+        // pass resized result image to new activity
+        int width = (int) ((float) resultBitmap.getWidth() / RV);
+        int height = (int) ((float) resultBitmap.getHeight() / RV);
+
+        Bitmap rescaledBitmap = Bitmap.createScaledBitmap(resultBitmap, width, height, false);
+
+        if (takenFromCam) {
+            intent.putExtra("Orientation", orientation); // pass orientation when image was taken for next activity
+            intent.putExtra("cam", takenFromCam);
+            takenFromCam = false;
+            Matrix m = new Matrix(); // rotate image according to phone orientation when image was taken
+            if (orientation == Surface.ROTATION_0) {
+                m.postRotate(90);
+            } else if (orientation == Surface.ROTATION_270) {
+                m.postRotate(180);
+            } else if (orientation == Surface.ROTATION_180) {
+                m.postRotate(270);
+            } else if (orientation == Surface.ROTATION_90) {
+                m.postRotate(0);
+            }
+            rescaledBitmap = Bitmap.createBitmap(rescaledBitmap, 0, 0, rescaledBitmap.getWidth(), rescaledBitmap.getHeight(), m, false);
+        }
+
+        ByteArrayOutputStream stream2 = new ByteArrayOutputStream();
+        rescaledBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream2);
+        rescaledBitmap.recycle();
+        byte[] resImageByteArray = stream2.toByteArray();
+        intent.putExtra("resImage", resImageByteArray);
+
+        // pass image names
+        String imgNameStr = pictureFileCopy.toString().substring(pictureFileCopy.toString().lastIndexOf("/") + 1);
+        UtilsData.addImageName(imgNameStr);
+
+        intent.putExtra("picFile", pictureFileCopy.toString());
+
+        // pass resize value of original image
+        intent.putExtra("RV", RV);
+
+
+
+        startActivityForResult(intent, REQUEST_RESULTS);
+    }
+
     private Handler saveImageHandler = new Handler() {
 
         public void handleMessage(Message msg) {
@@ -1224,7 +1338,13 @@ public class CameraActivity extends AppCompatActivity {
         String file_name = pictureFileCopy.toString();
         Imgproc.cvtColor(UtilsCustom.oriSizeMat, UtilsCustom.oriSizeMat, Imgproc.COLOR_RGB2BGR);
 
-        Imgcodecs.imwrite(file_name, UtilsCustom.oriSizeMat);
+        ArrayList<Integer> parameters = new ArrayList<>();
+        parameters.add(Imgcodecs.CV_IMWRITE_JPEG_QUALITY);
+        parameters.add(100);
+        MatOfInt matOfInt = new MatOfInt();
+        matOfInt.fromList(parameters);
+
+        Imgcodecs.imwrite(file_name, UtilsCustom.oriSizeMat, matOfInt);
 
         long endTime = System.currentTimeMillis();
         long totalTime = endTime - startTime;
@@ -1311,10 +1431,13 @@ public class CameraActivity extends AppCompatActivity {
                     smearType = "Thick";
                 else
                     smearType = "Thin";
+
+                PreferenceManager.getDefaultSharedPreferences(this).edit().putString("smeartype", smearType).commit();
+
                 captureCount = 0;
                 cellTotal = 0;
                 infectedTotal = 0;
-                updateToolbar();
+                initCam();
                 break;
             case 's':
                 Context c = CameraActivity.this;
@@ -1394,7 +1517,7 @@ public class CameraActivity extends AppCompatActivity {
         File mediaFile;
         if (type == MEDIA_TYPE_IMAGE) {
             mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-                    timeStamp + ".png");
+                    timeStamp + "_" + smearType + ".jpg");
         } else {
             return null;
         }

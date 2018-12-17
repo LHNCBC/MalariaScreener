@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:key="category1_key"
+        android:title="@string/category1">
+        <ListPreference
+            android:defaultValue="0"
+            android:key="whitebalance"
+            android:summary="@string/wbsum"
+            android:title="@string/whitebalance" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="category2_key"
+        android:title="@string/category2">
+
+        <gov.nih.nlm.malaria_screener.custom.SeekBarPreference_WBCNeeded
+            android:defaultValue="200"
+            android:key="wbc_th"
+            android:summary="@string/wbc_required_summary"
+            android:title="@string/wbc_required"/>
+
+    </PreferenceCategory>
+
+
+</PreferenceScreen>

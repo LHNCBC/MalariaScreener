@@ -36,8 +36,8 @@ import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
 import gov.nih.nlm.malaria_screener.R;
-import gov.nih.nlm.malaria_screener.custom.CustomAdapter_CellCount;
-import gov.nih.nlm.malaria_screener.custom.RowItem_CellCount;
+import gov.nih.nlm.malaria_screener.custom.CustomAdapter_Counts;
+import gov.nih.nlm.malaria_screener.custom.RowItem_CountsNtexts;
 import gov.nih.nlm.malaria_screener.custom.TouchImageView;
 
 import java.io.File;
@@ -77,7 +77,7 @@ public class getResultNdisplay extends AppCompatActivity {
     int[] values_cells = new int[2];
     int[] values_infectedcells = new int[2];
 
-    List<RowItem_CellCount> rowItemCellCount = new ArrayList<RowItem_CellCount>();
+    List<RowItem_CountsNtexts> rowItemCellCount = new ArrayList<RowItem_CountsNtexts>();
 
     private ProgressBar progressBar;
     private int progressStatus = 0;
@@ -144,7 +144,7 @@ public class getResultNdisplay extends AppCompatActivity {
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         //getSupportActionBar().setDisplayShowHomeEnabled(false);
 
-        listView_cells = (ListView) findViewById(R.id.listView_cells);
+        listView_cells = (ListView) findViewById(R.id.listView_counts);
         progressBar = (ProgressBar) findViewById(R.id.progressBar2);
         progressText = (TextView) findViewById(R.id.textView_progress);
 
@@ -177,7 +177,7 @@ public class getResultNdisplay extends AppCompatActivity {
 
                             finishActivity(REQUEST_CAM);
 
-                            Intent PatientInfoIntent = new Intent(view.getContext(), PatientInfo.class);
+                            Intent PatientInfoIntent = new Intent(view.getContext(), PatientInfoActivity.class);
                             bundle.putString("nameStringEachImage", nameEachImage);
                             bundle.putString("cellCountEachImage", cellEachImage);
                             bundle.putString("infectedCountEachImage", infectedEachImage);
@@ -259,7 +259,6 @@ public class getResultNdisplay extends AppCompatActivity {
             }
         });
 
-
         //set up listView
         cellCurrent = Integer.valueOf(intent.getStringExtra("cellCountC"));
         infectedCurrent = Integer.valueOf(intent.getStringExtra("infectedCountC"));
@@ -273,11 +272,11 @@ public class getResultNdisplay extends AppCompatActivity {
         values_infectedcells[1] = infectedTotal;
 
         for (int i = 0; i < values_cells.length; i++) {
-            RowItem_CellCount item = new RowItem_CellCount(values_title[i], values_cells[i], values_infectedcells[i]);
+            RowItem_CountsNtexts item = new RowItem_CountsNtexts(values_title[i], values_cells[i], values_infectedcells[i], R.string.cells, R.string.infectedcells);
             rowItemCellCount.add(item);
         }
 
-        CustomAdapter_CellCount adapter_cellCount = new CustomAdapter_CellCount(this, rowItemCellCount);
+        CustomAdapter_Counts adapter_cellCount = new CustomAdapter_Counts(this, rowItemCellCount);
         listView_cells.setAdapter(adapter_cellCount);
 
         progressStatus = cellTotal;
@@ -536,7 +535,7 @@ public class getResultNdisplay extends AppCompatActivity {
 
             finishActivity(REQUEST_CAM);
 
-            Intent summaryIntent = new Intent(getBaseContext(), PatientInfo.class);
+            Intent summaryIntent = new Intent(getBaseContext(), PatientInfoActivity.class);
             bundle.putString("nameStringEachImage", nameEachImage);
             bundle.putString("cellCountEachImage", cellEachImage);
             bundle.putString("infectedCountEachImage", infectedEachImage);

@@ -15,11 +15,12 @@
         />
     <!--android:layout_above="@+id/include_bottom"-->
 
-    <include
-        layout="@layout/app_bar_cam"
+    <ViewStub
+        android:id="@+id/stub"
+        android:inflatedId="@id/stub"
+        android:layout="@layout/app_bar_cam"
         android:layout_width="match_parent"
-        android:layout_height="90dp"
-        android:id="@+id/include" />
+        android:layout_height="90dp" />
 
      <ImageButton
         android:id="@+id/button_gallery"
@@ -37,7 +38,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/progressBar"
-        android:layout_below="@+id/include"
+        android:layout_below="@+id/stub"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:max="1000"

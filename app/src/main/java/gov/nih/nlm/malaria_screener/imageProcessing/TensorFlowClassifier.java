@@ -1,20 +1,14 @@
 package gov.nih.nlm.malaria_screener.imageProcessing;
 
-import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.os.SystemClock;
 import android.util.Log;
 
 import org.tensorflow.contrib.android.TensorFlowInferenceInterface;
-import org.tensorflow.lite.Interpreter;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
 
-import gov.nih.nlm.malaria_screener.custom.UtilsCustom;
+import gov.nih.nlm.malaria_screener.custom.Utils.UtilsCustom;
 
 public class TensorFlowClassifier {
 
@@ -46,6 +40,33 @@ public class TensorFlowClassifier {
         c.inputSize = inputSize;
 
         return c;
+    }
+
+    public boolean recongnize(float[] pixels, int dims){
+
+        float[] output = new float[numClasses * dims];
+
+        tfHelper.feed(inputName, pixels, dims, inputSize, inputSize, 3);
+
+        //tfHelper.feed("keep_prob", new float[] { 1 });
+
+        //get the possible outputs
+        tfHelper.run(outputNames);
+
+        //get the output
+        tfHelper.fetch(outputName, output);
+
+        Log.d(TAG, "output: " + output[0] + ", " + output[1]);
+
+        boolean infected;
+
+        if (output[0] > output[1]) {
+            infected = false;
+        } else {
+            infected = true;
+        }
+
+        return infected;
     }
 
     public void recongnize_batch(float[] pixels, int dims) {

@@ -330,6 +330,20 @@ public class Dropbox extends AppCompatActivity {
                 csvFileWriter.writeNext(arrStr);
             }
 
+            String queryImage_thick = "SELECT * FROM images_thick";
+            cursor = db.rawQuery(queryImage_thick, null);
+            csvFileWriter.writeNext(cursor.getColumnNames());
+
+            int imageColCount_thick = cursor.getColumnCount();
+
+            while (cursor.moveToNext()) {
+                String arrStr[] = new String[imageColCount_thick];
+                for (int i = 0; i < arrStr.length; i++) {
+                    arrStr[i] = cursor.getString(i);
+                }
+                csvFileWriter.writeNext(arrStr);
+            }
+
             csvFileWriter.close();
             cursor.close();
         } catch (IOException e) {

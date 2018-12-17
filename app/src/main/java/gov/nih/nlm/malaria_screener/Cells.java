@@ -1,9 +1,7 @@
 package gov.nih.nlm.malaria_screener;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Environment;
-import android.os.SystemClock;
 import android.util.Log;
 
 import java.io.File;
@@ -25,7 +23,7 @@ import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
-import gov.nih.nlm.malaria_screener.custom.UtilsCustom;
+import gov.nih.nlm.malaria_screener.custom.Utils.UtilsCustom;
 import gov.nih.nlm.malaria_screener.imageProcessing.SVM_Classifier;
 import gov.nih.nlm.malaria_screener.imageProcessing.TFClassifier_Lite;
 import gov.nih.nlm.malaria_screener.imageProcessing.TensorFlowClassifier;
@@ -68,7 +66,7 @@ public class Cells {
 
         long startTime = System.currentTimeMillis();
 
-        this.tensorFlowClassifier = UtilsCustom.tensorFlowClassifier;
+        this.tensorFlowClassifier = UtilsCustom.tensorFlowClassifier_thin;
         this.svm_classifier = UtilsCustom.svm_classifier;
 
         this.tfClassifier_lite = UtilsCustom.tfClassifier_lite;
@@ -263,15 +261,15 @@ public class Cells {
         Core.multiply(featureTable, scaleMat, featureTable);
 
 
-        //runClassification();
-        long startTimeNN = System.currentTimeMillis();
+        runClassification();
+        /*long startTimeNN = System.currentTimeMillis();
 
 
         tfClassifier_lite.process_by_batch(cellChip);
 
         long endTime_NN = System.currentTimeMillis();
         long totalTime_NN = endTime_NN - startTimeNN;
-        Log.d(TAG, "Deep learning Time, TF Lite: " + totalTime_NN);
+        Log.d(TAG, "Deep learning Time, TF Lite: " + totalTime_NN);*/
 
 
 //        if (picFile!=null) {

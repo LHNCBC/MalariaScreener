@@ -35,7 +35,6 @@ import gov.nih.nlm.malaria_screener.custom.PhotoFragment;
 import gov.nih.nlm.malaria_screener.custom.RowItem_Image;
 import gov.nih.nlm.malaria_screener.custom.TouchImageView;
 import gov.nih.nlm.malaria_screener.frontEnd.EnterManualCounts;
-import gov.nih.nlm.malaria_screener.frontEnd.PatientInfo;
 
 
 public class ImageGallery extends AppCompatActivity implements CustomAdapter_ImageGalleryDB.OnPhotoCallback {
@@ -73,6 +72,8 @@ public class ImageGallery extends AppCompatActivity implements CustomAdapter_Ima
     RecyclerView recyclerView;
 
     ArrayList<String> imageNameList;
+
+    int thinOrThick = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,7 +116,9 @@ public class ImageGallery extends AppCompatActivity implements CustomAdapter_Ima
 
                 String imagePath = allImageListing[i].getAbsolutePath();
 
-                if ((imagePath.indexOf("result") == -1) && (imagePath.indexOf("mask") == -1) && (imagePath.contains("png"))) { // pick out the original image by checking the image name
+                Log.d(TAG, "imagePath: " + imagePath);
+
+                if ((imagePath.indexOf("result") == -1) && (imagePath.indexOf("mask") == -1) && (imagePath.contains("jpg"))) { // pick out the original image by checking the image name
                     originalImagePath.add(imagePath);
                 } else if (imagePath.indexOf("result") != -1) { // // pick out the result image by checking the image name
                     resultImagePath.add(imagePath);
@@ -143,7 +146,7 @@ public class ImageGallery extends AppCompatActivity implements CustomAdapter_Ima
         // read cell counts from database
         getInfoOfEachImageFromDB(patientStr, slideStr, imageNameList);
 
-        adapter_imageGalleryDB = new CustomAdapter_ImageGalleryDB(this, imageList, this, cell_eachImage, infected_eachImage, patientStr, slideStr, cell_eachImageGT, infected_eachImageGT);
+        adapter_imageGalleryDB = new CustomAdapter_ImageGalleryDB(this, imageList, this, cell_eachImage, infected_eachImage, patientStr, slideStr, cell_eachImageGT, infected_eachImageGT, thinOrThick);
         recyclerView.setAdapter(adapter_imageGalleryDB);
 
         pageNum = imageList.size();
@@ -503,7 +506,7 @@ public class ImageGallery extends AppCompatActivity implements CustomAdapter_Ima
 
         //getInfoOfEachImage(patientStr, slideStr);
         getInfoOfEachImageFromDB(patientStr, slideStr, imageNameList);
-        adapter_imageGalleryDB = new CustomAdapter_ImageGalleryDB(this, imageList, this, cell_eachImage, infected_eachImage, patientStr, slideStr, cell_eachImageGT, infected_eachImageGT);
+        adapter_imageGalleryDB = new CustomAdapter_ImageGalleryDB(this, imageList, this, cell_eachImage, infected_eachImage, patientStr, slideStr, cell_eachImageGT, infected_eachImageGT, thinOrThick);
         recyclerView.setAdapter(adapter_imageGalleryDB);
 
     }
