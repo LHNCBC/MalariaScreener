@@ -24,6 +24,10 @@ public final class UtilsData {
     public static ArrayList<String> WBCCountList_GT = new ArrayList<>();
 
     //resets--------------------------------------------------------
+    public static final void resetImageNames(){
+        imageNames.clear();
+    }
+
     public static final void resetCurrentCounts(){
         parasiteCurrent = 0;
         WBCCurrent = 0;

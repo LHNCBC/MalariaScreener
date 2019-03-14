@@ -7,6 +7,10 @@
 #include <opencv2/dnn.hpp>
 #include <string>
 #include <android/log.h>
+#include <ctime>
+#include <opencv2/core/core_c.h>
+#include <opencv2/features2d.hpp>
+#include <opencv2/imgcodecs.hpp>
 
 #define LOG_TAG "FaceDetection/DetectionBasedTracker"
 #define LOGD(...) ((void)__android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__))
@@ -19,10 +23,9 @@ using namespace std;
 int height = 44;
 int width = 44;
 
-JNIEXPORT jstring
+double scale_factor = 2;
 
-JNICALL
-Java_com_example_yuh5_nativetest_MainActivity_stringFromJNI(
+JNIEXPORT jstring JNICALL Java_com_example_yuh5_nativetest_MainActivity_stringFromJNI(
         JNIEnv *env,
         jobject /* this */) {
     std::string hello = "Hello from C++";
@@ -37,24 +40,39 @@ void JNICALL Java_com_example_yuh5_nativetest_EdgeDetection_detectEdges(JNIEnv *
 
 }
 
-void JNICALL
-Java_gov_nih_nlm_malaria_1screener_imageProcessing_ThickSmearProcessor_processThickImage(
-        JNIEnv *env, jobject,
-        jlong mat,
-        jlong result, jintArray intJNIArray_X, jintArray intJNIArray_Y) {
+void print_timediff(const char* prefix, const struct timespec& start, const
+struct timespec& end)
+{
+    double milliseconds = (end.tv_nsec - start.tv_nsec) / 1e6 + (end.tv_sec - start.tv_sec) * 1e3;
+    //printf("%s: %lf milliseconds\n", prefix, milliseconds);
+
+    LOGD("%s: %lf", prefix, milliseconds);
+}
+
+JNIEXPORT jint JNICALL Java_gov_nih_nlm_malaria_1screener_imageProcessing_ThickSmearProcessor_processThickImage(
+        JNIEnv *env, jobject, jlong mat, jlong result,
+        jintArray intJNIArray_X, jintArray intJNIArray_Y, jlong extra) {
 
     Mat &mat_this = *(Mat *) mat;
     Mat *mat_result = (Mat *) result;
+
+    Mat *mat_extra = (Mat *) extra;
+
+    struct timespec start, end;
 
     // Step 1: Convert the incoming JNI jintarray to C's jint[]
     jint *intCArray_x = env->GetIntArrayElements(intJNIArray_X, NULL);
     jint *intCArray_y = env->GetIntArrayElements(intJNIArray_Y, NULL);
 
-    copyMakeBorder(mat_this, mat_this, 0, height, 0, width, CV_HAL_BORDER_CONSTANT);
+    copyMakeBorder(mat_this, mat_this, height, height, width, width, CV_HAL_BORDER_CONSTANT);
+
+    // added 02/01/2019, downsample to speed up
+    Mat mat_this_resized;
+    resize(mat_this, mat_this_resized, Size(), 1/scale_factor, 1/scale_factor, INTER_NEAREST);
 
     //---------------------------------------get masks----------------------------------------
     Mat gray;
-    cvtColor(mat_this, gray, COLOR_RGB2GRAY);
+    cvtColor(mat_this_resized, gray, COLOR_RGB2GRAY);
 
     Mat mask;
     threshold(gray, mask, 0, 255, THRESH_BINARY | THRESH_OTSU);
@@ -83,8 +101,7 @@ Java_gov_nih_nlm_malaria_1screener_imageProcessing_ThickSmearProcessor_processTh
 
     Mat border_mask = mask.clone();
     for (int i = 0; i < contours.size(); i++) {
-        if (i !=
-            maxValIdx) { // do not fill the largest contour since it's the whole field of the view
+        if (i != maxValIdx) { // do not fill the largest contour since it's the whole field of the view
             drawContours(border_mask, contours, i, (1), -1);
         }
     }
@@ -106,14 +123,14 @@ Java_gov_nih_nlm_malaria_1screener_imageProcessing_ThickSmearProcessor_processTh
     for (int i = 0; i < contours1.size(); i++) {
         double area = contourArea(contours1[i]);
 
-        if (area <= 1200) {
+        if (area <= (1200 / (scale_factor*scale_factor))) {
             drawContours(WBC_mask, contours1, i, (0), -1);
         }
     }
 
     //imdilate
-    Mat kernel_5x5 = getStructuringElement(MORPH_ELLIPSE, Size(5, 5));
-    morphologyEx(WBC_mask, WBC_mask, MORPH_DILATE, kernel_5x5);
+    Mat kernel_9x9 = getStructuringElement(MORPH_ELLIPSE, Size(9, 9));
+    morphologyEx(WBC_mask, WBC_mask, MORPH_DILATE, kernel_9x9);
 
     // imfill
     Mat WBC_mask_clone = WBC_mask.clone();
@@ -127,8 +144,8 @@ Java_gov_nih_nlm_malaria_1screener_imageProcessing_ThickSmearProcessor_processTh
     contours2.clear();
 
     //imerode
-    morphologyEx(border_mask, border_mask, MORPH_ERODE, kernel_5x5);
-    kernel_5x5.release();
+    morphologyEx(border_mask, border_mask, MORPH_ERODE, kernel_9x9);
+    kernel_9x9.release();
 
     // change 0&1 to 0&255, then use bitwise_not to invert image
     Mat all255 = Mat::zeros(border_mask.size(), border_mask.type());
@@ -136,16 +153,64 @@ Java_gov_nih_nlm_malaria_1screener_imageProcessing_ThickSmearProcessor_processTh
 
     multiply(border_mask, all255, border_mask);
 
+    Mat border_mask_clone = border_mask.clone();
+
     bitwise_not(border_mask, border_mask);
 
     divide(border_mask, border_mask, border_mask);
 
     //added 12/13/2018
     //imdilate
-    Mat kernel_44x44 = getStructuringElement(MORPH_ELLIPSE, Size(44, 44));
-    morphologyEx(border_mask, border_mask, MORPH_DILATE, kernel_44x44);
+    clock_gettime(CLOCK_MONOTONIC, &start);
+
+    Mat kernel_11x11 = getStructuringElement(MORPH_ELLIPSE, Size(11, 11));
+    dilate(border_mask, border_mask, kernel_11x11);
+    //morphologyEx(border_mask, border_mask, MORPH_DILATE, kernel_11x11);
+
+    clock_gettime(CLOCK_MONOTONIC, &end);
+
+    print_timediff("imdilate time", start, end);
+
+    // added for debug
+
+    vector<Mat> channels1;
+    Mat all_C;
+    channels1.push_back(border_mask_clone);
+    channels1.push_back(border_mask_clone);
+    channels1.push_back(border_mask_clone);
+    merge(channels1, all_C);
+
+    *mat_extra = all_C;
 
     //---------------------------------------get masks----------------------------------------
+
+    //**********count WBCs************
+    int WBC_num = 0;
+    double total_area = 0;
+    double avg_area = 0;
+
+    Mat WBC_mask_clone1 = WBC_mask.clone();
+    vector<vector<Point> > contours_wbc;
+    findContours(WBC_mask_clone1, contours_wbc, RETR_LIST, CHAIN_APPROX_NONE);
+    WBC_mask_clone1.release();
+
+    for (int contourIdx = 0; contourIdx < contours_wbc.size(); contourIdx++) {
+        double contour_area = contourArea(contours_wbc[contourIdx]);
+
+        total_area = total_area + contour_area;
+    }
+
+    avg_area = total_area/contours_wbc.size();
+
+    for (int contourIdx = 0; contourIdx < contours_wbc.size(); contourIdx++) {
+        double contour_area = contourArea(contours_wbc[contourIdx]);
+
+        if (contour_area < 10000 && contour_area > 1000) {
+
+            WBC_num = WBC_num + round(contour_area/avg_area);
+        }
+    }
+    contours_wbc.clear();
 
     //----------------------------------greddy method------------------------------------------
 
@@ -178,7 +243,7 @@ Java_gov_nih_nlm_malaria_1screener_imageProcessing_ThickSmearProcessor_processTh
 
     //~~~~~~~~~~~~~~~~~~~~~~~~get rif of noise
 
-    Mat candi_mask = Mat::zeros(candi.size(), candi.type());
+    Mat candi_mask = Mat::ones(candi.size(), candi.type());
 
     multiply(WBC_mask, all255, WBC_mask);
     bitwise_not(WBC_mask, WBC_mask);
@@ -195,7 +260,7 @@ Java_gov_nih_nlm_malaria_1screener_imageProcessing_ThickSmearProcessor_processTh
     minMaxLoc(candi, &min_Val, &max_Val, &minLoc, &maxLoc, minMaxMask);
     minMaxMask.release();
 
-    int num_th = 500;
+    int num_th = 400;
     int num_patch = 0;
 
     int rad = (int) (height * 0.5);
@@ -216,17 +281,25 @@ Java_gov_nih_nlm_malaria_1screener_imageProcessing_ThickSmearProcessor_processTh
 
     Mat all_patches;
 
+    clock_gettime(CLOCK_MONOTONIC, &start);
+
     while (num_patch < num_th) {
 
-        Rect rect((minLoc.x - rad), (minLoc.y - rad), width, height);
+        //LOGD("%s: %d", "iteration", num_patch);
+
+        if ((scale_factor*minLoc.x - rad) < 0 || (scale_factor*minLoc.y - rad) < 0){
+            break;
+        }
+
+        Rect rect((scale_factor*minLoc.x - rad), (scale_factor*minLoc.y - rad), width, height);
 
         patch = mat_this(rect);
 
         patch_test = patch.mul(mask_cir_3);
 
         // put x&y coordinates into array
-        intCArray_x[num_patch] = minLoc.x;
-        intCArray_y[num_patch] = minLoc.y;
+        intCArray_x[num_patch] = scale_factor*minLoc.x;
+        intCArray_y[num_patch] = scale_factor*minLoc.y;
 
         if (num_patch == 0) {
             all_patches = patch_test.clone();
@@ -234,30 +307,29 @@ Java_gov_nih_nlm_malaria_1screener_imageProcessing_ThickSmearProcessor_processTh
             vconcat(all_patches, patch_test, all_patches);
         }
 
-        LOGD("all_patches size: %d, %d", all_patches.size[0], all_patches.size[1]);
-
-
-        //patch.release();
-        //patch_test.release();
-
-        circle(candi_mask, Point(minLoc.x, minLoc.y), rad, (1), -1);
+        circle(candi_mask, Point(minLoc.x, minLoc.y), rad, (0), -1);
 
         //candi = candi.*(1-candi_mask);
-        subtract(allOnes, candi_mask, temp1);
+        /*subtract(allOnes, candi_mask, temp1);
         candi = candi.mul(temp1);
-        temp1.release();
+        temp1.release();*/
+        candi = candi.mul(candi_mask);
 
         //candi(candi<0) = 0;
-        compare(candi, allZeros, candi_compare1, CMP_GE);
+        /*compare(candi, allZeros, candi_compare1, CMP_GE);
         divide(candi_compare1, candi_compare1, candi_compare1);
         multiply(candi, candi_compare1, candi);
-        candi_compare1.release();
+        candi_compare1.release();*/
 
         minMaxLoc(candi, &min_Val, &max_Val, &minLoc, &maxLoc, candi);
 
         num_patch = num_patch + 1;
 
     }
+
+    clock_gettime(CLOCK_MONOTONIC, &end);
+
+    print_timediff("Loop in greedy time", start, end);
 
     *mat_result = all_patches;
 
@@ -273,6 +345,8 @@ Java_gov_nih_nlm_malaria_1screener_imageProcessing_ThickSmearProcessor_processTh
     temp1.release();
     mask_cir.release();
     candi_compare1.release();
+
+    return WBC_num;
 
 }
 

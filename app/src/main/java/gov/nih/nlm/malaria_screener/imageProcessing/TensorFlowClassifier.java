@@ -1,7 +1,6 @@
 package gov.nih.nlm.malaria_screener.imageProcessing;
 
 import android.content.res.AssetManager;
-import android.os.SystemClock;
 import android.util.Log;
 
 import org.tensorflow.contrib.android.TensorFlowInferenceInterface;
@@ -56,7 +55,7 @@ public class TensorFlowClassifier {
         //get the output
         tfHelper.fetch(outputName, output);
 
-        Log.d(TAG, "output: " + output[0] + ", " + output[1]);
+        //Log.d(TAG, "output: " + output[0] + ", " + output[1]);
 
         boolean infected;
 
@@ -69,11 +68,10 @@ public class TensorFlowClassifier {
         return infected;
     }
 
+    // for Shiva's thin smear classifier
     public void recongnize_batch(float[] pixels, int dims) {
 
             float[] output = new float[numClasses * dims];
-
-        long startTime = SystemClock.uptimeMillis();
 
             tfHelper.feed(inputName, pixels, dims, inputSize, inputSize, 3);
 
@@ -83,22 +81,44 @@ public class TensorFlowClassifier {
             //get the output
             tfHelper.fetch(outputName, output);
 
-        long endTime = SystemClock.uptimeMillis();
-
-        Log.d(TAG, "TF mobile run() on single chip: " + Long.toString(endTime - startTime));
-
             for (int i = 0; i < output.length / 2; i++) {
 
-                if (output[i*2] > output[i*2+1]) {  // in the loaded TF model 0 is abnormal, 1 is normal
-                    UtilsCustom.results_NN.add(1);
+                if (output[i*2] > output[i*2+1]) {  // in the loaded TF model(Shiva's) 0 is infected, 1 is normal
+                    UtilsCustom.results.add(1);
                     //Log.d(TAG, "result: " + output[i*2] + ", " + output[i*2+1]);
                 } else {
-                    UtilsCustom.results_NN.add(0);
+                    UtilsCustom.results.add(0);
                     //Log.d(TAG, "result: " + output[i*2] + ", " + output[i*2+1]);
                 }
             }
 
             Log.d(TAG, "One batch over");
+    }
+
+    // for thick smear classifier
+    public void recongnize_batch_thick(float[] pixels, int dims) {
+
+        float[] output = new float[numClasses * dims];
+
+        tfHelper.feed(inputName, pixels, dims, inputSize, inputSize, 3);
+
+        //get the possible outputs
+        tfHelper.run(outputNames);
+
+        //get the output
+        tfHelper.fetch(outputName, output);
+
+        for (int i = 0; i < output.length / 2; i++) {
+
+            if (output[i*2] > output[i*2+1]) {  // in the loaded TF model 0 is normal, 1 is infected
+                UtilsCustom.results.add(0);
+
+            } else {
+                UtilsCustom.results.add(1);
+
+            }
+        }
+
     }
 
 }

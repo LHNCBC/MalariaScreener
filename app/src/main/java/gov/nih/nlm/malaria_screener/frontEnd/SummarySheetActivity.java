@@ -148,7 +148,6 @@ public class SummarySheetActivity extends AppCompatActivity {
         double Hct = Double.valueOf(hctStr);
         ParasitaemiaStr = String.valueOf((int) (infectedNum * Hct * 125.6)) + " Parasites/" + Html.fromHtml("&#956") + "L";
 
-
         //patient
         patient_txt = new String[4];
         patient_txt[0] = patientIDStr;

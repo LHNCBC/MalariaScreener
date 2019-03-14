@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,6 +25,8 @@ import gov.nih.nlm.malaria_screener.custom.RowItem_Patient;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +37,7 @@ public class DatabasePage extends AppCompatActivity {
     private static final String TAG = "MyDebug";
 
     MyDBHandler dbHandler;
-    //private Button exportButton;
+    private Button exportButton;
     private Button deleteDBButton, dropboxButton;
 
     static final int REQUEST_DROPBOX = 1;
@@ -47,6 +50,8 @@ public class DatabasePage extends AppCompatActivity {
     ListView listView_testPatients;
 
     Bundle bundle;
+
+    private final static String DROPBOX_FILE_DIR = "/NLM_Malaria_Screener/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +66,7 @@ public class DatabasePage extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         dbHandler = new MyDBHandler(this, null, null, 1);
-        //exportButton = (Button) findViewById(R.id.button_export);
+        exportButton = (Button) findViewById(R.id.button_export);
         deleteDBButton = (Button) findViewById(R.id.button_delete);
         dropboxButton = (Button) findViewById(R.id.button_dropbox);
         //deleteImagesButton = (Button) findViewById(R.id.button_delete_all_images);
@@ -71,16 +76,18 @@ public class DatabasePage extends AppCompatActivity {
 
         printDatabase();
 
-//        exportButton.setOnClickListener(
-//                new Button.OnClickListener(){
-//                    @Override
-//                    public void onClick(View view) {
-//
-//                        exportDB();
-//
-//                    }
-//                }
-//        );
+        exportButton.setOnClickListener(
+                new Button.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        exportDB();
+
+                        Toast.makeText(getApplicationContext(), "Database file has been exported.", Toast.LENGTH_SHORT).show();
+
+                    }
+                }
+        );
 
         dropboxButton.setOnClickListener(
                 new Button.OnClickListener() {
@@ -331,23 +338,24 @@ public class DatabasePage extends AppCompatActivity {
     public void printDatabase() {
 
         List<RowItem_Patient> rowItems_allpatients = new ArrayList<RowItem_Patient>();
-        List<RowItem_Patient> rowItems_testpatients = new ArrayList<RowItem_Patient>();;
+        List<RowItem_Patient> rowItems_testpatients = new ArrayList<RowItem_Patient>();
+        ;
 
         String dbString[][] = dbHandler.databaseToString();
 
         int dbLength = dbHandler.getTableSize();
 
         for (int i = 0; i < dbLength; i++) {
-            if (!dbString[i][1].equals("N/A")) { // don't print out test patient here
+            if (!dbString[i][0].equals("test")) { // don't print out test patient here
                 if (dbString[i][2].equals("male")) {
                     String string = getResources().getString(R.string.male);
                     dbString[i][2] = string;
-                } else {
+                } else if (dbString[i][2].equals("female")){
                     String string = getResources().getString(R.string.female);
                     dbString[i][2] = string;
                 }
 
-                RowItem_Patient item = new RowItem_Patient(dbString[i][0], dbString[i][1], dbString[i][2], Integer.valueOf(dbString[i][3]));
+                RowItem_Patient item = new RowItem_Patient(dbString[i][0], dbString[i][1], dbString[i][2], dbString[i][3]);
                 rowItems_allpatients.add(item);
             }
         }
@@ -356,13 +364,13 @@ public class DatabasePage extends AppCompatActivity {
         listView_allPatients.setAdapter(adapter_patientDB);
 
         //test patient
-        if (dbHandler.checkExist_Patient("test")) {
-            RowItem_Patient item_testPatient = new RowItem_Patient("Test", "", "", 0);
+        /*if (dbHandler.checkExist_Patient("test")) {
+            RowItem_Patient item_testPatient = new RowItem_Patient("Test", "", "", "");
             rowItems_testpatients.add(item_testPatient);
         }
 
-            CustomAdapter_PatientDB adapter_patientDB_test = new CustomAdapter_PatientDB(this, rowItems_testpatients, true);
-            listView_testPatients.setAdapter(adapter_patientDB_test);
+        CustomAdapter_PatientDB adapter_patientDB_test = new CustomAdapter_PatientDB(this, rowItems_testpatients, true);
+        listView_testPatients.setAdapter(adapter_patientDB_test);*/
 
     }
 
@@ -431,44 +439,79 @@ public class DatabasePage extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), string, Toast.LENGTH_SHORT).show();
     }
 
-    //exporting database
     private void exportDB() {
 
+        File exportDir = new File(Environment.getExternalStorageDirectory(), DROPBOX_FILE_DIR);
+
+        File file = new File(exportDir, "MalariaScreenerDB.csv");
+
         try {
-            File sd = Environment.getExternalStorageDirectory();
-            File data = Environment.getDataDirectory();
+            file.createNewFile();
+            CSVFileWriter csvFileWriter = new CSVFileWriter(new FileWriter(file));
+            SQLiteDatabase db = dbHandler.getReadableDatabase();
 
-            File dbDir = new File(sd, "NLM_Malaria_Screener/");
+            String queryPatient = "SELECT * FROM patients";
+            Cursor cursor = db.rawQuery(queryPatient, null);
+            csvFileWriter.writeNext(cursor.getColumnNames());  // write column names into excel sheet
 
-            if (!dbDir.exists()) {
-                if (!dbDir.mkdirs()) {
-                    Log.d("MalariaDB", "failed to create directory");
+            int patientColCount = cursor.getColumnCount();
+
+            while (cursor.moveToNext()) {
+                String arrStr[] = new String[patientColCount];
+                for (int i = 0; i < arrStr.length; i++) {
+                    arrStr[i] = cursor.getString(i);
                 }
+                csvFileWriter.writeNext(arrStr);
             }
 
-            if (sd.canWrite()) {
+            String querySlide = "SELECT * FROM slides";
+            cursor = db.rawQuery(querySlide, null);
+            csvFileWriter.writeNext(cursor.getColumnNames());
 
-                String currentDBPath = "/data/" + getPackageName()
-                        + "/databases/" + "patients.db";
-                String backupDBPath = "NLM_Malaria_Screener/patients.png";
-                File currentDB = new File(data, currentDBPath);
-                File backupDB = new File(sd, backupDBPath);
+            int slideColCount = cursor.getColumnCount();
 
-                FileChannel src = new FileInputStream(currentDB).getChannel();
-                FileChannel dst = new FileOutputStream(backupDB).getChannel();
-                dst.transferFrom(src, 0, src.size());
-                src.close();
-                dst.close();
-                //Toast.makeText(getBaseContext(), backupDB.toString(),
-                //Toast.LENGTH_LONG).show();
-
+            while (cursor.moveToNext()) {
+                String arrStr[] = new String[slideColCount];
+                for (int i = 0; i < arrStr.length; i++) {
+                    arrStr[i] = cursor.getString(i);
+                }
+                csvFileWriter.writeNext(arrStr);
             }
-        } catch (Exception e) {
 
-            Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_LONG)
-                    .show();
+            String queryImage = "SELECT * FROM images";
+            cursor = db.rawQuery(queryImage, null);
+            csvFileWriter.writeNext(cursor.getColumnNames());
 
+            int imageColCount = cursor.getColumnCount();
+
+            while (cursor.moveToNext()) {
+                String arrStr[] = new String[imageColCount];
+                for (int i = 0; i < arrStr.length; i++) {
+                    arrStr[i] = cursor.getString(i);
+                }
+                csvFileWriter.writeNext(arrStr);
+            }
+
+            String queryImage_thick = "SELECT * FROM images_thick";
+            cursor = db.rawQuery(queryImage_thick, null);
+            csvFileWriter.writeNext(cursor.getColumnNames());
+
+            int imageColCount_thick = cursor.getColumnCount();
+
+            while (cursor.moveToNext()) {
+                String arrStr[] = new String[imageColCount_thick];
+                for (int i = 0; i < arrStr.length; i++) {
+                    arrStr[i] = cursor.getString(i);
+                }
+                csvFileWriter.writeNext(arrStr);
+            }
+
+            csvFileWriter.close();
+            cursor.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
     }
 
 

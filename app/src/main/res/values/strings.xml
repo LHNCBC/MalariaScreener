@@ -162,7 +162,8 @@
     <string name="microscopist_empty">Microscopist can not be empty!</string>
     <string name="hct_empty">HCT can not be empty!</string>
 
-    <string name="slide_id">Slide ID</string>
+    <string name="slide_id">Slide ID<font fgcolor="#e64444">*</font></string>
+    <string name="slide_id_db">Slide ID</string>
     <string name="date">Date</string>
     <string name="time">Time</string>
     <string name="site">Site</string>
@@ -189,7 +190,7 @@
 
     <string name="no_resultDB">No result from database.</string>
 
-    <string name="patient_id">Patient ID</string>
+    <string name="patient_id">Patient ID<font fgcolor="#e64444">*</font></string>
     <string name="initial">Initials</string>
     <string name="age">Age</string>
 
@@ -219,6 +220,8 @@
     <string name="delete_all_images">Are you sure you want to remove all the images from the \'NLM_Malaria_Screener\' folder?</string>
     <string name="delete_image_message">There are images that haven\'t been uploaded yet, do you want to proceed?</string>
     <string name="image_all_deleted">All images removed</string>
+
+    <string name="export">Export Database</string>
 
     <!-- Strings for Dropbox-->
     <string name="upload_succeeded">Last upload succeeded!</string>

@@ -1,0 +1,1 @@
+[{"outputType":{"type":"MERGED_MANIFESTS"},"apkInfo":{"type":"MAIN","splits":[],"versionCode":3420,"versionName":"3.4.2","enabled":true,"outputFile":"openCVLibrary342-release.aar","fullName":"release","baseName":"release"},"path":"..\\..\\library_manifest\\release\\AndroidManifest.xml","properties":{"packageId":"org.opencv","split":""}}]

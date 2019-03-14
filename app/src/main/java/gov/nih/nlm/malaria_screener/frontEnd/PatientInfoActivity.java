@@ -134,18 +134,19 @@ public class PatientInfoActivity extends AppCompatActivity implements SearchView
 
     private void nextpageclicked() {
 
-        Pattern ps = Pattern.compile("^[a-zA-Z ]+$");
+        /*Pattern ps = Pattern.compile("^[a-zA-Z ]+$");
         Matcher ms = ps.matcher(initials.getText().toString());
-        boolean bs = ms.matches();
+        boolean bs = ms.matches();*/
 
-        if (patientID.getText().toString().isEmpty() || initials.getText().toString().isEmpty() || age.getText().toString().isEmpty() || genderStr.isEmpty() || bs == false) {
+        //if (patientID.getText().toString().isEmpty() || initials.getText().toString().isEmpty() || age.getText().toString().isEmpty() || genderStr.isEmpty() || bs == false) {
+        if (patientID.getText().toString().isEmpty()){          // only patient ID is required  03/12/2019
 
-            if (patientID.getText().toString().isEmpty()) {
+            //if (patientID.getText().toString().isEmpty()) {
                 pIDLayout.setErrorEnabled(true);
                 String string = getResources().getString(R.string.patient_id_empty);
                 pIDLayout.setError(string);
-            }
-            if (initials.getText().toString().isEmpty()) {
+            //}
+            /*if (initials.getText().toString().isEmpty()) {
                 initialLayout.setErrorEnabled(true);
                 String string = getResources().getString(R.string.initial_empty);
                 initialLayout.setError(string);
@@ -157,9 +158,28 @@ public class PatientInfoActivity extends AppCompatActivity implements SearchView
             }
             if (genderStr.isEmpty()) {
                 genderTextView.setText(R.string.gender);
-            }
+            }*/
 
         } else {
+
+            String initialStr;
+            String ageStr;
+
+            if (initials.getText().toString().isEmpty()) {
+                initialStr = "N/A";
+            } else {
+                initialStr = initials.getText().toString().toUpperCase();
+            }
+
+            if (age.getText().toString().isEmpty()) {
+                ageStr = "N/A";
+            } else {
+                ageStr = age.getText().toString();
+            }
+
+            if (genderStr.isEmpty()) {
+                genderStr = "N/A";
+            }
 
             // check patient ID to see if this patient is already in the database
             if (!dbHandler.checkExist_Patient(patientID.getText().toString())) { // not exists in the database
@@ -173,9 +193,9 @@ public class PatientInfoActivity extends AppCompatActivity implements SearchView
 
                 Intent intent = new Intent(getApplicationContext(), SlideInfoActivity.class);
                 bundle.putString("patientID", patientID.getText().toString());
-                bundle.putString("initial", initials.getText().toString().toUpperCase());
+                bundle.putString("initial", initialStr);
                 bundle.putString("gender", genderStr);
-                bundle.putString("age", age.getText().toString());
+                bundle.putString("age", ageStr);
                 bundle.putString("newPatient", "true");
                 intent.putExtras(bundle);
                 startActivity(intent);
@@ -186,9 +206,9 @@ public class PatientInfoActivity extends AppCompatActivity implements SearchView
                 if (ifSame) {
                     Intent intent = new Intent(getApplicationContext(), SlideInfoActivity.class);
                     bundle.putString("patientID", patientID.getText().toString());
-                    bundle.putString("initial", initials.getText().toString().toUpperCase());
+                    bundle.putString("initial", initialStr);
                     bundle.putString("gender", genderStr);
-                    bundle.putString("age", age.getText().toString());
+                    bundle.putString("age", ageStr);
                     intent.putExtras(bundle);
                     startActivity(intent);
 
@@ -218,7 +238,7 @@ public class PatientInfoActivity extends AppCompatActivity implements SearchView
             Matcher ms = ps.matcher(initials.getText().toString());
             bs = ms.matches();
 
-            if (bs == false && initials.getText().toString().isEmpty() == false) {
+            if (bs == false && initials.getText().toString().isEmpty() == false && !initials.getText().toString().equals("N/A")) {
                 initialLayout.setErrorEnabled(true);
                 String string = getResources().getString(R.string.initial_are_letters);
                 initialLayout.setError(string);
@@ -274,9 +294,9 @@ public class PatientInfoActivity extends AppCompatActivity implements SearchView
                 nextpageclicked();
                 return true;
 
-            case R.id.skip:
+            /*case R.id.skip:
                 onSkipPressed();
-                return true;
+                return true;*/
         }
 
         return super.onOptionsItemSelected(item);
@@ -426,7 +446,7 @@ public class PatientInfoActivity extends AppCompatActivity implements SearchView
 
     }*/
 
-    private void onSkipPressed() {
+    /*private void onSkipPressed() {
 
         // Move files to Extra & clear New folder
         final File file = new File(Environment.getExternalStorageDirectory(
@@ -476,7 +496,7 @@ public class PatientInfoActivity extends AppCompatActivity implements SearchView
                 dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
                 dialog.show();
 
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener(){
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
 
@@ -547,7 +567,7 @@ public class PatientInfoActivity extends AppCompatActivity implements SearchView
                             String infectedCountGT[] = bundle.getString("infectedCountEachImageGT").split(",");
                             String imageName[] = bundle.getString("nameStringEachImage").split(",");
 
-                            for (int i=0;i<imageName.length;i++) {
+                            for (int i = 0; i < imageName.length; i++) {
                                 Images images = new Images("test", m_Text, imageName[i], cellCount[i], infectedCount[i], cellCountGT[i], infectedCountGT[i]);
                                 dbHandler.addImage(images);
                             }
@@ -570,9 +590,9 @@ public class PatientInfoActivity extends AppCompatActivity implements SearchView
             }
 
         }
-    }
+    }*/
 
-    public static void copyFile(File src, File dst) throws IOException {
+    /*public static void copyFile(File src, File dst) throws IOException {
 
         FileInputStream var2 = new FileInputStream(src);
         FileOutputStream var3 = new FileOutputStream(dst);
@@ -585,9 +605,9 @@ public class PatientInfoActivity extends AppCompatActivity implements SearchView
 
         var2.close();
         var3.close();
-    }
+    }*/
 
-    private void deleteImagesInSlide(String PID, String SID) {
+    /*private void deleteImagesInSlide(String PID, String SID) {
 
         Log.d(TAG, "PID: " + PID);
         Log.d(TAG, "SID: " + SID);
@@ -627,6 +647,6 @@ public class PatientInfoActivity extends AppCompatActivity implements SearchView
 
         }
 
-    }
+    }*/
 
 }

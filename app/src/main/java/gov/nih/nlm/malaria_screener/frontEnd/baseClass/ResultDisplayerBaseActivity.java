@@ -24,6 +24,7 @@ import java.io.FileOutputStream;
 
 import gov.nih.nlm.malaria_screener.R;
 import gov.nih.nlm.malaria_screener.custom.TouchImageView;
+import gov.nih.nlm.malaria_screener.custom.Utils.UtilsCustom;
 
 public abstract class ResultDisplayerBaseActivity extends AppCompatActivity {
 
@@ -43,8 +44,9 @@ public abstract class ResultDisplayerBaseActivity extends AppCompatActivity {
         float RV = bundle.getFloat("RV");
         boolean takenFromCam = bundle.getBoolean("cam");
 
-        Mat oriSizeMat = Imgcodecs.imread(picFile, Imgcodecs.CV_LOAD_IMAGE_COLOR);
-        Imgproc.cvtColor(oriSizeMat, oriSizeMat, Imgproc.COLOR_BGR2RGB);
+        Mat oriSizeMat = UtilsCustom.oriSizeMat;
+        //Mat oriSizeMat = Imgcodecs.imread(picFile, Imgcodecs.CV_LOAD_IMAGE_COLOR);
+        //Imgproc.cvtColor(oriSizeMat, oriSizeMat, Imgproc.COLOR_BGR2RGB);
         int width = (int) ((float) oriSizeMat.cols() / RV);
         int height = (int) ((float) oriSizeMat.rows() / RV);
         Mat resizedMat = new Mat();

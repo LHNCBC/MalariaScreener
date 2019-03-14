@@ -102,7 +102,7 @@ public class CameraActivity extends AppCompatActivity {
     private String slideId = "";
     private Toolbar toolbar;
     private String info = "";
-    public static final AlphaAnimation BUTTON_PRESS = new AlphaAnimation(1F, 0.5F);
+    public static final AlphaAnimation BUTTON_PRESS = new AlphaAnimation(1F, 0.0F);
     //private TextView sidInfo;
     //private TextView pidInfo;
     private TextView typeInfo;
@@ -191,6 +191,8 @@ public class CameraActivity extends AppCompatActivity {
 
     public CharSequence[] cs;
 
+    private boolean imageAcquisition = false;
+
     // for bluetooth ------------------------------
     private String MY_UUID = "ddec19b4-a607-43bc-b8fe-a2e61161046b";
 
@@ -278,6 +280,8 @@ public class CameraActivity extends AppCompatActivity {
                         //thick smear
                         UtilsCustom.tensorFlowClassifier_thick = TensorFlowClassifier.create(context.getAssets(), "ThickSmearModel.h5.pb", UtilsCustom.TF_input_size, "conv2d_1_input", "output_node0");
 
+                        //UtilsCustom.tensorFlowClassifier_thick = TensorFlowClassifier.create(context.getAssets(), "ThickSmearModel_7LayerConv.h5.pb", UtilsCustom.TF_input_size, "conv2d_1_input", "output_node0");
+
 
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -332,7 +336,7 @@ public class CameraActivity extends AppCompatActivity {
             progressStatus = cellTotal;
             progressBar.setProgress(progressStatus);
             progressText.setText(cellTotal + "/" + totalCellNeeded);
-        } else if (smearType.equals("Thick")){
+        } else if (smearType.equals("Thick")) {
             typeInfo.setText(R.string.smear_type1);
             parasiteInfo.setText(parasiteCountStr + UtilsData.parasiteTotal);
             wbcInfo.setText(wbcCountStr + UtilsData.WBCTotal);
@@ -369,9 +373,9 @@ public class CameraActivity extends AppCompatActivity {
         // smear type
         smearType = sharedPreferences.getString("smeartype", "Thin");
 
-        if (smearType.equals("Thin")){
+        if (smearType.equals("Thin")) {
             stub.setLayoutResource(R.layout.app_bar_cam);
-        } else if (smearType.equals("Thick")){
+        } else if (smearType.equals("Thick")) {
             stub.setLayoutResource(R.layout.app_bar_cam_thick);
         }
         stub.inflate();
@@ -419,6 +423,7 @@ public class CameraActivity extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        BUTTON_PRESS.setDuration(1000);
                         v.startAnimation(BUTTON_PRESS);
                         prompt('t'); // toggle blood smear type
                     }
@@ -476,7 +481,7 @@ public class CameraActivity extends AppCompatActivity {
             infectedCountInfo.setTextColor(getResources().getColor(R.color.toolbar_text));
 
             progressBar.setMax(totalCellNeeded);
-        } else if (smearType.equals("Thick")){
+        } else if (smearType.equals("Thick")) {
             parasiteInfo = (TextView) findViewById(R.id.parasite);
             parasiteInfo.setSingleLine(true);
             parasiteInfo.setTextSize(textSize);
@@ -500,6 +505,15 @@ public class CameraActivity extends AppCompatActivity {
         // set camera parameters
         Camera.Parameters parameters = cam.getParameters();
         parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE); //make camera focus quickly
+
+        /*// try focus area
+        Rect rect = new Rect(-200,-200,200,200);
+        Camera.Area focusArea = new Camera.Area(rect, 1000);
+
+        List<Camera.Area> focusList = new ArrayList<Camera.Area>();
+        focusList.add(focusArea);
+
+        parameters.setFocusAreas(focusList);*/
 
         // get supported white balance options
         List<String> whitelist = parameters.getSupportedWhiteBalance();
@@ -531,6 +545,8 @@ public class CameraActivity extends AppCompatActivity {
 
         totalWBCNeeded = sharedPreferences.getInt("wbc_th", 200);
 
+        imageAcquisition = sharedPreferences.getBoolean("image_acquire", false);
+
         parameters.setWhiteBalance(whitelist.get(Integer.valueOf(WB)));
         //parameters.setJpegQuality(ImgQ);
         //parameters.setExposureCompensation(EC);
@@ -557,7 +573,6 @@ public class CameraActivity extends AppCompatActivity {
 //                    }
 //                }
 //        );
-
 
 
         updateToolbar();
@@ -817,7 +832,6 @@ public class CameraActivity extends AppCompatActivity {
         }
     };
 
-    //
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -847,7 +861,9 @@ public class CameraActivity extends AppCompatActivity {
                 @Override
                 public void run() {
 
-                    UtilsCustom.oriSizeMat = Imgcodecs.imread(picturePath, -1);
+                    //UtilsCustom.oriSizeMat = Imgcodecs.imread(picturePath, -1);
+                    UtilsCustom.oriSizeMat = Imgcodecs.imread(picturePath, Imgcodecs.CV_LOAD_IMAGE_COLOR);
+
                     Imgproc.cvtColor(UtilsCustom.oriSizeMat, UtilsCustom.oriSizeMat, Imgproc.COLOR_BGR2RGB);
 
                     Log.d(TAG, "oriSizeMat: " + UtilsCustom.oriSizeMat);
@@ -856,13 +872,8 @@ public class CameraActivity extends AppCompatActivity {
 
                     if (smearType.equals("Thin")) {
                         ProcessThinSmearImage();
-                    } else if (smearType.equals("Thick")){
-                        ThickSmearProcessor thickSmearProcessor = new ThickSmearProcessor(UtilsCustom.oriSizeMat);
-                        thickSmearProcessor.processImage();
-
-                        saveOriImage();
-
-                        goToNextActivity_thickSmear(thickSmearProcessor.getResultBitmap());
+                    } else if (smearType.equals("Thick")) {
+                        ProcessThickSmearImage();
                     }
                 }
             };
@@ -881,8 +892,8 @@ public class CameraActivity extends AppCompatActivity {
                 infectedTotal = infectedTotal + infectedCurrent;
 
                 captureCount++;
-            } else if (smearType.equals("Thick")){
-
+            } else if (smearType.equals("Thick")) {
+                captureCount++;
             }
 
             updateToolbar();
@@ -894,7 +905,7 @@ public class CameraActivity extends AppCompatActivity {
                 cellEachImage = data.getStringExtra("cellCountEachImage");
                 infectedEachImage = data.getStringExtra("infectedCountEachImage");
                 nameEachImage = data.getStringExtra("nameStringEachImage");
-            } else if (smearType.equals("Thick")){
+            } else if (smearType.equals("Thick")) {
 
             }
         }
@@ -928,7 +939,9 @@ public class CameraActivity extends AppCompatActivity {
                     Mat jpegData = new Mat(1, data.length, CvType.CV_8UC1);
                     jpegData.put(0, 0, data);
 
-                    UtilsCustom.oriSizeMat = Imgcodecs.imdecode(jpegData, -1); // produce a 3 channel bgr image
+                    //UtilsCustom.oriSizeMat = Imgcodecs.imdecode(jpegData, -1); // produce a 3 channel bgr image
+                    UtilsCustom.oriSizeMat = Imgcodecs.imdecode(jpegData, Imgcodecs.CV_LOAD_IMAGE_COLOR);
+
                     Log.d(TAG, "UtilsCustom.oriSizeMat: " + UtilsCustom.oriSizeMat);
                     Imgproc.cvtColor(UtilsCustom.oriSizeMat, UtilsCustom.oriSizeMat, Imgproc.COLOR_BGR2RGB);
 
@@ -947,7 +960,7 @@ public class CameraActivity extends AppCompatActivity {
         }
     };
 
-    private void resizeImage(){
+    private void resizeImage() {
 
         float ori_height = 2988;
         float ori_width = 5312;
@@ -1034,14 +1047,18 @@ public class CameraActivity extends AppCompatActivity {
                             public void run() {
 
                                 if (smearType.equals("Thin")) {
-                                    ProcessThinSmearImage();
-                                } else if (smearType.equals("Thick")){
-                                    ThickSmearProcessor thickSmearProcessor = new ThickSmearProcessor(UtilsCustom.oriSizeMat);
-                                    thickSmearProcessor.processImage();
 
-                                    saveOriImage();
-
-                                    goToNextActivity_thickSmear(thickSmearProcessor.getResultBitmap());
+                                    if (imageAcquisition) {
+                                        ImageAcquisition();
+                                    } else {
+                                        ProcessThinSmearImage();
+                                    }
+                                } else if (smearType.equals("Thick")) {
+                                    if (imageAcquisition) {
+                                        ImageAcquisition_thick();
+                                    } else {
+                                        ProcessThickSmearImage();
+                                    }
                                 }
                             }
                         };
@@ -1064,6 +1081,51 @@ public class CameraActivity extends AppCompatActivity {
                     }
                 }
         );
+
+    }
+
+    private void ImageAcquisition_thick() {
+
+        UtilsData.addParasiteCount("N/A");
+        UtilsData.addWBCCount("N/A");
+
+        processingTime = 0;
+
+        // set Bitmap to paint
+        Bitmap bitmap = Bitmap.createBitmap(UtilsCustom.oriSizeMat.width(), UtilsCustom.oriSizeMat.height(), Bitmap.Config.RGB_565);
+        Utils.matToBitmap(UtilsCustom.oriSizeMat, bitmap);
+
+        saveImageHandler.sendEmptyMessage(0);
+        goToNextActivity_thickSmear(bitmap);
+    }
+
+    private void ProcessThickSmearImage() {
+
+        long startTime_w = System.currentTimeMillis();
+
+        ThickSmearProcessor thickSmearProcessor = new ThickSmearProcessor(UtilsCustom.oriSizeMat);
+        thickSmearProcessor.processImage();
+
+        long endTime_w = System.currentTimeMillis();
+        long totalTime_w = endTime_w - startTime_w;
+        Log.d(TAG, "One image time: " + totalTime_w);
+        processingTime = totalTime_w;
+
+        saveImageHandler.sendEmptyMessage(0);
+
+        goToNextActivity_thickSmear(thickSmearProcessor.getResultBitmap());
+    }
+
+    private void ImageAcquisition() {
+
+        resizedMat.release();
+
+        cellCurrent = 0;
+        infectedCurrent = 0;
+
+        saveImageHandler.sendEmptyMessage(0);
+
+        goToNextActivity();
 
     }
 
@@ -1109,6 +1171,7 @@ public class CameraActivity extends AppCompatActivity {
         long endTime = System.currentTimeMillis();
         long totalTime = endTime - startTime_w;
         Log.d(TAG, "Single Image Processing Time: " + totalTime);
+        processingTime = totalTime;
 
         System.gc();
         Runtime.getRuntime().gc();
@@ -1123,9 +1186,10 @@ public class CameraActivity extends AppCompatActivity {
         } else {
 
             //save image to file
-            saveOriImage(); // taken out of handler, otherwise original image not saved before needed in next activity. 09/26/2017
+            //saveOriImage(); // taken out of handler, otherwise original image not saved before needed in next activity. 09/26/2017
+            saveImageHandler.sendEmptyMessage(0);                // put in handler again, original image is copied for saving, display in result page using image in memory. 03/12/2019
             //if (takenFromCam) {
-            saveImageHandler.sendEmptyMessage(0);
+            saveMaskImageHandler.sendEmptyMessage(0);
             //}
 
             cellLocation = UtilsCustom.cellLocation;
@@ -1140,14 +1204,14 @@ public class CameraActivity extends AppCompatActivity {
 
     public void drawAll() {
 
-        for (int i = 0; i < UtilsCustom.results_NN.size(); i++) {
+        for (int i = 0; i < UtilsCustom.results.size(); i++) {
 
-            if (UtilsCustom.results_NN.get(i) == 0) {
+            if (UtilsCustom.results.get(i) == 0) {
                 //infectedNum++;
                 paint.setColor(Color.BLUE); // not infected
                 canvas.drawCircle(UtilsCustom.cellLocation[i][1] / RV, UtilsCustom.cellLocation[i][0] / RV, 2, paint);
                 //canvas.drawText(String.valueOf(infectedNum), cellLocation[i][1] - 7, cellLocation[i][0] - 7, paint);
-            } else if (UtilsCustom.results_NN.get(i) == 1) {
+            } else if (UtilsCustom.results.get(i) == 1) {
                 infectedCurrent++;
                 paint.setColor(Color.RED);
                 canvas.drawCircle(UtilsCustom.cellLocation[i][1] / RV, UtilsCustom.cellLocation[i][0] / RV, 2, paint);
@@ -1237,6 +1301,7 @@ public class CameraActivity extends AppCompatActivity {
             nameEachImage = imgNameStr + ",";
         }
 
+
         intent.putExtra("cellCountEachImage", cellEachImage);
         intent.putExtra("infectedCountEachImage", infectedEachImage);
         intent.putExtra("nameStringEachImage", nameEachImage);
@@ -1305,12 +1370,15 @@ public class CameraActivity extends AppCompatActivity {
         // pass resize value of original image
         intent.putExtra("RV", RV);
 
+        // pass white balance
+        intent.putExtra("WB", cs[Integer.valueOf(WB)]);
 
+        intent.putExtra("time", String.valueOf(processingTime));
 
         startActivityForResult(intent, REQUEST_RESULTS);
     }
 
-    private Handler saveImageHandler = new Handler() {
+    private Handler saveMaskImageHandler = new Handler() {
 
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
@@ -1325,7 +1393,27 @@ public class CameraActivity extends AppCompatActivity {
                 }
             };
 
-            Thread saveImgThread = new Thread(r);
+            Thread saveMaskImgThread = new Thread(r);
+            saveMaskImgThread.start();
+
+        }
+    };
+
+    private Handler saveImageHandler = new Handler() {
+
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+
+            Runnable r1 = new Runnable() {
+                @Override
+                public void run() {
+
+                    saveOriImage();
+
+                }
+            };
+
+            Thread saveImgThread = new Thread(r1);
             saveImgThread.start();
 
         }
@@ -1335,22 +1423,25 @@ public class CameraActivity extends AppCompatActivity {
 
         long startTime = System.currentTimeMillis();
 
+        Mat oriSizeMat_clone = UtilsCustom.oriSizeMat.clone();
+
         String file_name = pictureFileCopy.toString();
-        Imgproc.cvtColor(UtilsCustom.oriSizeMat, UtilsCustom.oriSizeMat, Imgproc.COLOR_RGB2BGR);
+        Imgproc.cvtColor(oriSizeMat_clone, oriSizeMat_clone, Imgproc.COLOR_RGB2BGR);
 
         ArrayList<Integer> parameters = new ArrayList<>();
-        parameters.add(Imgcodecs.CV_IMWRITE_JPEG_QUALITY);
-        parameters.add(100);
+        parameters.add(Imgcodecs.CV_IMWRITE_PNG_COMPRESSION);
+        parameters.add(3);
         MatOfInt matOfInt = new MatOfInt();
         matOfInt.fromList(parameters);
 
-        Imgcodecs.imwrite(file_name, UtilsCustom.oriSizeMat, matOfInt);
+        Imgcodecs.imwrite(file_name, oriSizeMat_clone, matOfInt);
 
         long endTime = System.currentTimeMillis();
         long totalTime = endTime - startTime;
         Log.d(TAG, "save Pic Time: " + totalTime);
 
-        UtilsCustom.oriSizeMat.release();
+        oriSizeMat_clone.release();
+        //UtilsCustom.oriSizeMat.release();
     }
 
     public void saveMaskImage() {
@@ -1517,7 +1608,7 @@ public class CameraActivity extends AppCompatActivity {
         File mediaFile;
         if (type == MEDIA_TYPE_IMAGE) {
             mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-                    timeStamp + "_" + smearType + ".jpg");
+                    timeStamp + "_" + smearType + ".png");
         } else {
             return null;
         }
@@ -1653,6 +1744,8 @@ public class CameraActivity extends AppCompatActivity {
         alertDialog.setPositiveButton(string, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
 
+                reset_utils_data();
+
                 finish();
 
                 String string = getResources().getString(R.string.quit_session_aborted);
@@ -1676,6 +1769,16 @@ public class CameraActivity extends AppCompatActivity {
         alertDialog.show();
 
         return;
+    }
+
+    private void reset_utils_data() {
+
+        UtilsData.resetImageNames();
+        UtilsData.resetCurrentCounts();
+        UtilsData.resetTotalCounts();
+        UtilsData.resetCountLists();
+        UtilsData.resetCountLists_GT();
+
     }
 
     @Override

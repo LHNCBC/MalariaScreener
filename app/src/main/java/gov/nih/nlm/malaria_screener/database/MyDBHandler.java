@@ -147,11 +147,14 @@ public class MyDBHandler extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL(" DROP TABLE IF EXISTS " + TABLE_PATIENTS);
+
+
+
+        /*db.execSQL(" DROP TABLE IF EXISTS " + TABLE_PATIENTS);
         db.execSQL(" DROP TABLE IF EXISTS " + TABLE_SLIDES);
         db.execSQL(" DROP TABLE IF EXISTS " + TABLE_IMAGES);
         db.execSQL(" DROP TABLE IF EXISTS " + TABLE_IMAGES_THICK);
-        onCreate(db);
+        onCreate(db);*/
     }
 
     // Add a new row to patient table
@@ -421,6 +424,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         db.execSQL(" DELETE FROM " + TABLE_PATIENTS + " WHERE " + COLUMN_ID + "='" + condition + "'; ");
         db.execSQL(" DELETE FROM " + TABLE_SLIDES + " WHERE " + COLUMN_PATIENT_ID + "='" + pIDStr + "'; " );
         db.execSQL(" DELETE FROM " + TABLE_IMAGES + " WHERE " + COLUMN_IMAGE_PATIENT_ID + "='" + pIDStr + "'; " );
+        db.execSQL(" DELETE FROM " + TABLE_IMAGES_THICK + " WHERE " + COLUMN_IMAGE_PATIENT_ID_THICK + "='" + pIDStr + "'; " );
     }
 
     //Delete one slide of a patient from the database
@@ -429,6 +433,13 @@ public class MyDBHandler extends SQLiteOpenHelper {
 
         db.execSQL(" DELETE FROM " + TABLE_SLIDES + " WHERE " + COLUMN_PATIENT_ID + "='" + pIDStr + "' " + " AND " + COLUMN_SLIDE_ID + " = \"" + sIDStr + "\"");
         db.execSQL(" DELETE FROM " + TABLE_IMAGES + " WHERE " + COLUMN_IMAGE_PATIENT_ID + "='" + pIDStr + "' " + " AND " + COLUMN_IMAGE_SLIDE_ID + " = \"" + sIDStr + "\"");
+    }
+
+    public void deleteSlide_thick(String sIDStr, String pIDStr) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        db.execSQL(" DELETE FROM " + TABLE_SLIDES + " WHERE " + COLUMN_PATIENT_ID + "='" + pIDStr + "' " + " AND " + COLUMN_SLIDE_ID + " = \"" + sIDStr + "\"");
+        db.execSQL(" DELETE FROM " + TABLE_IMAGES_THICK + " WHERE " + COLUMN_IMAGE_PATIENT_ID_THICK + "='" + pIDStr + "' " + " AND " + COLUMN_IMAGE_SLIDE_ID_THICK + " = \"" + sIDStr + "\"");
     }
 
     //Delete all images after slide deleted

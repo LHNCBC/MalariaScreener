@@ -53,9 +53,9 @@ public class PatientInfoBaseActivity extends AppCompatActivity {
                 nextpageclicked();
                 return true;
 
-            case R.id.skip:
+            /*case R.id.skip:
                 //onSkipPressed();
-                return true;
+                return true;*/
         }
 
         return super.onOptionsItemSelected(item);

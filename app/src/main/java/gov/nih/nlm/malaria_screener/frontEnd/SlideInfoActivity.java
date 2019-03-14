@@ -180,16 +180,16 @@ public class SlideInfoActivity extends AppCompatActivity {
 
     public void nextPageClicked1() {
 
-        if (slideID.getText().toString().isEmpty() || date.getText().toString().isEmpty() || time.getText().toString().isEmpty() || site.getText().toString().isEmpty()) {
+        //if (slideID.getText().toString().isEmpty() || date.getText().toString().isEmpty() || time.getText().toString().isEmpty() || site.getText().toString().isEmpty()) {
+        if (slideID.getText().toString().isEmpty()) {  // only slide ID is required  03/12/2019
 
+            //if (slideID.getText().toString().isEmpty()) {
+            String string = getResources().getString(R.string.slide_id_empty);
+            sIDLayout.setError(string);
+            sIDLayout.setErrorEnabled(true);
+            //}
 
-            if (slideID.getText().toString().isEmpty()) {
-                String string = getResources().getString(R.string.slide_id_empty);
-                sIDLayout.setError(string);
-                sIDLayout.setErrorEnabled(true);
-            }
-
-            if (date.getText().toString().isEmpty()) {
+            /*if (date.getText().toString().isEmpty()) {
                 String string = getResources().getString(R.string.date_empty);
                 dateLayout.setError(string);
                 dateLayout.setErrorEnabled(true);
@@ -205,7 +205,7 @@ public class SlideInfoActivity extends AppCompatActivity {
                 String string = getResources().getString(R.string.site_empty);
                 siteLayout.setError(string);
                 siteLayout.setErrorEnabled(true);
-            }
+            }*/
 
         } else {
 
@@ -264,7 +264,8 @@ public class SlideInfoActivity extends AppCompatActivity {
     }
 
     private void nextPageClicked2() {
-        if (preparator.getText().toString().isEmpty() || operator.getText().toString().isEmpty() || HCT.getText().toString().isEmpty()) {
+
+        /*if (preparator.getText().toString().isEmpty() || operator.getText().toString().isEmpty() || HCT.getText().toString().isEmpty()) {
 
             if (preparator.getText().toString().isEmpty()) {
                 String string = getResources().getString(R.string.slide_pre_empty);
@@ -284,12 +285,55 @@ public class SlideInfoActivity extends AppCompatActivity {
                 hctLayout.setErrorEnabled(true);
             }
 
+        } else {*/
+
+        String dateStr;
+        String timeStr;
+        String siteStr;
+        String preparatorStr;
+        String operatorStr;
+        String hctStr;
+
+        if (date.getText().toString().isEmpty()){
+            dateStr = "N/A";
         } else {
+            dateStr = date.getText().toString();
+        }
 
-            addSearchInput_preparator(preparator.getText().toString());
-            addSearchInput_operator(operator.getText().toString());
+        if (time.getText().toString().isEmpty()){
+            timeStr = "N/A";
+        } else {
+            timeStr = time.getText().toString();
+        }
 
-            // add slide into database
+        if (site.getText().toString().isEmpty()){
+            siteStr = "N/A";
+        } else {
+            siteStr = site.getText().toString();
+        }
+
+        if (preparator.getText().toString().isEmpty()){
+            preparatorStr = "N/A";
+        } else {
+            preparatorStr = preparator.getText().toString();
+        }
+
+        if (operator.getText().toString().isEmpty()){
+            operatorStr = "N/A";
+        } else {
+            operatorStr = operator.getText().toString();
+        }
+
+        if (HCT.getText().toString().isEmpty()){
+            hctStr = "0";
+        } else {
+            hctStr = HCT.getText().toString();
+        }
+
+        addSearchInput_preparator(preparator.getText().toString());
+        addSearchInput_operator(operator.getText().toString());
+
+        // add slide into database
 //                                                String slideIDStr = slideID.getText().toString();
 //                                                String patientIDStr = bundle.getString("patientID");
 //                                                String dateStr = date.getText().toString();
@@ -300,40 +344,40 @@ public class SlideInfoActivity extends AppCompatActivity {
 //                                                String stainingStr = stainingSpinner.getSelectedItem().toString();
 //                                                String hctStr = HCT.getText().toString();
 
-            //Slides slides = new Slides(slideIDStr, patientIDStr, dateStr, timeStr, siteStr, preparatorStr, operatorStr, stainingStr, hctStr, "", "", "");
-            //dbHandler.addSlide(slides);
+        //Slides slides = new Slides(slideIDStr, patientIDStr, dateStr, timeStr, siteStr, preparatorStr, operatorStr, stainingStr, hctStr, "", "", "");
+        //dbHandler.addSlide(slides);
 
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-            // smear type
-            String smearType = sharedPreferences.getString("smeartype", "Thin");
+        // smear type
+        String smearType = sharedPreferences.getString("smeartype", "Thin");
 
-            Intent intent = null;
+        Intent intent = null;
 
-            if (smearType.equals("Thin")) {
-                intent = new Intent(getApplicationContext(), SummarySheetActivity.class);
-            } else if (smearType.equals("Thick")){
-                intent = new Intent(getApplicationContext(), SummarySheetActivity_thick.class);
-            }
-
-            spinnerStr = stainingSpinner.getSelectedItem().toString();
-
-            bundle.putString("patientID", patientIDStr);
-            bundle.putString("slideID", slideID.getText().toString());
-            bundle.putString("date", date.getText().toString());
-            bundle.putString("time", time.getText().toString());
-            bundle.putString("site", site.getText().toString());
-
-            bundle.putString("preparator", preparator.getText().toString());
-            bundle.putString("operator", operator.getText().toString());
-            bundle.putString("staining", spinnerStr);
-            bundle.putString("hct", HCT.getText().toString());
-            bundle.putString("newSlide", "true");
-
-            intent.putExtras(bundle);
-            startActivity(intent);
-
+        if (smearType.equals("Thin")) {
+            intent = new Intent(getApplicationContext(), SummarySheetActivity.class);
+        } else if (smearType.equals("Thick")) {
+            intent = new Intent(getApplicationContext(), SummarySheetActivity_thick.class);
         }
+
+        spinnerStr = stainingSpinner.getSelectedItem().toString();
+
+        bundle.putString("patientID", patientIDStr);
+        bundle.putString("slideID", slideID.getText().toString());
+        bundle.putString("date", dateStr);
+        bundle.putString("time", timeStr);
+        bundle.putString("site", siteStr);
+
+        bundle.putString("preparator", preparatorStr);
+        bundle.putString("operator", operatorStr);
+        bundle.putString("staining", spinnerStr);
+        bundle.putString("hct", hctStr);
+        bundle.putString("newSlide", "true");
+
+        intent.putExtras(bundle);
+        startActivity(intent);
+
+        //}
     }
 
     private TextWatcher watcher = new TextWatcher() {

@@ -38,6 +38,11 @@
             android:summary="@string/celltotal_summary"
             android:title="@string/celltotal"/>
 
+        <SwitchPreference
+            android:key="image_acquire"
+            android:title="Image Acquisition Mode"
+            android:summary="This mode allows user to capture and save images without processing them."/>
+
     </PreferenceCategory>
 
 

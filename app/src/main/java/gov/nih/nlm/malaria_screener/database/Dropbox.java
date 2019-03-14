@@ -126,7 +126,7 @@ public class Dropbox extends AppCompatActivity {
 
         DbxRequestConfig config = new DbxRequestConfig("dropbox/sample-app", "en_US");
 
-        dbxClientV2 = new DbxClientV2(config, "K-CP-L6LtbAAAAAAAAAASwmxSnmgBT3iJXlCYf0bo3uM0LotOBuLw4BCyzTfABea");
+        dbxClientV2 = new DbxClientV2(config, "K-CP-L6LtbAAAAAAAAAAasMaZq16SliwAnpOYA2KYlCkH2EXPv_eTiuJ4BxvASG3");
 
         final File file = new File(Environment.getExternalStorageDirectory(
         ), "NLM_Malaria_Screener");
@@ -447,7 +447,6 @@ public class Dropbox extends AppCompatActivity {
             try {
                 //isFolder = dropboxAPI.search(DROPBOX_FILE_DIR, folderName, 1, false);
                 fullAccount = dbxClientV2.users().getCurrentAccount();
-
             } catch (DbxException e) {
                 e.printStackTrace();
             }
@@ -459,13 +458,14 @@ public class Dropbox extends AppCompatActivity {
         protected void onPostExecute(Void values) {
             super.onPostExecute(values);
 
-            if (fullAccount.getName().toString().isEmpty()) {
-                String string = getResources().getString(R.string.no_internet);
-                Toast.makeText(getApplicationContext(), string, Toast.LENGTH_SHORT).show();
+            if (fullAccount!=null) {
+                if (fullAccount.getName().toString().isEmpty()) {
+                    String string = getResources().getString(R.string.no_internet);
+                    Toast.makeText(getApplicationContext(), string, Toast.LENGTH_SHORT).show();
 //
-            } else {
+                } else {
 
-                Log.d(TAG, "account Name: " + fullAccount.getName().toString());
+                    Log.d(TAG, "account Name: " + fullAccount.getName().toString());
 
 //                if (!isFolder.isEmpty()) { // have folder with same name
 //
@@ -502,21 +502,24 @@ public class Dropbox extends AppCompatActivity {
 //                    alertDialog.show();
 //
 //                } else {
-                progressBarCircle.setVisibility(View.VISIBLE);
-                progressBar.setVisibility(View.VISIBLE);
-                progressBar.setProgress(0);
-                textView.setVisibility(View.VISIBLE);
-                textView.setText(R.string.uploading);
-                path = DROPBOX_FILE_DIR + folderName;
+                    progressBarCircle.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.VISIBLE);
+                    progressBar.setProgress(0);
+                    textView.setVisibility(View.VISIBLE);
+                    textView.setText(R.string.uploading);
+                    path = DROPBOX_FILE_DIR + folderName;
 
-                SharedPreferences sharedPreferences = getBaseContext().getSharedPreferences(DROPBOX_NAME, 0);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.commit();
+                    SharedPreferences sharedPreferences = getBaseContext().getSharedPreferences(DROPBOX_NAME, 0);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.commit();
 
-                new Upload(getApplicationContext(), dbxClientV2, path).execute();
-                //}
+                    new Upload(getApplicationContext(), dbxClientV2, path).execute();
+                    //}
+                }
+            } else {
+                String string = getResources().getString(R.string.no_internet);
+                Toast.makeText(getApplicationContext(), string, Toast.LENGTH_SHORT).show();
             }
-
         }
 
     }

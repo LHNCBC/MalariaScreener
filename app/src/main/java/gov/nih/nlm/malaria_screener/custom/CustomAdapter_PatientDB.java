@@ -222,11 +222,8 @@ public class CustomAdapter_PatientDB extends BaseSwipeAdapter {
         holder.ID.setText(row_pos.getID());
         holder.initial.setText(row_pos.getInitial());
         holder.gender.setText(row_pos.getGender());
-        if (testPatient) {
-            holder.age.setText("");
-        } else {
-            holder.age.setText(String.valueOf(row_pos.getAge()));
-        }
+        holder.age.setText(row_pos.getAge());
+
 
     }
 

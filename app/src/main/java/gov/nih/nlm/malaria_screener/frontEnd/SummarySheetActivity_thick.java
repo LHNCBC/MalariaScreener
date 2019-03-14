@@ -125,6 +125,7 @@ public class SummarySheetActivity_thick extends SummarySheetBaseActivity {
 
     private void reset_utils_data(){
 
+        UtilsData.resetImageNames();
         UtilsData.resetCurrentCounts();
         UtilsData.resetTotalCounts();
         UtilsData.resetCountLists();

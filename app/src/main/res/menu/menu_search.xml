@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" tools:context="gov.nih.nlm.malaria_screener.frontEnd.PatientInfoActivity">
 
-    <item android:id="@+id/skip"
+    <!--<item android:id="@+id/skip"
         android:title="@string/skip"
-        app:showAsAction="always" />
+        app:showAsAction="always" />-->
 
     <item
         android:id="@+id/search"

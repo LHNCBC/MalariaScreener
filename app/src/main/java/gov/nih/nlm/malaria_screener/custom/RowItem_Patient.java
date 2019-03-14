@@ -8,9 +8,9 @@ public class RowItem_Patient {
     private String ID;
     private String initial;
     private String gender;
-    private int age;
+    private String age;
 
-    public RowItem_Patient(String ID, String initial, String gender, int age) {
+    public RowItem_Patient(String ID, String initial, String gender, String age) {
         this.ID = ID;
         this.initial = initial;
         this.gender = gender;
@@ -41,11 +41,12 @@ public class RowItem_Patient {
         this.gender = gender;
     }
 
-    public int getAge() {
+    public String getAge() {
         return age;
     }
 
-    public void setAge(int age) {
+    public void setAge(String age) {
         this.age = age;
     }
+
 }

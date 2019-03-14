@@ -41,8 +41,6 @@ public class TFClassifier_Lite {
 
     private ByteBuffer imgData = null;
 
-
-
     /**
      * Memory-map the model file in Assets.
      */
@@ -106,9 +104,9 @@ public class TFClassifier_Lite {
         for(int i=0;i<current_batchSize;i++) {
 
             if (labelProb[i][0] > labelProb[i][1]) {  // in the loaded TF model 0 is abnormal, 1 is normal
-                UtilsCustom.results_NN.add(1);
+                UtilsCustom.results.add(1);
             } else {
-                UtilsCustom.results_NN.add(0);
+                UtilsCustom.results.add(0);
             }
         }
 
@@ -127,7 +125,7 @@ public class TFClassifier_Lite {
 
         tfLite.setNumThreads(8);
 
-        UtilsCustom.results_NN.clear();
+        UtilsCustom.results.clear();
 
         int NumOfImage = cellChip.size();
 

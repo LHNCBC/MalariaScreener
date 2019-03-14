@@ -150,7 +150,9 @@ public class DatabaseSlideLogPage extends AppCompatActivity {
                             do {
 
                                 String itemStr = cursor.getString(cursor.getColumnIndex("parasitemia_thin"));
-                                parasitemiaList.add(itemStr);
+                                if (!itemStr.equals("")) {
+                                    parasitemiaList.add(itemStr);
+                                }
 
                             } while (cursor.moveToNext());
 

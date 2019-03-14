@@ -116,9 +116,7 @@ public class ImageGallery extends AppCompatActivity implements CustomAdapter_Ima
 
                 String imagePath = allImageListing[i].getAbsolutePath();
 
-                Log.d(TAG, "imagePath: " + imagePath);
-
-                if ((imagePath.indexOf("result") == -1) && (imagePath.indexOf("mask") == -1) && (imagePath.contains("jpg"))) { // pick out the original image by checking the image name
+                if ((imagePath.indexOf("result") == -1) && (imagePath.indexOf("mask") == -1)) { // pick out the original image by checking the image name
                     originalImagePath.add(imagePath);
                 } else if (imagePath.indexOf("result") != -1) { // // pick out the result image by checking the image name
                     resultImagePath.add(imagePath);

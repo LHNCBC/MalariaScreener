@@ -89,8 +89,20 @@
         android:textColor="#FFFFFF"
         android:textSize="15dp"
         android:layout_marginBottom="15dp"
-        android:layout_above="@+id/button_delete"
+        android:layout_above="@+id/button_export"
          />
+
+    <Button
+        android:id="@+id/button_export"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/button_delete"
+        android:layout_marginBottom="15dp"
+        android:background="#d95891ec"
+        android:text="@string/export"
+        android:textColor="#FFFFFF"
+        android:textSize="15dp"
+        />
 
     <Button
         android:id="@+id/button_delete"

@@ -10,8 +10,10 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -23,6 +25,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +34,7 @@ import gov.nih.nlm.malaria_screener.R;
 import gov.nih.nlm.malaria_screener.custom.CustomAdapter_Counts;
 import gov.nih.nlm.malaria_screener.custom.RowItem_CountsNtexts;
 import gov.nih.nlm.malaria_screener.custom.TouchImageView;
+import gov.nih.nlm.malaria_screener.custom.Utils.UtilsCustom;
 import gov.nih.nlm.malaria_screener.custom.Utils.UtilsData;
 import gov.nih.nlm.malaria_screener.frontEnd.baseClass.ResultDisplayerBaseActivity;
 
@@ -44,9 +49,51 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
     String[] wbcCount = new String[1];
     String[] parasiteCount = new String[1];
 
+    String WB;
+    long processingTime;
+
+    private Bundle bundle;
+
+    Bitmap resultBitmap;
+
+    boolean imageAcquisition = false;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        final int totalWBCNeeded = sharedPreferences.getInt("wbc_th", 200);
+
+        imageAcquisition = sharedPreferences.getBoolean("image_acquire", false);
+
+        if (imageAcquisition) {
+            setContentView(R.layout.activity_display_acquisition_mode);
+
+            Button finishButton = findViewById(R.id.finishButton);
+
+            finishButton.setOnClickListener(
+                    new Button.OnClickListener() {
+                        public void onClick(View view) {
+
+                            // save results image
+                            createDirectoryAndSaveResultImage(resultBitmap, bundle);
+                            writeLogFile();
+
+                            setManualCounts();
+
+                            finishActivity(REQUEST_CAM);
+
+                            Intent PatientInfoIntent = new Intent(view.getContext(), PatientInfoActivity.class);
+
+                            PatientInfoIntent.putExtras(bundle);
+                            startActivity(PatientInfoIntent);
+                            finish();
+
+                        }
+                    }
+            );
+        }
 
         Toolbar toolbar = findViewById(R.id.navigate_bar_result);
         toolbar.setTitle(R.string.title_result);
@@ -59,15 +106,15 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
         TouchImageView imageView = findViewById(R.id.processed);
         Button continueButton = findViewById(R.id.continueButton);
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        final int totalWBCNeeded = sharedPreferences.getInt("wbc_th", 200);
-
         Intent intent = getIntent();
-        final Bundle bundle = intent.getExtras();
+        bundle = intent.getExtras();
         picFile = bundle.getString("picFile");
 
+        WB = intent.getStringExtra("WB");
+        processingTime = Long.valueOf(intent.getStringExtra("time"));
+
         //set up bitmaps
-        final Bitmap resultBitmap = getResBitmap(bundle, imageView);
+        resultBitmap = getResBitmap(bundle, imageView);
 
         displayOriginalImage(bundle, imageView, resultBitmap);
 
@@ -75,7 +122,9 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
                 new Button.OnClickListener() {
                     public void onClick(View view) {
 
+                        // save results image
                         createDirectoryAndSaveResultImage(resultBitmap, bundle);
+                        writeLogFile();
 
                         setManualCounts();
 
@@ -131,9 +180,11 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
             Toast.makeText(getApplicationContext(), string, Toast.LENGTH_LONG).show();
         }
 
+        UtilsCustom.oriSizeMat.release();
+
     }
 
-    private void setManualCounts(){
+    private void setManualCounts() {
 
         if (wbcCount[0] == null) {
             wbcCount[0] = "N/A";
@@ -174,7 +225,7 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
 
                     // delete data from current image
                     UtilsData.parasiteTotal = UtilsData.parasiteTotal - UtilsData.parasiteCurrent;
-                    UtilsData.WBCTotal = UtilsData.WBCTotal - 101;
+                    UtilsData.WBCTotal = UtilsData.WBCTotal - UtilsData.WBCCurrent;
                     UtilsData.removeImageName();
                     UtilsData.removeParasiteCount();
                     UtilsData.removeWBCCount();
@@ -206,6 +257,13 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
         alertDialog.show();
 
         return;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_resultpage, menu);
+        return true;
     }
 
     @Override
@@ -293,9 +351,86 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
 
             dialog_wbccounts.show();
 
+        } else if (id == R.id.action_endSession) {
+
+            // save results image
+            createDirectoryAndSaveResultImage(resultBitmap, bundle);
+            writeLogFile();
+
+            setManualCounts();
+
+            finishActivity(REQUEST_CAM);
+
+            Intent PatientInfoIntent = new Intent(getBaseContext(), PatientInfoActivity.class);
+
+            PatientInfoIntent.putExtras(bundle);
+            startActivity(PatientInfoIntent);
+            finish();
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void writeLogFile() {
+
+        File textFile = null;
+
+        try {
+            textFile = createTextFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (textFile != null) {
+            FileOutputStream outText = null;
+
+            try {
+
+                outText = new FileOutputStream(textFile, true);
+
+                if (textFile.length() == 0) {
+                    outText.write(("ImageName,WhiteBalance,ProcessingTime(sec)").getBytes());
+                    outText.write(("\n").getBytes());
+                }
+
+                // get image name
+                String imgStr = picFile.toString().substring(picFile.toString().lastIndexOf("/") + 1);
+                int endIndex = imgStr.lastIndexOf(".");
+                String imageName = imgStr.substring(0, endIndex);
+
+                outText.write((imageName + "," + WB + "," + processingTime).getBytes());
+                outText.write(("\n").getBytes());
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (outText != null) {
+                        outText.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+    }
+
+    private File createTextFile() throws IOException {
+
+        File direct = new File(Environment.getExternalStorageDirectory(), "NLM_Malaria_Screener/");
+
+        if (!direct.exists()) {
+            direct.mkdirs();
+        }
+
+        File Dir = new File(Environment.getExternalStorageDirectory(), "NLM_Malaria_Screener/");
+        File imgFile = new File(Dir, "Log_thick.txt");
+        if (!imgFile.exists()) {
+            imgFile.createNewFile();
+        }
+
+        return imgFile;
     }
 
 }

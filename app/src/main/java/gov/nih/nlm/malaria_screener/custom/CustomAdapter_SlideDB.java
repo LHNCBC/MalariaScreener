@@ -3,6 +3,7 @@ package gov.nih.nlm.malaria_screener.custom;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.database.Cursor;
 import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -89,7 +90,16 @@ public class CustomAdapter_SlideDB extends BaseSwipeAdapter {
                             public void onClick(DialogInterface dialog, int which) {
 
                                 RowItem_Slide rowItem_slide = rowItemSlides.get(position);
-                                dbHandler.deleteSlide(rowItem_slide.getSlideID(), rowItem_slide.getPatientID());
+
+                                Cursor cursor = dbHandler.returnSlideCursor(rowItem_slide.getPatientID(), rowItem_slide.getSlideID());
+
+                                String p_thin = cursor.getString(cursor.getColumnIndex("parasitemia_thin"));
+
+                                if (!p_thin.equals("")) { // if slide is thin smear
+                                    dbHandler.deleteSlide(rowItem_slide.getSlideID(), rowItem_slide.getPatientID());
+                                } else { // if slide is thick smear
+                                    dbHandler.deleteSlide_thick(rowItem_slide.getSlideID(), rowItem_slide.getPatientID());
+                                }
 
                                 deleteImagesInSlide(rowItem_slide.getPatientID(), rowItem_slide.getSlideID());
 

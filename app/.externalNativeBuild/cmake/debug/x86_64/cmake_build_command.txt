@@ -3,7 +3,7 @@ arguments :
 -HQ:\Malaria\AndroidProject\MalariaScreener\app
 -BQ:\Malaria\AndroidProject\MalariaScreener\app\.externalNativeBuild\cmake\debug\x86_64
 -DANDROID_ABI=x86_64
--DANDROID_PLATFORM=android-21
+-DANDROID_PLATFORM=android-19
 -DCMAKE_LIBRARY_OUTPUT_DIRECTORY=Q:\Malaria\AndroidProject\MalariaScreener\app\build\intermediates\cmake\debug\obj\x86_64
 -DCMAKE_BUILD_TYPE=Debug
 -DANDROID_NDK=C:\Users\yuh5\AppData\Local\Android\sdk\ndk-bundle

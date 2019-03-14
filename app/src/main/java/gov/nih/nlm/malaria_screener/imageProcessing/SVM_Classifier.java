@@ -112,14 +112,14 @@ public class SVM_Classifier {
             }
         }
 
-        // Note: classLabels in SVM is 1(normal) & 2(infected). However, to keep it same with TensorFlow classifier I change it to 0&1 while putting them in UtilsCustom.results_NN
-        UtilsCustom.results_NN.clear();
+        // Note: classLabels in SVM is 1(normal) & 2(infected). However, to keep it same with TensorFlow classifier I change it to 0&1 while putting them in UtilsCustom.results
+        UtilsCustom.results.clear();
         for (int i = 0; i < classLabels.length; i++) {
 
             if (classLabels[i] == 1) {
-                UtilsCustom.results_NN.add(0);
+                UtilsCustom.results.add(0);
             } else if (classLabels[i] == 2) {
-                UtilsCustom.results_NN.add(1);
+                UtilsCustom.results.add(1);
             }
         }
 

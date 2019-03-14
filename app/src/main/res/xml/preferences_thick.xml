@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory
         android:key="category1_key"
@@ -21,6 +22,12 @@
             android:key="wbc_th"
             android:summary="@string/wbc_required_summary"
             android:title="@string/wbc_required"/>
+
+        <SwitchPreference
+            android:key="image_acquire"
+            android:title="Image Acquisition Mode"
+            android:summary="This mode allows user to capture and save images without processing them."/>
+
 
     </PreferenceCategory>
 

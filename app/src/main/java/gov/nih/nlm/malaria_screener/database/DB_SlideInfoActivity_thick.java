@@ -68,10 +68,9 @@ public class DB_SlideInfoActivity_thick extends DB_SlideInfoBaseActivity {
     public void feedListView(String patientStr, String slideStr) {
         super.feedListView(patientStr, slideStr);
 
-
+        // get manual counts from database of each image and then add up together
         Cursor cursorImages1 = dbHandler.returnAllSlideImages_thick(patientStr, slideStr);
 
-        // get manual counts from database of each image and then add up together
         String WBCCountGTStr;
         String parasiteCountGTStr;
 
@@ -110,13 +109,38 @@ public class DB_SlideInfoActivity_thick extends DB_SlideInfoBaseActivity {
 
         // get count of each image and then add up together
         Cursor cursorImages2 = dbHandler.returnAllSlideImages_thick(patientStr, slideStr);
+
+        String WBCCountStr;
+        String parasiteCountStr;
+
         int wbcTotal = 0;
         int parasiteTotal = 0;
+        String ParasitaemiaStr;
+
         do {
-            wbcTotal = wbcTotal + Integer.valueOf(cursorImages2.getString(cursorImages2.getColumnIndex("wbc_count")));
-            parasiteTotal = parasiteTotal + Integer.valueOf(cursorImages2.getString(cursorImages2.getColumnIndex("parasite_count")));
+            String wbcCountTemp, parasiteCountTemp;
+            wbcCountTemp = cursorImages2.getString(cursorImages2.getColumnIndex("wbc_count"));
+            parasiteCountTemp = cursorImages2.getString(cursorImages2.getColumnIndex("parasite_count"));
+
+            if (wbcCountTemp.equals("N/A") || parasiteCountTemp.equals("N/A")){
+                wbcTotal = 0;
+                parasiteTotal = 0;
+                break;
+            }
+
+            wbcTotal = wbcTotal + Integer.valueOf(wbcCountTemp);
+            parasiteTotal = parasiteTotal + Integer.valueOf(parasiteCountTemp);
 
         } while (cursorImages2.moveToNext());
+
+        if (wbcTotal == 0 && parasiteTotal == 0) {
+            WBCCountStr = "N/A";
+            parasiteCountStr = "N/A";
+
+        } else {
+            WBCCountStr = String.valueOf(wbcTotal);
+            parasiteCountStr = String.valueOf(parasiteTotal);
+        }
 
         Cursor cursor = dbHandler.returnSlideCursor(patientStr, slideStr);
         slide_txt = new String[14];
@@ -128,11 +152,18 @@ public class DB_SlideInfoActivity_thick extends DB_SlideInfoBaseActivity {
         slide_txt[5] = cursor.getString(cursor.getColumnIndex("operator"));
         slide_txt[6] = cursor.getString(cursor.getColumnIndex("stainingMethod"));
         slide_txt[7] = cursor.getString(cursor.getColumnIndex("hct"));
-        slide_txt[8] = String.valueOf(wbcTotal);
-        slide_txt[9] = String.valueOf(parasiteTotal);
-        slide_txt[10] = cursor.getString(cursor.getColumnIndex("parasitemia_thick"));
+        slide_txt[8] = WBCCountStr;
+        slide_txt[9] = parasiteCountStr;
+        //slide_txt[10] = cursor.getString(cursor.getColumnIndex("parasitemia_thick"));
         slide_txt[11] = WBCCountGTStr;
         slide_txt[12] = parasiteCountGTStr;
+
+        if (wbcTotal == 0 && parasiteTotal == 0){
+            ParasitaemiaStr = "N/A";
+        } else {
+            ParasitaemiaStr = cursor.getString(cursor.getColumnIndex("parasitemia_thick"));
+        }
+        slide_txt[10] = ParasitaemiaStr;
 
         if ((wbcCountGT == 0 && parasiteCountGT == 0) || patientStr.equals("test")) {
             ParasitaemiaGTStr = "N/A";

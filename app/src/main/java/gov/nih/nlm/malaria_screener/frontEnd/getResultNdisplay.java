@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -12,6 +13,7 @@ import android.graphics.Matrix;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -39,6 +41,7 @@ import gov.nih.nlm.malaria_screener.R;
 import gov.nih.nlm.malaria_screener.custom.CustomAdapter_Counts;
 import gov.nih.nlm.malaria_screener.custom.RowItem_CountsNtexts;
 import gov.nih.nlm.malaria_screener.custom.TouchImageView;
+import gov.nih.nlm.malaria_screener.custom.Utils.UtilsCustom;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -107,9 +110,60 @@ public class getResultNdisplay extends AppCompatActivity {
 
     Bitmap smallOriBitmap;
 
+    boolean imageAcquisition = false;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display);
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        imageAcquisition = sharedPreferences.getBoolean("image_acquire", false);
+
+        if (imageAcquisition) {
+            setContentView(R.layout.activity_display_acquisition_mode);
+
+            Button finishButton = findViewById(R.id.finishButton);
+
+            finishButton.setOnClickListener(
+                    new Button.OnClickListener() {
+                        public void onClick(View view) {
+
+                            if (picFile != null) {
+                                // output result image & write log file
+                                createDirectoryAndSaveFile2(canvasBitmap);
+                                writeLogFile();
+                            }
+
+                            canvasBitmap.recycle();
+
+                            finishActivity(REQUEST_CAM);
+
+                            Intent patientInfoIntent = new Intent(getBaseContext(), PatientInfoActivity.class);
+                            bundle.putString("nameStringEachImage", nameEachImage);
+                            bundle.putString("cellCountEachImage", cellEachImage);
+                            bundle.putString("infectedCountEachImage", infectedEachImage);
+
+                            // add the last one to string
+                            if (cellEachImageGT != null && infectedEachImageGT != null) {
+                                cellEachImageGT = cellEachImageGT + (cellCountManual + ",");
+                                infectedEachImageGT = infectedEachImageGT + (infectedCountManual + ",");
+                            } else {
+                                cellEachImageGT = cellCountManual + ",";
+                                infectedEachImageGT = infectedCountManual + ",";
+                            }
+
+                            bundle.putString("cellCountEachImageGT", cellEachImageGT);
+                            bundle.putString("infectedCountEachImageGT", infectedEachImageGT);
+
+                            patientInfoIntent.putExtras(bundle);
+                            startActivity(patientInfoIntent);
+                            finish();
+
+                        }
+                    }
+            );
+        }
 
         values_title = getResources().getStringArray(R.array.count_item);
 
@@ -218,9 +272,10 @@ public class getResultNdisplay extends AppCompatActivity {
         int orientation = bundle.getInt("Orientation");
 
         Log.d(TAG, "picFile: " + picFile);
-        Mat oriSizeMat = Imgcodecs.imread(picFile, Imgcodecs.CV_LOAD_IMAGE_COLOR);
+        Mat oriSizeMat = UtilsCustom.oriSizeMat;
+        //Mat oriSizeMat = Imgcodecs.imread(picFile, Imgcodecs.CV_LOAD_IMAGE_COLOR);
         Log.d(TAG, "oriSizeMat: " + oriSizeMat.size());
-        Imgproc.cvtColor(oriSizeMat, oriSizeMat, Imgproc.COLOR_BGR2RGB);
+        //Imgproc.cvtColor(oriSizeMat, oriSizeMat, Imgproc.COLOR_BGR2RGB);
         int width = (int) ((float) oriSizeMat.cols() / RV);
         int height = (int) ((float) oriSizeMat.rows() / RV);
         Mat resizedMat = new Mat();
@@ -294,6 +349,8 @@ public class getResultNdisplay extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), string, Toast.LENGTH_LONG).show();
         }
 
+        UtilsCustom.oriSizeMat.release();
+
     }
 
     private void createDirectoryAndSaveFile2(Bitmap imageToSave) {
@@ -344,7 +401,7 @@ public class getResultNdisplay extends AppCompatActivity {
                 outText = new FileOutputStream(textFile, true);
 
                 if (textFile.length() == 0) {
-                    outText.write(("ImageName,InfectedCurrent,CellCurrent,WhiteBalance,SVMThreshold,ProcessingTime(sec),Infected_GT,Cell_GT").getBytes());
+                    outText.write(("ImageName,WhiteBalance,SVMThreshold,ProcessingTime(sec)").getBytes());
                     outText.write(("\n").getBytes());
                 }
 
@@ -353,7 +410,7 @@ public class getResultNdisplay extends AppCompatActivity {
                 int endIndex = imgStr.lastIndexOf(".");
                 String imageName = imgStr.substring(0, endIndex);
 
-                outText.write((imageName + "," + infectedCurrent + "," + cellCurrent + "," + WB + "," + SVM_Th + "," + processingTime).getBytes());
+                outText.write((imageName + "," + WB + "," + SVM_Th + "," + processingTime).getBytes());
                 outText.write(("\n").getBytes());
 
             } catch (IOException e) {
@@ -535,7 +592,7 @@ public class getResultNdisplay extends AppCompatActivity {
 
             finishActivity(REQUEST_CAM);
 
-            Intent summaryIntent = new Intent(getBaseContext(), PatientInfoActivity.class);
+            Intent patientInfoIntent = new Intent(getBaseContext(), PatientInfoActivity.class);
             bundle.putString("nameStringEachImage", nameEachImage);
             bundle.putString("cellCountEachImage", cellEachImage);
             bundle.putString("infectedCountEachImage", infectedEachImage);
@@ -552,8 +609,8 @@ public class getResultNdisplay extends AppCompatActivity {
             bundle.putString("cellCountEachImageGT", cellEachImageGT);
             bundle.putString("infectedCountEachImageGT", infectedEachImageGT);
 
-            summaryIntent.putExtras(bundle);
-            startActivity(summaryIntent);
+            patientInfoIntent.putExtras(bundle);
+            startActivity(patientInfoIntent);
             finish();
 
         } else if (id == R.id.action_manualCounts) {

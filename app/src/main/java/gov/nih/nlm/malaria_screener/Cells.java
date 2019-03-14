@@ -290,7 +290,7 @@ public class Cells {
 
             long startTimeNN = System.currentTimeMillis();
 
-            UtilsCustom.results_NN.clear();
+            UtilsCustom.results.clear();
 
             float[] floatPixels = new float[width * height * 3 * batchSize];
 

@@ -32,7 +32,7 @@ public class NN_runnable implements Runnable {
 
     public long NNprocessingTime = 0;
 
-    //public ArrayList<Integer> results_NN;
+    //public ArrayList<Integer> results;
     int result;
 
     // Defines a field that contains the calling object of type PhotoTask.
