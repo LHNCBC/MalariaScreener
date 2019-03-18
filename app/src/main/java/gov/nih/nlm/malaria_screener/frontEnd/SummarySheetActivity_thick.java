@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Environment;
 import android.os.Bundle;
 import android.text.Html;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -126,10 +125,10 @@ public class SummarySheetActivity_thick extends SummarySheetBaseActivity {
     private void reset_utils_data(){
 
         UtilsData.resetImageNames();
-        UtilsData.resetCurrentCounts();
-        UtilsData.resetTotalCounts();
-        UtilsData.resetCountLists();
-        UtilsData.resetCountLists_GT();
+        UtilsData.resetCurrentCounts_thick();
+        UtilsData.resetTotalCounts_thick();
+        UtilsData.resetCountLists_thick();
+        UtilsData.resetCountLists_GT_thick();
 
     }
 

@@ -56,12 +56,12 @@
 
             <!-- android:label="@string/title_activity_camera" -->
         </activity>
-        <activity
+       <!-- <activity
             android:name=".frontEnd.getResultNdisplay"
             android:configChanges="orientation|screenSize"
             android:label="Results"
             android:parentActivityName=".CameraActivity"
-            android:screenOrientation="fullSensor" />
+            android:screenOrientation="fullSensor" />-->
         <activity
             android:name=".frontEnd.PatientInfoActivity"
             android:configChanges="orientation|screenSize"
@@ -160,6 +160,12 @@
         <activity android:name=".frontEnd.EnterManualCounts_thick"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="fullSensor"/>
+        <activity
+            android:name=".frontEnd.ResultDisplayer"
+            android:configChanges="orientation|screenSize"
+            android:label="Results"
+            android:parentActivityName=".CameraActivity"
+            android:screenOrientation="fullSensor" />
     </application>
 
 </manifest>

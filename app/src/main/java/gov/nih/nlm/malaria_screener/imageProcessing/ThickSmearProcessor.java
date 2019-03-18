@@ -11,13 +11,9 @@ import org.opencv.android.Utils;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.Rect;
-import org.opencv.core.Size;
-import org.opencv.imgproc.Imgproc;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 
 import gov.nih.nlm.malaria_screener.custom.Utils.UtilsCustom;
 import gov.nih.nlm.malaria_screener.custom.Utils.UtilsData;
@@ -51,7 +47,7 @@ public class ThickSmearProcessor {
     public void processImage() {
 
         // reset current parasites and WBC counts
-        UtilsData.resetCurrentCounts();
+        UtilsData.resetCurrentCounts_thick();
 
         //read deep learning model from assets folder
         //String dnnModel = getPath("ThickSmearModel.h5.pb", getApplicationContext());

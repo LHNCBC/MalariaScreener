@@ -163,13 +163,38 @@ public class DB_SlideInfoActivity extends AppCompatActivity {
 
         // get count of each image and then add up together
         Cursor cursorImages2 = dbHandler.returnAllSlideImages(patientStr, slideStr);
+
+        String cellCountStr;
+        String infectedCountStr;
+
         int cellTotal = 0;
         int infectedTotal = 0;
+        String ParasitaemiaStr;
+
         do {
-            cellTotal = cellTotal + Integer.valueOf(cursorImages2.getString(cursorImages2.getColumnIndex("cell_count")));
-            infectedTotal = infectedTotal + Integer.valueOf(cursorImages2.getString(cursorImages2.getColumnIndex("infected_count")));
+            String cellCountTemp, infectedCountTemp;
+            cellCountTemp = cursorImages2.getString(cursorImages2.getColumnIndex("cell_count"));
+            infectedCountTemp = cursorImages2.getString(cursorImages2.getColumnIndex("infected_count"));
+
+            if (cellCountTemp.equals("N/A") || infectedCountTemp.equals("N/A")){
+                cellTotal = 0;
+                infectedTotal = 0;
+                break;
+            }
+
+            cellTotal = cellTotal + Integer.valueOf(cellCountTemp);
+            infectedTotal = infectedTotal + Integer.valueOf(infectedCountTemp);
 
         } while (cursorImages2.moveToNext());
+
+        if (cellTotal == 0 && infectedTotal == 0) {
+            cellCountStr = "N/A";
+            infectedCountStr = "N/A";
+
+        } else {
+            cellCountStr = String.valueOf(cellTotal);
+            infectedCountStr = String.valueOf(infectedTotal);
+        }
 
         Cursor cursor = dbHandler.returnSlideCursor(patientStr, slideStr);
         slide_txt = new String[14];
@@ -181,11 +206,18 @@ public class DB_SlideInfoActivity extends AppCompatActivity {
         slide_txt[5] = cursor.getString(cursor.getColumnIndex("operator"));
         slide_txt[6] = cursor.getString(cursor.getColumnIndex("stainingMethod"));
         slide_txt[7] = cursor.getString(cursor.getColumnIndex("hct"));
-        slide_txt[8] = String.valueOf(cellTotal);
-        slide_txt[9] = String.valueOf(infectedTotal);
-        slide_txt[10] = cursor.getString(cursor.getColumnIndex("parasitemia_thin"));
+        slide_txt[8] = cellCountStr;
+        slide_txt[9] = infectedCountStr;
+        //slide_txt[10] = cursor.getString(cursor.getColumnIndex("parasitemia_thin"));
         slide_txt[11] = cellCountGTStr;
         slide_txt[12] = infectedCountGTStr;
+
+        if (cellTotal == 0 && infectedTotal == 0){
+            ParasitaemiaStr = "N/A";
+        } else {
+            ParasitaemiaStr = cursor.getString(cursor.getColumnIndex("parasitemia_thin"));
+        }
+        slide_txt[10] = ParasitaemiaStr;
 
         if ((cellCountGT == 0 && infectedCountGT == 0) || patientStr.equals("test")) {
             ParasitaemiaGTStr = "N/A";

@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,7 +39,7 @@ import gov.nih.nlm.malaria_screener.custom.Utils.UtilsCustom;
 import gov.nih.nlm.malaria_screener.custom.Utils.UtilsData;
 import gov.nih.nlm.malaria_screener.frontEnd.baseClass.ResultDisplayerBaseActivity;
 
-public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
+public class ResultDisplayer extends ResultDisplayerBaseActivity {
 
     private static final String TAG = "MyDebug";
 
@@ -46,10 +47,12 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
 
     String picFile;
 
-    String[] wbcCount = new String[1];
-    String[] parasiteCount = new String[1];
+    String[] cellCount = new String[1];
+    String[] infectedCount = new String[1];
 
     String WB;
+    double SVM_Th;
+
     long processingTime;
 
     private Bundle bundle;
@@ -58,12 +61,26 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
 
     boolean imageAcquisition = false;
 
+    String classifierType;
+
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        final int totalWBCNeeded = sharedPreferences.getInt("wbc_th", 200);
+        final int totalCellNeeded = sharedPreferences.getInt("celltotal", 1000);
+
+        int type = Integer.valueOf(sharedPreferences.getString("classifier", "0"));
+        if (type==0){
+            classifierType = "Deep Learning";
+        } else if (type==1){
+            classifierType = "SVM";
+        }
+
+        double value = sharedPreferences.getInt("SVM_Th", 35);
+        SVM_Th = (100 - value) / 100;
 
         imageAcquisition = sharedPreferences.getBoolean("image_acquire", false);
 
@@ -128,7 +145,7 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
 
                         setManualCounts();
 
-                        if (UtilsData.WBCTotal < totalWBCNeeded) {
+                        if (UtilsData.cellTotal < totalCellNeeded) {
 
                             Intent returnIntent = new Intent();
 
@@ -149,29 +166,29 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
 
         String[] values_title = getResources().getStringArray(R.array.count_item);
 
-        int[] values_parasites = new int[2];
-        int[] values_wbcs = new int[2];
-        values_parasites[0] = UtilsData.parasiteCurrent;
-        values_parasites[1] = UtilsData.parasiteTotal;
-        values_wbcs[0] = UtilsData.WBCCurrent;
-        values_wbcs[1] = UtilsData.WBCTotal;
+        int[] values_cells = new int[2];
+        int[] values_infectedcells = new int[2];
+        values_cells[0] = UtilsData.cellCurrent;
+        values_cells[1] = UtilsData.cellTotal;
+        values_infectedcells[0] = UtilsData.infectedCurrent;
+        values_infectedcells[1] = UtilsData.infectedTotal;
 
         List<RowItem_CountsNtexts> rowItemCellCount = new ArrayList<RowItem_CountsNtexts>();
-        for (int i = 0; i < values_parasites.length; i++) {
-            RowItem_CountsNtexts item = new RowItem_CountsNtexts(values_title[i], values_parasites[i], values_wbcs[i], R.string.parasites, R.string.wbcs);
+        for (int i = 0; i < values_cells.length; i++) {
+            RowItem_CountsNtexts item = new RowItem_CountsNtexts(values_title[i], values_cells[i], values_infectedcells[i], R.string.cells, R.string.infectedcells);
             rowItemCellCount.add(item);
         }
 
         CustomAdapter_Counts adapter_cellCount = new CustomAdapter_Counts(this, rowItemCellCount);
         listView_counts.setAdapter(adapter_cellCount);
 
-        int progressStatus = UtilsData.WBCTotal;
+        int progressStatus = UtilsData.cellTotal;
         progressBar.setProgress(progressStatus);
-        progressBar.setMax(totalWBCNeeded);
-        progressText.setText(UtilsData.WBCTotal + "/" + totalWBCNeeded);
+        progressBar.setMax(totalCellNeeded);
+        progressText.setText(UtilsData.cellTotal + "/" + totalCellNeeded);
 
         // when get enough cells
-        if (UtilsData.WBCTotal > totalWBCNeeded) {
+        if (UtilsData.cellTotal > totalCellNeeded) {
             continueButton.setText(R.string.finish_button);
             continueButton.setTextColor(Color.parseColor("red"));
             continueButton.setTextSize(20);
@@ -189,16 +206,16 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
 
     private void setManualCounts() {
 
-        if (wbcCount[0] == null) {
-            wbcCount[0] = "N/A";
+        if (cellCount[0] == null) {
+            cellCount[0] = "N/A";
         }
 
-        if (parasiteCount[0] == null) {
-            parasiteCount[0] = "N/A";
+        if (infectedCount[0] == null) {
+            infectedCount[0] = "N/A";
         }
 
-        UtilsData.addWBCCount_GT(wbcCount[0]);
-        UtilsData.addParasiteCount_GT(parasiteCount[0]);
+        UtilsData.addCellCount_GT(cellCount[0]);
+        UtilsData.addinfectedCount_GT(infectedCount[0]);
     }
 
     public void onBackPressed() {
@@ -227,12 +244,12 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
                     }
 
                     // delete data from current image
-                    UtilsData.parasiteTotal = UtilsData.parasiteTotal - UtilsData.parasiteCurrent;
-                    UtilsData.WBCTotal = UtilsData.WBCTotal - UtilsData.WBCCurrent;
+                    UtilsData.cellTotal = UtilsData.cellTotal - UtilsData.cellCurrent;
+                    UtilsData.infectedTotal = UtilsData.infectedTotal - UtilsData.infectedCurrent;
                     UtilsData.removeImageName();
-                    UtilsData.removeParasiteCount();
-                    UtilsData.removeWBCCount();
-                    UtilsData.resetCurrentCounts_thick();
+                    UtilsData.removeCellCount();
+                    UtilsData.removeInfectedCount();
+                    UtilsData.resetCurrentCounts();
 
                 }
 
@@ -278,81 +295,81 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
 
         if (id == R.id.action_manualCounts) {
 
-            final Dialog dialog_wbccounts = new Dialog(this);
-            dialog_wbccounts.setContentView(R.layout.input_box_manualcounts);
-            dialog_wbccounts.setCancelable(false);
-            dialog_wbccounts.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-            TextView textView_wbccounts = dialog_wbccounts.findViewById(R.id.textView_manualcounts);
-            final EditText input_wbccount = dialog_wbccounts.findViewById(R.id.editText_manualcounts);
+            final Dialog dialog_cellcounts = new Dialog(this);
+            dialog_cellcounts.setContentView(R.layout.input_box_manualcounts);
+            dialog_cellcounts.setCancelable(false);
+            dialog_cellcounts.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+            TextView textView_cellcounts = dialog_cellcounts.findViewById(R.id.textView_manualcounts);
+            final EditText input_cellcount = dialog_cellcounts.findViewById(R.id.editText_manualcounts);
 
-            Button button_wbccounts = dialog_wbccounts.findViewById(R.id.button_okay);
-            Button buttonCancel_wbccounts = dialog_wbccounts.findViewById(R.id.button_cancel);
+            Button button_cellcounts = dialog_cellcounts.findViewById(R.id.button_okay);
+            Button buttonCancel_cellcounts = dialog_cellcounts.findViewById(R.id.button_cancel);
 
-            final Dialog dialog_parasitecounts = new Dialog(this);
-            dialog_parasitecounts.setCancelable(false);
-            dialog_parasitecounts.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-            dialog_parasitecounts.setContentView(R.layout.input_box_manualcounts);
-            TextView textView_parasitecounts = dialog_parasitecounts.findViewById(R.id.textView_manualcounts);
-            final EditText input_parasite = dialog_parasitecounts.findViewById(R.id.editText_manualcounts);
+            final Dialog dialog_infectedcounts = new Dialog(this);
+            dialog_infectedcounts.setCancelable(false);
+            dialog_infectedcounts.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+            dialog_infectedcounts.setContentView(R.layout.input_box_manualcounts);
+            TextView textView_infectedcounts = dialog_infectedcounts.findViewById(R.id.textView_manualcounts);
+            final EditText input_infected = dialog_infectedcounts.findViewById(R.id.editText_manualcounts);
 
-            Button button_parasitecounts = dialog_parasitecounts.findViewById(R.id.button_okay);
-            Button buttonCancel_parasitecounts = dialog_parasitecounts.findViewById(R.id.button_cancel);
+            Button button_infectedcounts = dialog_infectedcounts.findViewById(R.id.button_okay);
+            Button buttonCancel_infectedcounts = dialog_infectedcounts.findViewById(R.id.button_cancel);
 
-            textView_wbccounts.setText(R.string.manual_wbc_count);
-            textView_parasitecounts.setText(R.string.manual_parasite_infected);
+            textView_cellcounts.setText(R.string.manual_cell_count);
+            textView_infectedcounts.setText(R.string.manual_count_infected);
 
-            button_wbccounts.setOnClickListener(
+            button_cellcounts.setOnClickListener(
                     new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            wbcCount[0] = input_wbccount.getText().toString();
+                            cellCount[0] = input_cellcount.getText().toString();
 
-                            dialog_parasitecounts.show();
-                            dialog_wbccounts.dismiss();
+                            dialog_infectedcounts.show();
+                            dialog_cellcounts.dismiss();
                         }
                     }
             );
 
-            buttonCancel_wbccounts.setOnClickListener(
+            buttonCancel_cellcounts.setOnClickListener(
                     new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
 
-                            dialog_wbccounts.dismiss();
+                            dialog_cellcounts.dismiss();
                         }
                     }
             );
 
-            button_parasitecounts.setOnClickListener(
+            button_infectedcounts.setOnClickListener(
                     new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            parasiteCount[0] = input_parasite.getText().toString();
+                            infectedCount[0] = input_infected.getText().toString();
 
-                            if (wbcCount[0].isEmpty()) {
-                                wbcCount[0] = "N/A";
+                            if (cellCount[0].isEmpty()) {
+                                cellCount[0] = "N/A";
                             }
 
-                            if (parasiteCount[0].isEmpty()) {
-                                parasiteCount[0] = "N/A";
+                            if (infectedCount[0].isEmpty()) {
+                                infectedCount[0] = "N/A";
                             }
 
-                            dialog_parasitecounts.dismiss();
+                            dialog_infectedcounts.dismiss();
                         }
                     }
             );
 
-            buttonCancel_parasitecounts.setOnClickListener(
+            buttonCancel_infectedcounts.setOnClickListener(
                     new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
 
-                            dialog_parasitecounts.dismiss();
+                            dialog_infectedcounts.dismiss();
                         }
                     }
             );
 
-            dialog_wbccounts.show();
+            dialog_cellcounts.show();
 
         } else if (id == R.id.action_endSession) {
 
@@ -392,7 +409,7 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
                 outText = new FileOutputStream(textFile, true);
 
                 if (textFile.length() == 0) {
-                    outText.write(("ImageName,WhiteBalance,ProcessingTime(sec)").getBytes());
+                    outText.write(("ImageName,WhiteBalance,ClassifierType,SVMThreshold,ProcessingTime(sec)").getBytes());
                     outText.write(("\n").getBytes());
                 }
 
@@ -401,7 +418,7 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
                 int endIndex = imgStr.lastIndexOf(".");
                 String imageName = imgStr.substring(0, endIndex);
 
-                outText.write((imageName + "," + WB + "," + processingTime).getBytes());
+                outText.write((imageName + "," + WB + "," + classifierType + "," + SVM_Th + "," + processingTime).getBytes());
                 outText.write(("\n").getBytes());
 
             } catch (IOException e) {
@@ -428,12 +445,13 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
         }
 
         File Dir = new File(Environment.getExternalStorageDirectory(), "NLM_Malaria_Screener/");
-        File imgFile = new File(Dir, "Log_thick.txt");
+        File imgFile = new File(Dir, "Log.txt");
         if (!imgFile.exists()) {
             imgFile.createNewFile();
         }
 
         return imgFile;
     }
+
 
 }

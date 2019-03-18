@@ -21,7 +21,7 @@
         android:key="category2_key"
         android:title="@string/category2">
         <ListPreference
-            android:defaultValue="1"
+            android:defaultValue="0"
             android:key="classifier"
             android:summary="@string/classifierT"
             android:title="@string/classifier" />
@@ -40,8 +40,8 @@
 
         <SwitchPreference
             android:key="image_acquire"
-            android:title="Image Acquisition Mode"
-            android:summary="This mode allows user to capture and save images without processing them."/>
+            android:summary="This mode allows user to capture and save images without processing them."
+            android:title="Image Acquisition Mode"/>
 
     </PreferenceCategory>
 

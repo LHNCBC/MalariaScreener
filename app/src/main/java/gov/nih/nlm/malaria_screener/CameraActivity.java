@@ -50,12 +50,12 @@ import android.widget.Toast;
 import gov.nih.nlm.malaria_screener.custom.TouchImageView;
 import gov.nih.nlm.malaria_screener.custom.Utils.UtilsCustom;
 import gov.nih.nlm.malaria_screener.custom.Utils.UtilsData;
+import gov.nih.nlm.malaria_screener.frontEnd.ResultDisplayer;
 import gov.nih.nlm.malaria_screener.frontEnd.ResultDisplayer_thickSmear;
 import gov.nih.nlm.malaria_screener.imageProcessing.MarkerBasedWatershed;
 import gov.nih.nlm.malaria_screener.imageProcessing.SVM_Classifier;
 import gov.nih.nlm.malaria_screener.imageProcessing.TensorFlowClassifier;
 import gov.nih.nlm.malaria_screener.frontEnd.SettingsActivity;
-import gov.nih.nlm.malaria_screener.frontEnd.getResultNdisplay;
 import gov.nih.nlm.malaria_screener.imageProcessing.ThickSmearProcessor;
 
 import org.opencv.android.Utils;
@@ -147,22 +147,8 @@ public class CameraActivity extends AppCompatActivity {
 
     float RV = 6; //resize value
 
-    private int cellTotal = 0;        // total cell count
-    private int infectedTotal = 0;    // total infected count
-
     private int cellCurrent = 0;
     private int infectedCurrent = 0;
-
-    private String nameEachImage;
-
-    private String cellEachImage;
-    private String infectedEachImage;
-
-    private String cellCountManual;
-    private String infectedCountManual;
-
-    private String cellEachImageGT;
-    private String infectedEachImageGT;
 
     //Mat oriSizeMat;
     Mat resizedMat = new Mat();
@@ -330,12 +316,12 @@ public class CameraActivity extends AppCompatActivity {
 
         if (smearType.equals("Thin")) {
             typeInfo.setText(R.string.smear_type);
-            countInfo.setText(cellCountStr + cellTotal);
-            infectedCountInfo.setText(infectedCountStr + infectedTotal);
+            countInfo.setText(cellCountStr + UtilsData.cellTotal);
+            infectedCountInfo.setText(infectedCountStr + UtilsData.infectedTotal);
             //update progress bar
-            progressStatus = cellTotal;
+            progressStatus = UtilsData.cellTotal;
             progressBar.setProgress(progressStatus);
-            progressText.setText(cellTotal + "/" + totalCellNeeded);
+            progressText.setText(UtilsData.cellTotal + "/" + totalCellNeeded);
         } else if (smearType.equals("Thick")) {
             typeInfo.setText(R.string.smear_type1);
             parasiteInfo.setText(parasiteCountStr + UtilsData.parasiteTotal);
@@ -883,31 +869,12 @@ public class CameraActivity extends AppCompatActivity {
 
         } else if (requestCode == REQUEST_RESULTS && resultCode == Activity.RESULT_OK) {
 
-            if (smearType.equals("Thin")) {
-
-                cellCountManual = data.getStringExtra("cellsCountManual");
-                infectedCountManual = data.getStringExtra("infectedCountManual");
-
-                cellTotal = cellTotal + cellCurrent;
-                infectedTotal = infectedTotal + infectedCurrent;
-
-                captureCount++;
-            } else if (smearType.equals("Thick")) {
-                captureCount++;
-            }
+            captureCount++;
 
             updateToolbar();
 
         } else if (requestCode == REQUEST_RESULTS && resultCode == Activity.RESULT_CANCELED) {
 
-            if (smearType.equals("Thin")) {
-
-                cellEachImage = data.getStringExtra("cellCountEachImage");
-                infectedEachImage = data.getStringExtra("infectedCountEachImage");
-                nameEachImage = data.getStringExtra("nameStringEachImage");
-            } else if (smearType.equals("Thick")) {
-
-            }
         }
 
     }
@@ -1118,10 +1085,12 @@ public class CameraActivity extends AppCompatActivity {
 
     private void ImageAcquisition() {
 
-        resizedMat.release();
+        UtilsData.addCellCount("N/A");
+        UtilsData.addInfectedCount("N/A");
 
-        cellCurrent = 0;
-        infectedCurrent = 0;
+        processingTime = 0;
+
+        resizedMat.release();
 
         saveImageHandler.sendEmptyMessage(0);
 
@@ -1164,17 +1133,32 @@ public class CameraActivity extends AppCompatActivity {
 
             drawAll();
 
+            saveResults();
+
+            long endTime = System.currentTimeMillis();
+            long totalTime = endTime - startTime_w;
+            Log.d(TAG, "Single Image Processing Time: " + totalTime);
+            processingTime = totalTime;
+
             goToNextActivity();
 
         }
 
-        long endTime = System.currentTimeMillis();
-        long totalTime = endTime - startTime_w;
-        Log.d(TAG, "Single Image Processing Time: " + totalTime);
-        processingTime = totalTime;
+
 
         System.gc();
         Runtime.getRuntime().gc();
+
+    }
+
+    private void saveResults() {
+
+        UtilsData.cellCurrent = cellCurrent;
+        UtilsData.infectedCurrent = infectedCurrent;
+        UtilsData.cellTotal = UtilsData.cellTotal + cellCurrent;
+        UtilsData.infectedTotal = UtilsData.infectedTotal + infectedCurrent;
+        UtilsData.addCellCount(String.valueOf(cellCurrent));
+        UtilsData.addInfectedCount(String.valueOf(infectedCurrent));
 
     }
 
@@ -1242,7 +1226,7 @@ public class CameraActivity extends AppCompatActivity {
 
         inProgress.dismiss();
 
-        Intent intent = new Intent(context, getResultNdisplay.class);
+        Intent intent = new Intent(context, ResultDisplayer.class);
 
         if (takenFromCam) {
             intent.putExtra("Orientation", orientation); // pass orientation when image was taken for next activity
@@ -1275,22 +1259,21 @@ public class CameraActivity extends AppCompatActivity {
         intent.putExtra("resImage", resImageByteArray);
 
         intent.putExtra("WB", cs[Integer.valueOf(WB)]);
-        intent.putExtra("SVM_Th", String.valueOf(UtilsCustom.SVM_Th));
-        intent.putExtra("totalcell", String.valueOf(totalCellNeeded));
 
         intent.putExtra("time", String.valueOf(processingTime));
 
-        // pass total cell count info
+        /*// pass total cell count info
         intent.putExtra("cellTotal", String.valueOf(cellTotal));
         intent.putExtra("infectedTotal", String.valueOf(infectedTotal));
 
         // pass cell count info of current image
         intent.putExtra("cellCountC", String.valueOf(cellCurrent));
-        intent.putExtra("infectedCountC", String.valueOf(infectedCurrent));
+        intent.putExtra("infectedCountC", String.valueOf(infectedCurrent));*/
 
         String imgNameStr = pictureFileCopy.toString().substring(pictureFileCopy.toString().lastIndexOf("/") + 1);
+        UtilsData.addImageName(imgNameStr);
 
-        // append cell info and image name per image together as string to store in database
+        /*// append cell info and image name per image together as string to store in database
         if (cellEachImage != null && infectedEachImage != null) { // when it's the second image
             cellEachImage = cellEachImage + (cellCurrent + ",");
             infectedEachImage = infectedEachImage + (infectedCurrent + ",");
@@ -1317,7 +1300,7 @@ public class CameraActivity extends AppCompatActivity {
             }
         }
         intent.putExtra("cellCountEachImageGT", cellEachImageGT);
-        intent.putExtra("infectedCountEachImageGT", infectedEachImageGT);
+        intent.putExtra("infectedCountEachImageGT", infectedEachImageGT);*/
 
         System.gc();
         Runtime.getRuntime().gc();
@@ -1374,6 +1357,9 @@ public class CameraActivity extends AppCompatActivity {
         intent.putExtra("WB", cs[Integer.valueOf(WB)]);
 
         intent.putExtra("time", String.valueOf(processingTime));
+
+        System.gc();
+        Runtime.getRuntime().gc();
 
         startActivityForResult(intent, REQUEST_RESULTS);
     }
@@ -1514,10 +1500,6 @@ public class CameraActivity extends AppCompatActivity {
                 alertDialog3.show();
                 break;
             case 't':
-//                if (smearType.equals("Thick"))
-//                    smearType = "Thin";
-//                else
-//                    smearType = "Thick";
                 if (smearType.equals("Thin")) // for now
                     smearType = "Thick";
                 else
@@ -1526,8 +1508,6 @@ public class CameraActivity extends AppCompatActivity {
                 PreferenceManager.getDefaultSharedPreferences(this).edit().putString("smeartype", smearType).commit();
 
                 captureCount = 0;
-                cellTotal = 0;
-                infectedTotal = 0;
                 initCam();
                 break;
             case 's':
@@ -1543,8 +1523,6 @@ public class CameraActivity extends AppCompatActivity {
                         //smearType = "Thick";
                         smearType = "Thin";
                         captureCount = 0;
-                        cellTotal = 0;
-                        infectedTotal = 0;
                         slideId = input.getText().toString();
                         updateToolbar();
                     }
@@ -1571,8 +1549,7 @@ public class CameraActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         smearType = "Thick";
                         captureCount = 0;
-                        cellTotal = 0;
-                        infectedTotal = 0;
+
                         patientId = input2.getText().toString();
                         updateToolbar();
                     }
@@ -1774,10 +1751,18 @@ public class CameraActivity extends AppCompatActivity {
     private void reset_utils_data() {
 
         UtilsData.resetImageNames();
+
+        // thin
         UtilsData.resetCurrentCounts();
         UtilsData.resetTotalCounts();
         UtilsData.resetCountLists();
         UtilsData.resetCountLists_GT();
+
+        //thick
+        UtilsData.resetCurrentCounts_thick();
+        UtilsData.resetTotalCounts_thick();
+        UtilsData.resetCountLists_thick();
+        UtilsData.resetCountLists_GT_thick();
 
     }
 

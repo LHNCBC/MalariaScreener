@@ -219,87 +219,87 @@ public class ImageGalleryActivity_thick extends AppCompatActivity implements Cus
 
     public void showInputBox(final int position) {
 
-        final Dialog dialog_cellcounts = new Dialog(this);
-        dialog_cellcounts.setContentView(R.layout.input_box_manualcounts);
-        dialog_cellcounts.setCancelable(false);
-        dialog_cellcounts.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-        TextView textView_cellcounts = (TextView) dialog_cellcounts.findViewById(R.id.textView_manualcounts);
-        final EditText input_cellcount = (EditText) dialog_cellcounts.findViewById(R.id.editText_manualcounts);
-        final String[] cellCount = new String[1];
-        Button button_cellcounts = (Button) dialog_cellcounts.findViewById(R.id.button_okay);
-        Button buttonCancel_cellcounts = (Button) dialog_cellcounts.findViewById(R.id.button_cancel);
+        final Dialog dialog_WBCcounts = new Dialog(this);
+        dialog_WBCcounts.setContentView(R.layout.input_box_manualcounts);
+        dialog_WBCcounts.setCancelable(false);
+        dialog_WBCcounts.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        TextView textView_wbccounts = (TextView) dialog_WBCcounts.findViewById(R.id.textView_manualcounts);
+        final EditText input_wbccount = (EditText) dialog_WBCcounts.findViewById(R.id.editText_manualcounts);
+        final String[] wbcCount = new String[1];
+        Button button_wbccounts = (Button) dialog_WBCcounts.findViewById(R.id.button_okay);
+        Button buttonCancel_wbccounts = (Button) dialog_WBCcounts.findViewById(R.id.button_cancel);
 
-        final Dialog dialog_infectedcounts = new Dialog(this);
-        dialog_infectedcounts.setCancelable(false);
-        dialog_infectedcounts.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-        dialog_infectedcounts.setContentView(R.layout.input_box_manualcounts);
-        TextView textView_infectedcounts = (TextView) dialog_infectedcounts.findViewById(R.id.textView_manualcounts);
-        final EditText input_infected = (EditText) dialog_infectedcounts.findViewById(R.id.editText_manualcounts);
-        final String[] infectedCount = new String[1];
-        Button button_infectedcounts = (Button) dialog_infectedcounts.findViewById(R.id.button_okay);
-        Button buttonCancel_infectedcounts = (Button) dialog_infectedcounts.findViewById(R.id.button_cancel);
+        final Dialog dialog_parasitecounts = new Dialog(this);
+        dialog_parasitecounts.setCancelable(false);
+        dialog_parasitecounts.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        dialog_parasitecounts.setContentView(R.layout.input_box_manualcounts);
+        TextView textView_parasitecounts = (TextView) dialog_parasitecounts.findViewById(R.id.textView_manualcounts);
+        final EditText input_parasite = (EditText) dialog_parasitecounts.findViewById(R.id.editText_manualcounts);
+        final String[] parasiteCount = new String[1];
+        Button button_parasitecounts = (Button) dialog_parasitecounts.findViewById(R.id.button_okay);
+        Button buttonCancel_parasitecounts = (Button) dialog_parasitecounts.findViewById(R.id.button_cancel);
 
-        textView_cellcounts.setText(R.string.manual_cell_count);
-        textView_infectedcounts.setText(R.string.manual_count_infected);
+        textView_wbccounts.setText(R.string.manual_wbc_count);
+        textView_parasitecounts.setText(R.string.manual_parasite_infected);
 
-        button_cellcounts.setOnClickListener(
+        button_wbccounts.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        cellCount[0] = input_cellcount.getText().toString();
+                        wbcCount[0] = input_wbccount.getText().toString();
 
-                        dialog_infectedcounts.show();
-                        dialog_cellcounts.dismiss();
+                        dialog_parasitecounts.show();
+                        dialog_WBCcounts.dismiss();
                     }
                 }
         );
 
-        buttonCancel_cellcounts.setOnClickListener(
+        buttonCancel_wbccounts.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
 
-                        dialog_cellcounts.dismiss();
+                        dialog_WBCcounts.dismiss();
                     }
                 }
         );
 
-        button_infectedcounts.setOnClickListener(
+        button_parasitecounts.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        infectedCount[0] = input_infected.getText().toString();
+                        parasiteCount[0] = input_parasite.getText().toString();
 
-                        if (cellCount[0].isEmpty()) {
-                            cellCount[0] = "N/A";
+                        if (wbcCount[0].isEmpty()) {
+                            wbcCount[0] = "N/A";
                         }
 
-                        if (infectedCount[0].isEmpty()) {
-                            infectedCount[0] = "N/A";
+                        if (parasiteCount[0].isEmpty()) {
+                            parasiteCount[0] = "N/A";
                         }
 
-                        wbc_eachImageGT[position] = cellCount[0];
-                        parasite_eachImageGT[position] = infectedCount[0];
+                        wbc_eachImageGT[position] = wbcCount[0];
+                        parasite_eachImageGT[position] = parasiteCount[0];
 
-                        dbHandler.updateImageManulCounts(patientStr, slideStr, imageNameList.get(position), cellCount[0], infectedCount[0]);
+                        dbHandler.updateImageManulCounts_thick(patientStr, slideStr, imageNameList.get(position), wbcCount[0], parasiteCount[0]);
                         adapter_imageGalleryDB.notifyDataSetChanged();
 
-                        dialog_infectedcounts.dismiss();
+                        dialog_parasitecounts.dismiss();
                     }
                 }
         );
 
-        buttonCancel_infectedcounts.setOnClickListener(
+        buttonCancel_parasitecounts.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
 
-                        dialog_infectedcounts.dismiss();
+                        dialog_parasitecounts.dismiss();
                     }
                 }
         );
 
-        dialog_cellcounts.show();
+        dialog_WBCcounts.show();
     }
 
     private void initPager() {

@@ -298,8 +298,6 @@ public class Cells {
 
             int NumOfImage = cellChip.size();
 
-            Log.d(TAG, "NumOfImage: " + NumOfImage);
-
             int iteration = NumOfImage / batchSize;
             int lastBatchSize = NumOfImage % batchSize;
 

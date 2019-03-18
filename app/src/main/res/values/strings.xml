@@ -56,7 +56,7 @@
 
     <string name="category2">OTHERS</string>
     <string name="SVM_Th">Sensitivity Level</string>
-    <string name="SVM_Th_summary">Adjust classifier sensitivity level. Default value:35</string>
+    <string name="SVM_Th_summary">Adjust classifier sensitivity level. Default value:35 Only adjust this when SVM classifier is chosen.</string>
     <string name="celltotal">Total Cells Needed</string>
     <string name="celltotal_summary">Number of Cells that should be counted for each patient. Default value: 1000</string>
 
@@ -87,7 +87,7 @@
 
     <!-- Strings for about-->
 
-    <string name="version">Version 1.3-beta</string>
+    <string name="version">Version 1.4-beta</string>
 
     <string name="description">NLM Malaria Screener is an R&amp;D project of the Lister Hill National Center of Biomedical Communications, a division of the National
     Library of Medicine (NLM), part of the National Institutes of Health (NIH), in collaboration with Mahidol University, University of Oxford, and University of Missouri.</string>

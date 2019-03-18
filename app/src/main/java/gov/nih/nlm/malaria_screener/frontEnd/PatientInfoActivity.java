@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import gov.nih.nlm.malaria_screener.MainActivity;
 import gov.nih.nlm.malaria_screener.R;
+import gov.nih.nlm.malaria_screener.custom.Utils.UtilsData;
 import gov.nih.nlm.malaria_screener.database.Images;
 import gov.nih.nlm.malaria_screener.database.MyDBHandler;
 import gov.nih.nlm.malaria_screener.database.Patients;
@@ -201,6 +202,11 @@ public class PatientInfoActivity extends AppCompatActivity implements SearchView
                 startActivity(intent);
             } else { // exists in the database
 
+                Log.d(TAG, "patientID: " + patientID.getText().toString());
+                Log.d(TAG, "genderStr: " + genderStr);
+                Log.d(TAG, "initials: " + initials.getText().toString());
+                Log.d(TAG, "age: " + age.getText().toString());
+
                 boolean ifSame = dbHandler.checkIfSame_Patient(patientID.getText().toString(), genderStr, initials.getText().toString(), age.getText().toString());
 
                 if (ifSame) {
@@ -337,7 +343,7 @@ public class PatientInfoActivity extends AppCompatActivity implements SearchView
             if (genderStr.equals("male")) {
                 checkBox_male.setChecked(true);
                 checkBox_female.setChecked(false);
-            } else {
+            } else if (genderStr.equals("female")){
                 checkBox_male.setChecked(false);
                 checkBox_female.setChecked(true);
             }
@@ -383,6 +389,8 @@ public class PatientInfoActivity extends AppCompatActivity implements SearchView
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // kill all the other activities on top of the old MainActivity.class activity
                 startActivity(intent);
 
+                reset_utils_data();
+
                 finish();
 
                 // Write your code here to invoke YES event
@@ -406,6 +414,24 @@ public class PatientInfoActivity extends AppCompatActivity implements SearchView
         alertDialog.show();
 
         return;
+    }
+
+    private void reset_utils_data() {
+
+        UtilsData.resetImageNames();
+
+        // thin
+        UtilsData.resetCurrentCounts();
+        UtilsData.resetTotalCounts();
+        UtilsData.resetCountLists();
+        UtilsData.resetCountLists_GT();
+
+        //thick
+        UtilsData.resetCurrentCounts_thick();
+        UtilsData.resetTotalCounts_thick();
+        UtilsData.resetCountLists_thick();
+        UtilsData.resetCountLists_GT_thick();
+
     }
 
     /*private void onSkipPressed() {
