@@ -409,7 +409,7 @@ public class ResultDisplayer extends ResultDisplayerBaseActivity {
                 outText = new FileOutputStream(textFile, true);
 
                 if (textFile.length() == 0) {
-                    outText.write(("ImageName,WhiteBalance,ClassifierType,SVMThreshold,ProcessingTime(sec)").getBytes());
+                    outText.write(("ImageName,WhiteBalance,classifierType,SVM_Th,ProcessingTime(sec)").getBytes());
                     outText.write(("\n").getBytes());
                 }
 
@@ -419,6 +419,7 @@ public class ResultDisplayer extends ResultDisplayerBaseActivity {
                 String imageName = imgStr.substring(0, endIndex);
 
                 outText.write((imageName + "," + WB + "," + classifierType + "," + SVM_Th + "," + processingTime).getBytes());
+                //outText.write((imageName + "," + WB + "," + processingTime).getBytes());
                 outText.write(("\n").getBytes());
 
             } catch (IOException e) {

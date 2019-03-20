@@ -19,6 +19,7 @@ android {
         buildTypes {
             release {
                 minifyEnabled false
+                //shrinkResources true
                 //proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             }
         }
@@ -30,6 +31,9 @@ android {
                     exclude '**/NN_Manager.java'
                     exclude '**/NN_runnable.java'
                     exclude '**/NNTask.java'
+                    exclude '**/TFClassifier_Lite.java'
+
+
                 }
             }
             androidTest {
@@ -37,18 +41,26 @@ android {
                     exclude '**/TestNN_Manager.java'
                     exclude '**/TestNN_runnable.java'
                     exclude '**/TestNNTask.java'
+                    exclude '**/TFClassifier_Lite.java'
+
                 }
             }
         }
-        aaptOptions {
+        /*aaptOptions {
             noCompress "tflite"
-        }
+        }*/
 
         // for C++ native code
         externalNativeBuild {
             cmake {
                 cppFlags "-std=c++11 -frtti -fexceptions"
             }
+        }
+
+        ndk {
+            // Specifies the ABI configurations of your native
+            // libraries Gradle should build and package with your APK.
+            abiFilters 'armeabi-v7a', 'arm64-v8a'
         }
 
     }
@@ -76,7 +88,7 @@ android {
         implementation files('libs/glide-3.7.0.jar')
         implementation files('libs/flickrj-android-2.0.0.jar')
         implementation 'org.tensorflow:tensorflow-android:+'
-        implementation 'org.tensorflow:tensorflow-lite:0.0.0-nightly'
+        //implementation 'org.tensorflow:tensorflow-lite:0.0.0-nightly'
 
         implementation 'com.android.support:support-v13:28.0.0-rc01'
         implementation 'com.android.support:cardview-v7:28.0.0-rc01'
@@ -87,7 +99,6 @@ android {
         implementation fileTree(dir: 'libs', include: ['*.jar'])
         androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
             exclude group: 'com.android.support', module: 'support-annotations'
-
         })
 
         implementation 'com.google.code.gson:gson:2.8.2'

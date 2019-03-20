@@ -32,6 +32,8 @@ import gov.nih.nlm.malaria_screener.database.MyDBHandler;
 import gov.nih.nlm.malaria_screener.tutorial.About;
 import gov.nih.nlm.malaria_screener.tutorial.Diagram;
 import gov.nih.nlm.malaria_screener.tutorial.TutorialActivity;
+//import gov.nih.nlm.malaria_screener.tutorial.Diagram;
+//import gov.nih.nlm.malaria_screener.tutorial.TutorialActivity;
 
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.LoaderCallbackInterface;

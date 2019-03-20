@@ -25,7 +25,6 @@ import org.opencv.imgproc.Imgproc;
 
 import gov.nih.nlm.malaria_screener.custom.Utils.UtilsCustom;
 import gov.nih.nlm.malaria_screener.imageProcessing.SVM_Classifier;
-import gov.nih.nlm.malaria_screener.imageProcessing.TFClassifier_Lite;
 import gov.nih.nlm.malaria_screener.imageProcessing.TensorFlowClassifier;
 
 
@@ -51,7 +50,7 @@ public class Cells {
     TensorFlowClassifier tensorFlowClassifier;
     SVM_Classifier svm_classifier;
 
-    TFClassifier_Lite tfClassifier_lite;
+    //TFClassifier_Lite tfClassifier_lite;
 
     int height = UtilsCustom.TF_input_size;
     int width = UtilsCustom.TF_input_size;
@@ -69,7 +68,7 @@ public class Cells {
         this.tensorFlowClassifier = UtilsCustom.tensorFlowClassifier_thin;
         this.svm_classifier = UtilsCustom.svm_classifier;
 
-        this.tfClassifier_lite = UtilsCustom.tfClassifier_lite;
+        //this.tfClassifier_lite = UtilsCustom.tfClassifier_lite;
 
         //------------------------------------
 
@@ -284,49 +283,49 @@ public class Cells {
 
     }
 
-    private void runClassification(){
+    private void runClassification() {
 
         if (UtilsCustom.whichClassifier == 0) { // Deep Learning
 
-            long startTimeNN = System.currentTimeMillis();
+        long startTimeNN = System.currentTimeMillis();
 
-            UtilsCustom.results.clear();
+        UtilsCustom.results.clear();
 
-            float[] floatPixels = new float[width * height * 3 * batchSize];
+        float[] floatPixels = new float[width * height * 3 * batchSize];
 
-            float[] floatPixels_last;
+        float[] floatPixels_last;
 
-            int NumOfImage = cellChip.size();
+        int NumOfImage = cellChip.size();
 
-            int iteration = NumOfImage / batchSize;
-            int lastBatchSize = NumOfImage % batchSize;
+        int iteration = NumOfImage / batchSize;
+        int lastBatchSize = NumOfImage % batchSize;
 
-            floatPixels_last = new float[width * height * 3 * lastBatchSize];
+        floatPixels_last = new float[width * height * 3 * lastBatchSize];
 
-            // normal batches
-            for (int i = 0; i < iteration; i++) {
+        // normal batches
+        for (int i = 0; i < iteration; i++) {
 
-                for (int n = 0; n < batchSize; n++) {
+            for (int n = 0; n < batchSize; n++) {
 
-                    floatPixels = putInPixels(i, n, floatPixels);
-                }
-
-                tensorFlowClassifier.recongnize_batch(floatPixels,  batchSize);
-
+                floatPixels = putInPixels(i, n, floatPixels);
             }
 
-            // last batch
-            for (int n = 0; n < lastBatchSize; n++) {
+            tensorFlowClassifier.recongnize_batch(floatPixels, batchSize);
 
-                floatPixels_last = putInPixels(iteration, n, floatPixels_last);
-            }
+        }
 
-            tensorFlowClassifier.recongnize_batch(floatPixels_last, lastBatchSize);
+        // last batch
+        for (int n = 0; n < lastBatchSize; n++) {
 
-            long endTime_NN = System.currentTimeMillis();
-            long totalTime_NN = endTime_NN - startTimeNN;
-            Log.d(TAG, "Deep learning Time, TF mobile: " + totalTime_NN);
-            //--------------------------------------------------------
+            floatPixels_last = putInPixels(iteration, n, floatPixels_last);
+        }
+
+        tensorFlowClassifier.recongnize_batch(floatPixels_last, lastBatchSize);
+
+        long endTime_NN = System.currentTimeMillis();
+        long totalTime_NN = endTime_NN - startTimeNN;
+        Log.d(TAG, "Deep learning Time, TF mobile: " + totalTime_NN);
+        //--------------------------------------------------------
 
         } else if (UtilsCustom.whichClassifier==1){ // SVM
             svm_classifier.run(featureTable);

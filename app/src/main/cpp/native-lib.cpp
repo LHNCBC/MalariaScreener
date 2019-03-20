@@ -9,7 +9,7 @@
 #include <android/log.h>
 #include <ctime>
 #include <opencv2/core/core_c.h>
-#include <opencv2/features2d.hpp>
+//#include <opencv2/features2d.hpp>
 #include <opencv2/imgcodecs.hpp>
 
 #define LOG_TAG "FaceDetection/DetectionBasedTracker"

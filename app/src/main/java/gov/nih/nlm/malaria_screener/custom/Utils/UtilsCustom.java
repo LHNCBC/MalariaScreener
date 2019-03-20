@@ -8,10 +8,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Vector;
 
 import gov.nih.nlm.malaria_screener.imageProcessing.SVM_Classifier;
-import gov.nih.nlm.malaria_screener.imageProcessing.TFClassifier_Lite;
 import gov.nih.nlm.malaria_screener.imageProcessing.TensorFlowClassifier;
 
 /**
@@ -22,7 +20,7 @@ public final class UtilsCustom {
 
     public static TensorFlowClassifier tensorFlowClassifier_thin;
     public static TensorFlowClassifier tensorFlowClassifier_thick;
-    public static TFClassifier_Lite tfClassifier_lite;
+    //public static TFClassifier_Lite tfClassifier_lite;
     public static SVM_Classifier svm_classifier;
 
     public static Mat oriSizeMat;
