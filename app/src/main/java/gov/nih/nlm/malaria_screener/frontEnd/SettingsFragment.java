@@ -27,7 +27,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-
         cs_entry = getArguments().getCharSequenceArray("WB_list");
 
         ListPreference listPreference = (ListPreference) findPreference("whitebalance");

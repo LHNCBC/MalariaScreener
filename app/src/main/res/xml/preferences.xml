@@ -10,11 +10,12 @@
             android:summary="@string/wbsum"
             android:title="@string/whitebalance" />
 
-        <!--<com.example.hang.malaria.custom.SeekBarPreference_CellNeeded
-            android:defaultValue="3"
-            android:key="imagequality"
-            android:summary="@string/imgquality"
-            android:title="@string/imagequality" /> -->
+        <gov.nih.nlm.malaria_screener.custom.SeekBarPreference_Exposure
+            android:defaultValue="0"
+            android:key="exposure_compensation"
+            android:summary="@string/EC"
+            android:title="@string/exposure"/>
+
     </PreferenceCategory>
 
     <PreferenceCategory

@@ -58,14 +58,31 @@
 
     <Button
         android:id="@+id/continueButton"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/continue_button"
-        android:textColor="#FFFFFF"
-        android:background="#d95891ec"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="230dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginBottom="0dp"
+        android:background="#d95891ec"
+        android:text="@string/continue_button"
+        android:textColor="#FFFFFF" />
+
+    <Button
+        android:id="@+id/endButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="230dp"
+        android:layout_marginBottom="0dp"
+        android:background="#d95891ec"
+        android:text="@string/end_session"
+        android:textColor="#FFFFFF" />
 
     <Switch
         android:id="@+id/switch_image"

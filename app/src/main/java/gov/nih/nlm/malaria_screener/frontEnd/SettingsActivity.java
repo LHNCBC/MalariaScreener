@@ -4,7 +4,6 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -18,8 +17,6 @@ import gov.nih.nlm.malaria_screener.R;
 public class SettingsActivity extends AppCompatActivity{
 
     public static final String KEY_PREF_SYNC_CONN = "pref_syncConnectionType";
-
-    ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

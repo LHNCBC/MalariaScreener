@@ -14,11 +14,13 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.hardware.Camera;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -69,6 +71,8 @@ import org.opencv.imgproc.Imgproc;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -116,7 +120,7 @@ public class CameraActivity extends AppCompatActivity {
     private ImageButton captureButton;
     private ImageButton galleryButton;
     //private ImageButton backButton;
-    private View.OnClickListener clickList;
+    private View.OnClickListener onClickListener;
     private boolean segment = false;
     //ImageView imageview;
 
@@ -178,6 +182,8 @@ public class CameraActivity extends AppCompatActivity {
     public CharSequence[] cs;
 
     private boolean imageAcquisition = false;
+
+    //double blurScore;
 
     // for bluetooth ------------------------------
     private String MY_UUID = "ddec19b4-a607-43bc-b8fe-a2e61161046b";
@@ -490,16 +496,40 @@ public class CameraActivity extends AppCompatActivity {
 
         // set camera parameters
         Camera.Parameters parameters = cam.getParameters();
-        parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE); //make camera focus quickly
+        //parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE); //make camera focus quickly
+        //parameters.setAutoExposureLock(true);
 
-        /*// try focus area
-        Rect rect = new Rect(-200,-200,200,200);
-        Camera.Area focusArea = new Camera.Area(rect, 1000);
+        /*Log.d(TAG, "FocusMode: " + parameters.getFocusMode());
+        Log.d(TAG, "Supported Mode: " + parameters.getSupportedFocusModes());
 
-        List<Camera.Area> focusList = new ArrayList<Camera.Area>();
-        focusList.add(focusArea);
+        // set exposure
+        Log.d(TAG, "default Exposure: " + parameters.getExposureCompensation());
+        Log.d(TAG, "AutoExposureLock: " + parameters.getAutoExposureLock());*/
 
-        parameters.setFocusAreas(focusList);*/
+        parameters.setJpegQuality(100);
+        Log.d(TAG, "JpegQuality: " + parameters.getJpegQuality());
+
+        int exposure = sharedPreferences.getInt("exposure_compensation", 0);
+
+        int maxExposure = parameters.getMaxExposureCompensation();
+        int minExposure = parameters.getMinExposureCompensation();
+
+        UtilsCustom.maxExposure = maxExposure;
+        UtilsCustom.minExposure = minExposure;
+
+        Log.d(TAG, "aperture: " +cam.getParameters().get("aperture"));
+
+        //Log.d(TAG, "all: " + cam.getParameters().flatten());
+
+        /*parameters.set("iso", 800);
+        parameters.set("exposure-time", 32);*/
+
+        Log.d(TAG, "iso: " + parameters.get("iso"));
+//
+        Log.d(TAG, "iso-values: " + parameters.get("iso-values"));
+        Log.d(TAG, "exposure-time: " + parameters.get("exposure-time"));
+
+        parameters.setExposureCompensation(exposure);
 
         // get supported white balance options
         List<String> whitelist = parameters.getSupportedWhiteBalance();
@@ -508,11 +538,6 @@ public class CameraActivity extends AppCompatActivity {
         for (int i = 0; i < whitelist.size(); i++) {
             cs[i] = whitelist.get(i);
         }
-
-//        int maxEC = parameters.getMaxExposureCompensation();
-//        int minEC = parameters.getMinExposureCompensation();
-//        Log.d(TAG, "maxEC: " + maxEC);
-//        Log.d(TAG, "minEC: " + minEC);
 
         // record white balance options for setting
         bundle = new Bundle();
@@ -534,8 +559,6 @@ public class CameraActivity extends AppCompatActivity {
         imageAcquisition = sharedPreferences.getBoolean("image_acquire", false);
 
         parameters.setWhiteBalance(whitelist.get(Integer.valueOf(WB)));
-        //parameters.setJpegQuality(ImgQ);
-        //parameters.setExposureCompensation(EC);
 
         cam.setParameters(parameters);
 
@@ -564,7 +587,7 @@ public class CameraActivity extends AppCompatActivity {
         updateToolbar();
 
         // set up capture button
-        clickList = new View.OnClickListener() {
+        onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // take picture!
@@ -589,7 +612,7 @@ public class CameraActivity extends AppCompatActivity {
         };
 
         captureButton = (ImageButton) findViewById(R.id.button_capture);
-        captureButton.setOnClickListener(clickList);
+        captureButton.setOnClickListener(onClickListener);
 
         galleryButton = (ImageButton) findViewById(R.id.button_gallery);
         galleryButton.setOnClickListener(
@@ -850,6 +873,9 @@ public class CameraActivity extends AppCompatActivity {
                     //UtilsCustom.oriSizeMat = Imgcodecs.imread(picturePath, -1);
                     UtilsCustom.oriSizeMat = Imgcodecs.imread(picturePath, Imgcodecs.CV_LOAD_IMAGE_COLOR);
 
+                    //blurry detection
+                    //blurScore = blurDetection.computeBlur();
+
                     Imgproc.cvtColor(UtilsCustom.oriSizeMat, UtilsCustom.oriSizeMat, Imgproc.COLOR_BGR2RGB);
 
                     Log.d(TAG, "oriSizeMat: " + UtilsCustom.oriSizeMat);
@@ -909,12 +935,62 @@ public class CameraActivity extends AppCompatActivity {
                     //UtilsCustom.oriSizeMat = Imgcodecs.imdecode(jpegData, -1); // produce a 3 channel bgr image
                     UtilsCustom.oriSizeMat = Imgcodecs.imdecode(jpegData, Imgcodecs.CV_LOAD_IMAGE_COLOR);
 
+                    //blurry detection
+                    //blurScore = blurDetection.computeBlur();
+
                     Log.d(TAG, "UtilsCustom.oriSizeMat: " + UtilsCustom.oriSizeMat);
                     Imgproc.cvtColor(UtilsCustom.oriSizeMat, UtilsCustom.oriSizeMat, Imgproc.COLOR_BGR2RGB);
 
                     resizeImage();
 
                     messageHandler.sendEmptyMessage(0);
+
+
+                    // test exif
+                    final File pictureFile_jpg = getOutputMediaFile_jpeg(MEDIA_TYPE_IMAGE, patientId, slideId, captureCount, smearType);
+
+                    try {
+                        FileOutputStream fos = new FileOutputStream(pictureFile_jpg);
+                        fos.write(data);
+//                        Matrix m = new Matrix();
+//                        m.postRotate(90);
+//                        Bitmap rot = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true);
+//                        rot.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                        fos.close();
+                        Log.d(TAG, "Bitmap saved."); // Success
+                    } catch (FileNotFoundException e) {
+                        Log.d(TAG, "File not found: " + e.getMessage());
+                    } catch (IOException e) {
+                        Log.d(TAG, "Error accessing file: " + e.getMessage());
+                    }
+
+                    try {
+                        ExifInterface exifInterface = new ExifInterface(pictureFile_jpg.getAbsolutePath());
+
+//                        String isoString = exifInterface.getAttribute(ExifInterface.TAG_ISO);
+//                        String apertureString = exifInterface.getAttribute(ExifInterface.TAG_APERTURE);
+//                        String exposureTimeString = exifInterface.getAttribute(ExifInterface.TAG_EXPOSURE_TIME);
+//                        String shutterSpeedString = exifInterface.getAttribute(ExifInterface.TAG_SHUTTER_SPEED_VALUE);
+
+                        Double iso = exifInterface.getAttributeDouble(ExifInterface.TAG_ISO_SPEED_RATINGS, 0);
+                        Double aperture = exifInterface.getAttributeDouble(ExifInterface.TAG_APERTURE_VALUE, 0);
+
+                        Double exposureTime = exifInterface.getAttributeDouble(ExifInterface.TAG_EXPOSURE_TIME, 0);
+                        Double shutterSpeed = exifInterface.getAttributeDouble(ExifInterface.TAG_SHUTTER_SPEED_VALUE, 0);
+
+                        Log.d(TAG, "EXPOSURE_MODE: " + exifInterface.getAttribute(ExifInterface.TAG_EXPOSURE_MODE));
+                        Log.d(TAG, "EXPOSURE_TIME: " + exposureTime);
+                        Log.d(TAG, "ISO:" + iso);
+                        Log.d(TAG, "APERTURE: " + aperture);
+
+                        Log.d(TAG, "SHUTTER_SPEED: " + shutterSpeed);
+
+                        Log.d(TAG, "APERTURE 2: " + exifInterface.getAttribute(ExifInterface.TAG_APERTURE));
+
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
 
                 }
             };
@@ -973,6 +1049,14 @@ public class CameraActivity extends AppCompatActivity {
         imageViewTaken = findViewById(R.id.imageView_preview);
         imageButton_NO = findViewById(R.id.imageButton_no);
         imageButton_YES = findViewById(R.id.imageButton_yes);
+
+        TextView textView_blur = findViewById(R.id.textView_blur);
+
+        /*if (blurScore>100){
+            textView_blur.setText("Not Blurry:" + String.valueOf(blurScore));
+        }else {
+            textView_blur.setText("Blurry:" + String.valueOf(blurScore));
+        }*/
 
         Bitmap rotatedBitmap = Bitmap.createBitmap(resizedMat.width(), resizedMat.height(), Bitmap.Config.RGB_565);
         //Mat temp4View = new Mat();
@@ -1427,6 +1511,7 @@ public class CameraActivity extends AppCompatActivity {
         Log.d(TAG, "save Pic Time: " + totalTime);
 
         oriSizeMat_clone.release();
+
         //UtilsCustom.oriSizeMat.release();
     }
 
@@ -1586,6 +1671,32 @@ public class CameraActivity extends AppCompatActivity {
         if (type == MEDIA_TYPE_IMAGE) {
             mediaFile = new File(mediaStorageDir.getPath() + File.separator +
                     timeStamp + "_" + smearType + ".png");
+        } else {
+            return null;
+        }
+
+        return mediaFile;
+    }
+
+    private static File getOutputMediaFile_jpeg(int type, String pid, String sid, int num, String smearType) {
+
+        File mediaStorageDir = new File(Environment.getExternalStorageDirectory(
+        ), "NLM_Malaria_Screener/New");
+
+        if (!mediaStorageDir.exists()) {
+            if (!mediaStorageDir.mkdirs()) {
+                Log.d("MalariaPics", "failed to create directory");
+                return null;
+            }
+        }
+        String fieldNum = digitFormat(num);
+
+        // Create a media file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        File mediaFile;
+        if (type == MEDIA_TYPE_IMAGE) {
+            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
+                    timeStamp + "_" + smearType + ".jpg");
         } else {
             return null;
         }

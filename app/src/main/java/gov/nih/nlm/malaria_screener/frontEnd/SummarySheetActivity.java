@@ -1,6 +1,7 @@
 package gov.nih.nlm.malaria_screener.frontEnd;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Environment;
 import android.os.Bundle;
 import android.text.Html;
@@ -16,12 +17,16 @@ import gov.nih.nlm.malaria_screener.custom.Utils.UtilsData;
 import gov.nih.nlm.malaria_screener.database.Images;
 import gov.nih.nlm.malaria_screener.database.MyDBHandler;
 import gov.nih.nlm.malaria_screener.database.Patients;
+
 import gov.nih.nlm.malaria_screener.database.Slides;
 import gov.nih.nlm.malaria_screener.frontEnd.baseClass.SummarySheetBaseActivity;
 
 import java.io.File;
 
 public class SummarySheetActivity extends SummarySheetBaseActivity {
+
+    private final static String DROPBOX_NAME = "dropbox_prefs";
+    private final static String DROPBOX_REGISTER = "register";
 
     private static final String TAG = "MyDebug";
 
@@ -87,6 +92,14 @@ public class SummarySheetActivity extends SummarySheetBaseActivity {
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // kill all the other activities on top of the old MainActivity.class activity
                         startActivity(intent);
                         finish();
+
+                        // start upload event
+                        SharedPreferences sharedPreferences = getSharedPreferences(DROPBOX_NAME, 0);
+
+                        if (sharedPreferences.getBoolean(DROPBOX_REGISTER, false)) { // if registered
+                            Uploader uploader = new Uploader(getApplicationContext());
+                            uploader.checkConnectionAndUpload();
+                        }
                     }
                 }
         );

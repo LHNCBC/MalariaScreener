@@ -105,6 +105,7 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
         TextView progressText = findViewById(R.id.textView_progress);
         TouchImageView imageView = findViewById(R.id.processed);
         Button continueButton = findViewById(R.id.continueButton);
+        Button endButton = findViewById(R.id.endButton);
 
         Intent intent = getIntent();
         bundle = intent.getExtras();
@@ -143,6 +144,27 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
                             startActivity(PatientInfoIntent);
                             finish();
                         }
+                    }
+                }
+        );
+
+        endButton.setOnClickListener(
+                new Button.OnClickListener() {
+                    public void onClick(View view) {
+
+                        // save results image
+                        createDirectoryAndSaveResultImage(resultBitmap, bundle);
+                        writeLogFile();
+
+                        setManualCounts();
+
+                        finishActivity(REQUEST_CAM);
+
+                        Intent PatientInfoIntent = new Intent(getBaseContext(), PatientInfoActivity.class);
+
+                        PatientInfoIntent.putExtras(bundle);
+                        startActivity(PatientInfoIntent);
+                        finish();
                     }
                 }
         );

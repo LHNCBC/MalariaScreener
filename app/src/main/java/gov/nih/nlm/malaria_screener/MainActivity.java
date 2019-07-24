@@ -465,9 +465,11 @@ public class MainActivity extends AppCompatActivity {
             Intent aboutIntent = new Intent(this, About.class);
 
             startActivity(aboutIntent);
+
         } else if (id == R.id.action_change_language){
 
             showChangeLangDialog();
+            
         } else if (id == R.id.action_diagram){
 
             Intent diagramIntent = new Intent(this, Diagram.class);

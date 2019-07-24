@@ -41,6 +41,7 @@ import java.sql.Statement;
 import java.util.List;
 
 import gov.nih.nlm.malaria_screener.R;
+import gov.nih.nlm.malaria_screener.custom.ImageUploadEvent;
 
 public class Dropbox extends AppCompatActivity {
 
@@ -507,6 +508,7 @@ public class Dropbox extends AppCompatActivity {
                     progressBar.setProgress(0);
                     textView.setVisibility(View.VISIBLE);
                     textView.setText(R.string.uploading);
+
                     path = DROPBOX_FILE_DIR + folderName;
 
                     SharedPreferences sharedPreferences = getBaseContext().getSharedPreferences(DROPBOX_NAME, 0);

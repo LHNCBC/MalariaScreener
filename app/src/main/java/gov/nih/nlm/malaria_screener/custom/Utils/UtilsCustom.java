@@ -24,7 +24,6 @@ public final class UtilsCustom {
     public static SVM_Classifier svm_classifier;
 
     public static Mat oriSizeMat;
-    public static Bitmap resultBitmap;
 
     public static int whichClassifier = 0; // 0 is DL, 1 is SVM
     public static double SVM_Th = 0.65;
@@ -38,44 +37,9 @@ public final class UtilsCustom {
     public static int batch_size = 8;
 
     //-----------------------------------------------------------------------------------------
-    public static final String getThreadSignature()
-    {
-        Thread t = Thread.currentThread();
-        long l = t.getId();
-        String name = t.getName();
-        long p = t.getPriority();
-        String gname = t.getThreadGroup().getName();
-        return (name
-                + ":(id)" + l
-                + ":(priority)" + p
-                + ":(group)" + gname);
-    }
 
-    public static final int sizeOf(Object object) throws IOException {
+    /* for camera light exposure */
+    public static int maxExposure = 0;
+    public static int minExposure = 0;
 
-        if (object == null)
-            return -1;
-
-        // Special output stream use to write the content
-        // of an output stream to an internal byte array.
-        ByteArrayOutputStream byteArrayOutputStream =
-                new ByteArrayOutputStream();
-
-        // Output stream that can write object
-        ObjectOutputStream objectOutputStream =
-                new ObjectOutputStream(byteArrayOutputStream);
-
-        // Write object and close the output stream
-        objectOutputStream.writeObject(object);
-        objectOutputStream.flush();
-        objectOutputStream.close();
-
-        // Get the byte array
-        byte[] byteArray = byteArrayOutputStream.toByteArray();
-
-        // TODO can the toByteArray() method return a
-        // null array ?
-        return byteArray == null ? 0 : byteArray.length;
-
-    }
 }
