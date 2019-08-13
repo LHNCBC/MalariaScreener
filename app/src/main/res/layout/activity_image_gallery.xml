@@ -7,15 +7,15 @@
     android:layout_height="match_parent"
     tools:context="gov.nih.nlm.malaria_screener.database.ImageGallery">
 
-    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    <androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/navigate_bar_imageview"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentTop="true"
         android:background="#1F568a"
-        android:textAlignment="center"></android.support.v7.widget.Toolbar>
+        android:textAlignment="center"></androidx.appcompat.widget.Toolbar>
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview_imagegallery"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -27,13 +27,13 @@
         android:background="#000000"
         android:id="@+id/pagerLayout">
 
-        <android.support.v7.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar_full"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#000000" />
 
-        <android.support.v4.view.ViewPager
+        <androidx.viewpager.widget.ViewPager
             android:id="@+id/pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

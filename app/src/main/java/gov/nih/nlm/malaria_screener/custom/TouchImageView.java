@@ -8,7 +8,6 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
-import android.widget.ImageView;
 
 /**
  * Created by yuh5 on 8/24/2016.
@@ -21,7 +20,7 @@ import android.widget.ImageView;
 //
 //        The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
-public class TouchImageView extends android.support.v7.widget.AppCompatImageView {
+public class TouchImageView extends androidx.appcompat.widget.AppCompatImageView {
 
     private boolean startEnlarged = false;
 

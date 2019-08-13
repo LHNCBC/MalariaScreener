@@ -50,7 +50,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".CameraActivity"
+            android:name=".camera.CameraActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="fullSensor">
 
@@ -146,7 +146,7 @@
             android:name=".frontEnd.ResultDisplayer_thickSmear"
             android:configChanges="orientation|screenSize"
             android:label="Results"
-            android:parentActivityName=".CameraActivity"
+            android:parentActivityName=".camera.CameraActivity"
             android:screenOrientation="fullSensor" />
         <activity android:name=".frontEnd.SummarySheetActivity_thick"
             android:configChanges="orientation|screenSize"
@@ -164,7 +164,7 @@
             android:name=".frontEnd.ResultDisplayer"
             android:configChanges="orientation|screenSize"
             android:label="Results"
-            android:parentActivityName=".CameraActivity"
+            android:parentActivityName=".camera.CameraActivity"
             android:screenOrientation="fullSensor" />
     </application>
 

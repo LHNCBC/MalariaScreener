@@ -6,13 +6,13 @@
     android:layout_height="match_parent"
     tools:context="gov.nih.nlm.malaria_screener.frontEnd.EnterManualCounts">
 
-    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    <androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/navigate_bar_manualcounts"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentTop="true"
         android:background="#1F568a"
-        android:textAlignment="center"></android.support.v7.widget.Toolbar>
+        android:textAlignment="center"></androidx.appcompat.widget.Toolbar>
 
     <TextView
         android:layout_width="wrap_content"
@@ -24,7 +24,7 @@
         android:textSize="16dp"
         android:textStyle="bold"/>
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview_manualcounts"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

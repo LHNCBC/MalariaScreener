@@ -365,4 +365,6 @@
     <string name="thin">Thin</string>
     <string name="thick">Thick</string>
 
+    <string name="request_permission">This app needs camera permission.</string>
+
 </resources>

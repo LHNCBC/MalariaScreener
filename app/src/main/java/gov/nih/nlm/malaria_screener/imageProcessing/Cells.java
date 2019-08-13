@@ -1,4 +1,4 @@
-package gov.nih.nlm.malaria_screener;
+package gov.nih.nlm.malaria_screener.imageProcessing;
 
 import android.graphics.Bitmap;
 import android.os.Environment;

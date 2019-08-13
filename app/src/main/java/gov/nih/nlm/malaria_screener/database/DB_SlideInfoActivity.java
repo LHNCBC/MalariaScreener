@@ -2,10 +2,10 @@ package gov.nih.nlm.malaria_screener.database;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.os.Environment;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.text.Html;
 import android.util.Log;
 import android.view.MenuItem;
@@ -17,13 +17,7 @@ import gov.nih.nlm.malaria_screener.R;
 import gov.nih.nlm.malaria_screener.custom.CustomAdapter;
 import gov.nih.nlm.malaria_screener.custom.RowItem;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class DB_SlideInfoActivity extends AppCompatActivity {

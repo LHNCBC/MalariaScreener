@@ -9,8 +9,6 @@ import org.opencv.core.Mat;
 
 import java.lang.ref.WeakReference;
 
-import gov.nih.nlm.malaria_screener.Cells;
-
 /**
  * Created by yuh5 on 12/18/2017.
  */

@@ -16,8 +16,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import gov.nih.nlm.malaria_screener.Cells;
-
 /**
  * Created by yuh5 on 12/13/2017.
  */

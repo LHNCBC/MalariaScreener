@@ -1,4 +1,4 @@
-package gov.nih.nlm.malaria_screener;
+package gov.nih.nlm.malaria_screener.camera;
 
 import android.content.Context;
 import android.hardware.Camera;

@@ -6,13 +6,13 @@
     android:fitsSystemWindows="true"
     android:background="#ffffff">
 
-    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    <androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/navigate_bar_slide1"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentTop="true"
         android:background="#1F568a"
-        android:textAlignment="center"></android.support.v7.widget.Toolbar>
+        android:textAlignment="center"></androidx.appcompat.widget.Toolbar>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -28,7 +28,7 @@
             android:layout_gravity="center_horizontal"
             >
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/layout_preparator"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -42,9 +42,9 @@
                     android:hint="@string/slide_pre"
                     android:imeOptions="actionNext"
                     android:inputType="textPersonName" />
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/layout_operator"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -58,7 +58,7 @@
                     android:hint="@string/microscopist"
                     android:imeOptions="actionNext"
                     android:inputType="textPersonName" />
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <LinearLayout
                 android:id="@+id/spinner1"
@@ -80,7 +80,7 @@
                     android:entries="@array/staininglist" />
             </LinearLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/layout_hct"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -92,7 +92,7 @@
                     android:hint="@string/hct"
                     android:imeOptions="actionNext"
                     android:inputType="number" />
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
         </TableLayout>
 

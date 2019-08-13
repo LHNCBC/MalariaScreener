@@ -7,13 +7,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -27,16 +26,14 @@ import android.widget.Toast;
 //import com.github.amlcurran.showcaseview.ShowcaseView;
 //import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
+import gov.nih.nlm.malaria_screener.camera.CameraActivity;
 import gov.nih.nlm.malaria_screener.database.DatabasePage;
-import gov.nih.nlm.malaria_screener.database.MyDBHandler;
 import gov.nih.nlm.malaria_screener.tutorial.About;
 import gov.nih.nlm.malaria_screener.tutorial.Diagram;
 import gov.nih.nlm.malaria_screener.tutorial.TutorialActivity;
 //import gov.nih.nlm.malaria_screener.tutorial.Diagram;
 //import gov.nih.nlm.malaria_screener.tutorial.TutorialActivity;
 
-import org.opencv.android.BaseLoaderCallback;
-import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 
 import java.io.File;
@@ -97,11 +94,11 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
-        toolbar.setTitle(R.string.app_name_bar);
+        Toolbar toolbar = findViewById(R.id.app_bar);
+        //toolbar.setTitle(R.string.app_name_bar);
         toolbar.setTitleTextColor(getResources().getColor(R.color.toolbar_title));
         setSupportActionBar(toolbar);
-        toolbar.setLogo(R.mipmap.logo_toolbar);
+        toolbar.setLogo(R.mipmap.nlm_logo_white);
 
         newSessionButton = (Button) findViewById(R.id.newSession_button);
         databaseButton = (Button) findViewById(R.id.database_button);
