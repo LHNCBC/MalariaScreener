@@ -54,8 +54,6 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
 
     private Bundle bundle;
 
-    Bitmap resultBitmap;
-
     boolean imageAcquisition = false;
 
     @Override
@@ -67,7 +65,7 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
 
         imageAcquisition = sharedPreferences.getBoolean("image_acquire", false);
 
-        if (imageAcquisition) {
+        /*if (imageAcquisition) {
             setContentView(R.layout.activity_display_acquisition_mode);
 
             Button finishButton = findViewById(R.id.finishButton);
@@ -93,7 +91,7 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
                         }
                     }
             );
-        }
+        }*/
 
         Toolbar toolbar = findViewById(R.id.navigate_bar_result);
         toolbar.setTitle(R.string.title_result);
@@ -105,7 +103,7 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
         TextView progressText = findViewById(R.id.textView_progress);
         TouchImageView imageView = findViewById(R.id.processed);
         Button continueButton = findViewById(R.id.continueButton);
-        Button endButton = findViewById(R.id.endButton);
+        Button endButton = findViewById(R.id.finishButton);
 
         Intent intent = getIntent();
         bundle = intent.getExtras();
@@ -115,16 +113,16 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
         processingTime = Long.valueOf(intent.getStringExtra("time"));
 
         //set up bitmaps
-        resultBitmap = getResBitmap(bundle, imageView);
+        setResBitmap(imageView);
 
-        displayOriginalImage(bundle, imageView, resultBitmap);
+        displayOriginalImage(bundle, imageView);
 
         continueButton.setOnClickListener(
                 new Button.OnClickListener() {
                     public void onClick(View view) {
 
                         // save results image
-                        createDirectoryAndSaveResultImage(resultBitmap, bundle);
+                        createDirectoryAndSaveResultImage(bundle);
                         writeLogFile();
 
                         setManualCounts();
@@ -153,7 +151,7 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
                     public void onClick(View view) {
 
                         // save results image
-                        createDirectoryAndSaveResultImage(resultBitmap, bundle);
+                        createDirectoryAndSaveResultImage(bundle);
                         writeLogFile();
 
                         setManualCounts();
@@ -379,7 +377,7 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
         } else if (id == R.id.action_endSession) {
 
             // save results image
-            createDirectoryAndSaveResultImage(resultBitmap, bundle);
+            createDirectoryAndSaveResultImage(bundle);
             writeLogFile();
 
             setManualCounts();

@@ -36,7 +36,7 @@ public abstract class ResultDisplayerBaseActivity extends AppCompatActivity {
 
     }
 
-    public void displayOriginalImage(Bundle bundle, final TouchImageView imageView, final Bitmap resultBitmap){
+    public void displayOriginalImage(Bundle bundle, final TouchImageView imageView){
 
         String picFile = bundle.getString("picFile");
 
@@ -83,29 +83,29 @@ public abstract class ResultDisplayerBaseActivity extends AppCompatActivity {
 
                 } else {
                     imageSwitch.setText(R.string.original_image_switch);
-                    imageView.setImageBitmap(resultBitmap);
+                    imageView.setImageBitmap(UtilsCustom.canvasBitmap);
                 }
             }
         });
     }
 
-    public Bitmap getResBitmap(Bundle bundle, TouchImageView imageView) {
+    public void setResBitmap(TouchImageView imageView) {
 
         //set up Original bitmap
-        byte[] byteArray = bundle.getByteArray("resImage");
+        /*byte[] byteArray = bundle.getByteArray("resImage");
 
         Bitmap bmp_res = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
 
         Bitmap canvasBitmap = bmp_res.copy(Bitmap.Config.ARGB_8888, true); // set the second parameter put it to mutable
-        bmp_res.recycle();
+        bmp_res.recycle();*/
         imageView.changeEnlargedFlag(true);
-        imageView.setImageBitmap(canvasBitmap);
+        imageView.setImageBitmap(UtilsCustom.canvasBitmap);
         imageView.setMaxZoom(10.0f);
 
-        return canvasBitmap;
+
     }
 
-    public void createDirectoryAndSaveResultImage(Bitmap imageToSave, Bundle bundle) {
+    public void createDirectoryAndSaveResultImage(Bundle bundle) {
 
         String picFile = bundle.getString("picFile");
 
@@ -129,12 +129,14 @@ public abstract class ResultDisplayerBaseActivity extends AppCompatActivity {
 
         try {
             FileOutputStream out = new FileOutputStream(file);
-            imageToSave.compress(Bitmap.CompressFormat.PNG, 100, out);
+            UtilsCustom.canvasBitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
             out.flush();
             out.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        UtilsCustom.canvasBitmap.recycle();
 
     }
 

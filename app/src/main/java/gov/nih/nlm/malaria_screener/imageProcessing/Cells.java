@@ -133,7 +133,6 @@ public class Cells {
         Mat And_res = new Mat();
         int OverlapwWBC_index[] = new int[ccNum - 1];
 
-
         for (int i = 1; i < ccNum; i++) {
 
             numMat.setTo(new Scalar(i)); //30ms

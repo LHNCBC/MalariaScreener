@@ -52,14 +52,14 @@
             >
 
             <TextView
-                android:id="@+id/count"
+                android:id="@+id/count1"
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:clickable="true"/>
 
             <TextView
-                android:id="@+id/infected_count"
+                android:id="@+id/count2"
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

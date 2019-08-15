@@ -24,8 +24,8 @@ public class SettingsActivity extends AppCompatActivity{
 
         setContentView(R.layout.activity_setting);
 
-        Intent intent = getIntent();
-        Bundle bundle = intent.getExtras();
+        //Intent intent = getIntent();
+        //Bundle bundle = intent.getExtras();
         //CharSequence[] cs = bundle.getCharSequenceArray("WB_list");
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.navigate_bar_setting);
@@ -40,15 +40,15 @@ public class SettingsActivity extends AppCompatActivity{
         String smearType = sharedPreferences.getString("smeartype", "Thin");
 
         // Display the fragment as the main content.
-        if (smearType.equals("Thin")) {
+        if (smearType.equals("Thin")){
             SettingsFragment fragment = new SettingsFragment();
-            fragment.setArguments(bundle);
+            //fragment.setArguments(bundle);
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             transaction.add(R.id.container, fragment);
             transaction.commit();
         } else if (smearType.equals("Thick")){
             SettingsFragment_thick fragment = new SettingsFragment_thick();
-            fragment.setArguments(bundle);
+            //fragment.setArguments(bundle);
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             transaction.add(R.id.container, fragment);
             transaction.commit();

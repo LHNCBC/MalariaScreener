@@ -81,7 +81,6 @@ public class CameraActivity extends AppCompatActivity {
     //private TextView sidInfo;
     //private TextView pidInfo;
 
-
     private TouchImageView imageViewTaken;
 
     private ImageButton imageButton_NO;
@@ -89,7 +88,6 @@ public class CameraActivity extends AppCompatActivity {
 
     private Canvas canvas;
     private Paint paint;
-    Bitmap canvasBitmap;
     //Bitmap smallOriBitmap;
 
     float RV = 6; //resize value
@@ -127,6 +125,8 @@ public class CameraActivity extends AppCompatActivity {
 
     private int captureCount = 0;
 
+    Camera2RawFragment camera2RawFragment;
+
     //----------------------------------------------
 
 
@@ -150,7 +150,7 @@ public class CameraActivity extends AppCompatActivity {
 
         context = this;
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         // smear type
         smearType = sharedPreferences.getString("smeartype", "Thin");
@@ -161,7 +161,7 @@ public class CameraActivity extends AppCompatActivity {
         if (null == savedInstanceState) {
             Bundle bundle = new Bundle();
             bundle.putInt("capturecount", captureCount);
-            Camera2RawFragment camera2RawFragment = Camera2RawFragment.newInstance();
+            camera2RawFragment = Camera2RawFragment.newInstance();
             camera2RawFragment.setArguments(bundle);
 
             getFragmentManager().beginTransaction()
@@ -169,12 +169,15 @@ public class CameraActivity extends AppCompatActivity {
                     .commit();
         }
 
+        // View model to let CameraActivity get notified when images is taken in the Fragment & sync LiveData changes in the Fragment
         cameraViewModel = ViewModelProviders.of(this).get(CameraViewModel.class);
 
         cameraViewModel.getCamByteData().observe(this, new Observer<byte[]>() {
             @Override
             public void onChanged(byte[] bytes) {
-                Log.d(TAG, "image data received in activity.");
+
+                smearType = sharedPreferences.getString("smeartype", "Thin");
+                imageAcquisition = sharedPreferences.getBoolean("image_acquire", false);
 
                 processCameraData(bytes);
             }
@@ -183,6 +186,10 @@ public class CameraActivity extends AppCompatActivity {
         cameraViewModel.getImageString().observe(this, new Observer<String>() {
             @Override
             public void onChanged(String s) {
+
+                smearType = sharedPreferences.getString("smeartype", "Thin");
+                imageAcquisition = sharedPreferences.getBoolean("image_acquire", false);
+
                 processGalleryData(s);
             }
         });
@@ -271,7 +278,7 @@ public class CameraActivity extends AppCompatActivity {
 
             Bundle bundle = new Bundle();
             bundle.putInt("capturecount", captureCount);
-            Camera2RawFragment camera2RawFragment = Camera2RawFragment.newInstance();
+            camera2RawFragment = Camera2RawFragment.newInstance();
             camera2RawFragment.setArguments(bundle);
 
             getFragmentManager().beginTransaction()
@@ -284,7 +291,7 @@ public class CameraActivity extends AppCompatActivity {
 
             Bundle bundle = new Bundle();
             bundle.putInt("capturecount", captureCount);
-            Camera2RawFragment camera2RawFragment = Camera2RawFragment.newInstance();
+            camera2RawFragment = Camera2RawFragment.newInstance();
             camera2RawFragment.setArguments(bundle);
 
             getFragmentManager().beginTransaction()
@@ -384,10 +391,10 @@ public class CameraActivity extends AppCompatActivity {
         Imgproc.resize(UtilsCustom.oriSizeMat, resizedMat, new Size(width, height), 0, 0, Imgproc.INTER_CUBIC);
 
         // put resized image on canvas for drawing results after image processing
-        canvasBitmap = Bitmap.createBitmap(resizedMat.width(), resizedMat.height(), Bitmap.Config.RGB_565);
-        Utils.matToBitmap(resizedMat, canvasBitmap);
+        UtilsCustom.canvasBitmap = Bitmap.createBitmap(resizedMat.width(), resizedMat.height(), Bitmap.Config.RGB_565);
+        Utils.matToBitmap(resizedMat, UtilsCustom.canvasBitmap);
 
-        canvas = new Canvas(canvasBitmap);
+        canvas = new Canvas(UtilsCustom.canvasBitmap);
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setStrokeWidth(5);
         paint.setColor(Color.BLACK);
@@ -457,6 +464,7 @@ public class CameraActivity extends AppCompatActivity {
                                 if (smearType.equals("Thin")) {
 
                                     if (imageAcquisition) {
+                                        Log.d(TAG, "start acquisition");
                                         ImageAcquisition();
                                     } else {
                                         ProcessThinSmearImage();
@@ -488,8 +496,13 @@ public class CameraActivity extends AppCompatActivity {
 
                         setContentView(R.layout.activity_camera);
 
+                        Bundle bundle = new Bundle();
+                        bundle.putInt("capturecount", captureCount);
+                        camera2RawFragment = Camera2RawFragment.newInstance();
+                        camera2RawFragment.setArguments(bundle);
+
                         getFragmentManager().beginTransaction()
-                                .replace(R.id.container, Camera2RawFragment.newInstance())
+                                .replace(R.id.container,camera2RawFragment )
                                 .commit();
 
 
@@ -497,6 +510,9 @@ public class CameraActivity extends AppCompatActivity {
                     }
                 }
         );
+
+
+        getFragmentManager().beginTransaction().remove(camera2RawFragment).commit();
 
     }
 
@@ -508,11 +524,11 @@ public class CameraActivity extends AppCompatActivity {
         processingTime = 0;
 
         // set Bitmap to paint
-        Bitmap bitmap = Bitmap.createBitmap(UtilsCustom.oriSizeMat.width(), UtilsCustom.oriSizeMat.height(), Bitmap.Config.RGB_565);
-        Utils.matToBitmap(UtilsCustom.oriSizeMat, bitmap);
+        UtilsCustom.canvasBitmap = Bitmap.createBitmap(UtilsCustom.oriSizeMat.width(), UtilsCustom.oriSizeMat.height(), Bitmap.Config.RGB_565);
+        Utils.matToBitmap(UtilsCustom.oriSizeMat, UtilsCustom.canvasBitmap);
 
         saveImageHandler.sendEmptyMessage(0);
-        goToNextActivity_thickSmear(bitmap);
+        goToNextActivity_thickSmear();
     }
 
     private void ProcessThickSmearImage() {
@@ -529,7 +545,7 @@ public class CameraActivity extends AppCompatActivity {
 
         saveImageHandler.sendEmptyMessage(0);
 
-        goToNextActivity_thickSmear(thickSmearProcessor.getResultBitmap());
+        goToNextActivity_thickSmear();
     }
 
     private void ImageAcquisition() {
@@ -616,6 +632,8 @@ public class CameraActivity extends AppCompatActivity {
             retakeHandler.sendEmptyMessage(0);
         } else {
 
+            Log.d(TAG, "in do a few things");
+
             //save image to file
             //saveOriImage(); // taken out of handler, otherwise original image not saved before needed in next activity. 09/26/2017
             saveImageHandler.sendEmptyMessage(0);                // put in handler again, original image is copied for saving, display in result page using image in memory. 03/12/2019
@@ -689,7 +707,7 @@ public class CameraActivity extends AppCompatActivity {
             } else if (orientation == Surface.ROTATION_90) {
                 m.postRotate(0);
             }
-            canvasBitmap = Bitmap.createBitmap(canvasBitmap, 0, 0, canvasBitmap.getWidth(), canvasBitmap.getHeight(), m, false);
+            UtilsCustom.canvasBitmap = Bitmap.createBitmap(UtilsCustom.canvasBitmap, 0, 0, UtilsCustom.canvasBitmap.getWidth(), UtilsCustom.canvasBitmap.getHeight(), m, false);
         }
 
         //pass original file dir
@@ -698,12 +716,14 @@ public class CameraActivity extends AppCompatActivity {
         // pass resize value of original image
         intent.putExtra("RV", RV);
 
+        Log.d(TAG, "in go To Next Activity");
+
         // pass resized result image to new activity
-        ByteArrayOutputStream stream2 = new ByteArrayOutputStream();
+       /* ByteArrayOutputStream stream2 = new ByteArrayOutputStream();
         canvasBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream2);
         canvasBitmap.recycle();
         byte[] resImageByteArray = stream2.toByteArray();
-        intent.putExtra("resImage", resImageByteArray);
+        intent.putExtra("resImage", resImageByteArray);*/
 
         //intent.putExtra("WB", cs[Integer.valueOf(WB)]);
         intent.putExtra("WB", "auto");  // temp WB by Hang
@@ -757,17 +777,17 @@ public class CameraActivity extends AppCompatActivity {
 
     }
 
-    private void goToNextActivity_thickSmear(Bitmap resultBitmap) {
+    private void goToNextActivity_thickSmear() {
 
         inProgress.dismiss();
 
         Intent intent = new Intent(context, ResultDisplayer_thickSmear.class);
 
         // pass resized result image to new activity
-        int width = (int) ((float) resultBitmap.getWidth() / RV);
-        int height = (int) ((float) resultBitmap.getHeight() / RV);
+        int width = (int) ((float) UtilsCustom.canvasBitmap.getWidth() / RV);
+        int height = (int) ((float) UtilsCustom.canvasBitmap.getHeight() / RV);
 
-        Bitmap rescaledBitmap = Bitmap.createScaledBitmap(resultBitmap, width, height, false);
+        UtilsCustom.canvasBitmap = Bitmap.createScaledBitmap(UtilsCustom.canvasBitmap, width, height, false);
 
         if (takenFromCam) {
             intent.putExtra("Orientation", orientation); // pass orientation when image was taken for next activity
@@ -783,14 +803,14 @@ public class CameraActivity extends AppCompatActivity {
             } else if (orientation == Surface.ROTATION_90) {
                 m.postRotate(0);
             }
-            rescaledBitmap = Bitmap.createBitmap(rescaledBitmap, 0, 0, rescaledBitmap.getWidth(), rescaledBitmap.getHeight(), m, false);
+            UtilsCustom.canvasBitmap = Bitmap.createBitmap(UtilsCustom.canvasBitmap, 0, 0, UtilsCustom.canvasBitmap.getWidth(), UtilsCustom.canvasBitmap.getHeight(), m, false);
         }
 
-        ByteArrayOutputStream stream2 = new ByteArrayOutputStream();
+      /*  ByteArrayOutputStream stream2 = new ByteArrayOutputStream();
         rescaledBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream2);
         rescaledBitmap.recycle();
         byte[] resImageByteArray = stream2.toByteArray();
-        intent.putExtra("resImage", resImageByteArray);
+        intent.putExtra("resImage", resImageByteArray);*/
 
         // pass image names
         String imgNameStr = pictureFileCopy.toString().substring(pictureFileCopy.toString().lastIndexOf("/") + 1);
@@ -855,6 +875,8 @@ public class CameraActivity extends AppCompatActivity {
     };
 
     public void saveOriImage() {
+
+        Log.d(TAG, "in save ori image");
 
         long startTime = System.currentTimeMillis();
 

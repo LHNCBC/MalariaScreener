@@ -22,7 +22,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -30,11 +29,8 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.ImageFormat;
 import android.graphics.Matrix;
-import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.RectF;
 import android.graphics.SurfaceTexture;
@@ -116,7 +112,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import gov.nih.nlm.malaria_screener.R;
-import gov.nih.nlm.malaria_screener.custom.TouchImageView;
 import gov.nih.nlm.malaria_screener.custom.Utils.UtilsCustom;
 import gov.nih.nlm.malaria_screener.custom.Utils.UtilsData;
 import gov.nih.nlm.malaria_screener.frontEnd.SettingsActivity;
@@ -840,12 +835,12 @@ public class Camera2RawFragment extends Fragment
                     mCharacteristics = characteristics;
                     mCameraId = cameraId;
 
-                    //Log.d(TAG, "all keys: " + mCharacteristics.getAvailableCaptureRequestKeys()); // add by Hang, 07/24/2019
+                    //Log.d(TAG, "all keys: " + mCharacteristics.getAvailableCaptureRequestKeys());                   // get camera Characteristics add by Hang, 07/24/2019
                     Range<Long> range1 = characteristics.get(CameraCharacteristics.SENSOR_INFO_EXPOSURE_TIME_RANGE);
                     long max = range1.getUpper();
                     long min = range1.getLower();
-                    Log.d(TAG, "min exposure: " + min);
-                    Log.d(TAG, "max exposure: " + max);
+                    Log.d(TAG, "min exposure time: " + min);
+                    Log.d(TAG, "max exposure time: " + max);
 
                     Range<Integer> range2 = characteristics.get(CameraCharacteristics.SENSOR_INFO_SENSITIVITY_RANGE);
                     int max1 = range2.getUpper();
@@ -855,6 +850,17 @@ public class Camera2RawFragment extends Fragment
                     // add by Hang, 07/24/2019 End
 
                     Log.e(TAG, "MINIMUM_FOCUS_DISTANCE: " + characteristics.get(CameraCharacteristics.LENS_INFO_MINIMUM_FOCUS_DISTANCE));
+
+                    Log.d(TAG, "AE_EXPOSURE_COMPENSATION: " + characteristics.get(CameraCharacteristics.CONTROL_AE_COMPENSATION_RANGE));
+                    Log.d(TAG, "AE_EXPOSURE_COMPENSATION STEP: " + characteristics.get(CameraCharacteristics.CONTROL_AE_COMPENSATION_STEP));
+
+                    Range<Integer> EC_Range = characteristics.get(CameraCharacteristics.CONTROL_AE_COMPENSATION_RANGE);
+                    UtilsCustom.maxExposure = EC_Range.getUpper();
+                    UtilsCustom.minExposure = EC_Range.getLower();
+
+                    // END ******************* get camera Characteristics add by Hang, 07/24/2019
+
+
                 }
                 return true;
             }
@@ -960,7 +966,7 @@ public class Camera2RawFragment extends Fragment
     /**
      * Closes the current {@link CameraDevice}.
      */
-    private void closeCamera() {
+    public void closeCamera() {
         try {
             mCameraOpenCloseLock.acquire();
             synchronized (mCameraStateLock) {
@@ -1342,14 +1348,21 @@ public class Camera2RawFragment extends Fragment
             // Set request tag to easily track results in callbacks.
             captureBuilder.setTag(mRequestCounter.getAndIncrement());
 
-            /*captureBuilder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_OFF); // add by Hang, 07/24/2019
+            /*captureBuilder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_OFF); // manual camera control, add by Hang, 07/24/2019
 
             captureBuilder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, 70205952L);
-            captureBuilder.set(CaptureRequest.SENSOR_SENSITIVITY, 1000); // add by Hang, 07/24/2019
+            captureBuilder.set(CaptureRequest.SENSOR_SENSITIVITY, 1000);
 
             Log.e(TAG, "FOCUS_DISTANCE: " + captureBuilder.get(CaptureRequest.LENS_FOCUS_DISTANCE));
 
             Log.e(TAG, "Set ISO and exposure value. "); // end*/
+
+            // EC adjustment
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            int EC = sharedPreferences.getInt("exposure_compensation", 0);
+            // by Hang END **********************************************************************************************
+
+            captureBuilder.set(CaptureRequest.CONTROL_AE_EXPOSURE_COMPENSATION, EC);
 
             CaptureRequest request = captureBuilder.build();
 
@@ -1392,6 +1405,59 @@ public class Camera2RawFragment extends Fragment
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
+
+        // by Hang, 08/14/2019, close/release the camera after an image is captured
+        if (mOrientationListener != null) {
+            mOrientationListener.disable();
+        }
+        Log.d(TAG, "camera paused.");
+        pauseCamera();
+        //stopBackgroundThread();
+    }
+
+    private void pauseCamera(){
+
+        try {
+            mCameraOpenCloseLock.acquire();
+            synchronized (mCameraStateLock) {
+
+                // Reset state and clean up resources used by the camera.
+                // Note: After calling this, the ImageReaders will be closed after any background
+                // tasks saving Images from these readers have been completed.
+                mPendingUserCaptures = 0;
+                mState = STATE_CLOSED;
+                if (null != mCaptureSession) {
+                    mCaptureSession.close();
+                    mCaptureSession = null;
+                }
+                if (null != mCameraDevice) {
+                    mCameraDevice.close();
+                    mCameraDevice = null;
+                }
+                /*if (null != mJpegImageReader) {
+                    mJpegImageReader.close();
+                    mJpegImageReader = null;
+                }*/
+               
+                /*if (null != mRawImageReader) {                       // RAW comment out by Hang
+                    mRawImageReader.close();
+                    mRawImageReader = null;
+                }*/
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException("Interrupted while trying to lock camera closing.", e);
+        } finally {
+            mCameraOpenCloseLock.release();
+        }
+
+    }
+
+    public void releaseJpegImageReader(){
+
+        if (null != mJpegImageReader) {
+                    mJpegImageReader.close();
+                    mJpegImageReader = null;
+                }
     }
 
     /**
@@ -1470,9 +1536,6 @@ public class Camera2RawFragment extends Fragment
          * The Context to use when updating MediaStore with the saved images.
          */
         private final Context mContext;
-
-
-
 
         /**
          * A reference counted wrapper for the ImageReader that owns the given image.
@@ -2050,20 +2113,23 @@ public class Camera2RawFragment extends Fragment
 
     public void initCam(final View view) {
 
-        ViewStub stub = view.findViewById(R.id.stub);
+        /*ViewStub stub = view.findViewById(R.id.stub);
+        stub.setLayoutResource(R.layout.app_bar_cam);
+        stub.inflate();*/
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         // smear type
         smearType = sharedPreferences.getString("smeartype", "Thin");
 
-        if (smearType.equals("Thin")) {
+        /*if (smearType.equals("Thin")) {
             Log.d(TAG, "set stub");
             stub.setLayoutResource(R.layout.app_bar_cam);
         } else if (smearType.equals("Thick")) {
             stub.setLayoutResource(R.layout.app_bar_cam_thick);
         }
-        stub.inflate();
+        stub.inflate();*/
+
 
         // set up toolbar
         //toolbar = (Toolbar) findViewById(R.id.app_bar_cam);
@@ -2135,27 +2201,27 @@ public class Camera2RawFragment extends Fragment
         progressBar.setProgress(progressStatus);
         progressText = (TextView) view.findViewById(R.id.textView_progress);
 
-
         if (smearType.equals("Thin")) {
             // set up count and infected count text views
-            countInfo = (TextView) view.findViewById(R.id.count);
+            countInfo = (TextView) view.findViewById(R.id.count1);
             countInfo.setSingleLine(true);
             countInfo.setTextSize(textSize);
             countInfo.setTextColor(getResources().getColor(R.color.toolbar_text));
 
-            infectedCountInfo = (TextView) view.findViewById(R.id.infected_count);
+            infectedCountInfo = (TextView) view.findViewById(R.id.count2);
             infectedCountInfo.setSingleLine(true);
             infectedCountInfo.setTextSize(textSize);
             infectedCountInfo.setTextColor(getResources().getColor(R.color.toolbar_text));
 
             progressBar.setMax(totalCellNeeded);
+
         } else if (smearType.equals("Thick")) {
-            parasiteInfo = (TextView) view.findViewById(R.id.parasite);
+            parasiteInfo = (TextView) view.findViewById(R.id.count1);
             parasiteInfo.setSingleLine(true);
             parasiteInfo.setTextSize(textSize);
             parasiteInfo.setTextColor(getResources().getColor(R.color.toolbar_text));
 
-            wbcInfo = (TextView) view.findViewById(R.id.wbc);
+            wbcInfo = (TextView) view.findViewById(R.id.count2);
             wbcInfo.setSingleLine(true);
             wbcInfo.setTextSize(textSize);
             wbcInfo.setTextColor(getResources().getColor(R.color.toolbar_text));
@@ -2164,6 +2230,17 @@ public class Camera2RawFragment extends Fragment
         }
 
         updateToolbar();
+
+
+        UtilsCustom.whichClassifier = Integer.valueOf(sharedPreferences.getString("classifier", "0"));
+
+        double value = sharedPreferences.getInt("SVM_Th", 35);
+        UtilsCustom.SVM_Th = (100 - value) / 100;
+
+        totalCellNeeded = sharedPreferences.getInt("celltotal", 1000);
+
+        totalWBCNeeded = sharedPreferences.getInt("wbc_th", 200);
+
 
 //        if (slideId.equals(""))
 //            prompt('s'); // prompt slide id
@@ -2285,9 +2362,6 @@ public class Camera2RawFragment extends Fragment
             }
         };*/
 
-       /* captureButton = (ImageButton) view.findViewById(R.id.button_capture);
-        captureButton.setOnClickListener(onClickListener);
-*/
         galleryButton = (ImageButton) view.findViewById(R.id.button_gallery);
         galleryButton.setOnClickListener(
                 new Button.OnClickListener() {
@@ -2307,7 +2381,7 @@ public class Camera2RawFragment extends Fragment
                     public void onClick(View view) {
                         Intent settingIntent = new Intent(getActivity(), SettingsActivity.class);
 
-                        settingIntent.putExtras(bundle);
+                        //settingIntent.putExtras(bundle);
 
                         startActivityForResult(settingIntent, REQUEST_SETTING);
                     }
@@ -2339,6 +2413,7 @@ public class Camera2RawFragment extends Fragment
     }
 
     private void updateToolbar() {
+
         String captureStr = digitFormat(captureCount);
         String imgStr = getResources().getString(R.string.image_count);
         String cellCountStr = getResources().getString(R.string.cell_count);
@@ -2418,6 +2493,7 @@ public class Camera2RawFragment extends Fragment
 
                 PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().putString("smeartype", smearType).commit();
 
+                captureCount = 0;
                 cameraViewModel.setCaptureCountReset(true);
                 initCam(view);
                 break;

@@ -19,9 +19,9 @@
         android:layout_below="@+id/stub"
         />
 
-    <ViewStub
+    <include
         android:id="@+id/stub"
-        android:inflatedId="@id/stub"
+        layout="@layout/app_bar_cam"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

@@ -26,10 +26,6 @@ public class ThickSmearProcessor {
 
     int inputSize = 44;
 
-    Bitmap canvasBitmap;
-
-    Bitmap output;
-
     int num_th = 400;
 
     int batch_size = UtilsCustom.batch_size;
@@ -87,10 +83,10 @@ public class ThickSmearProcessor {
         Log.d(TAG, "Greedy method Time: " + totalTime);
 
         // set Bitmap to paint
-        canvasBitmap = Bitmap.createBitmap(oriSizeMat.width(), oriSizeMat.height(), Bitmap.Config.RGB_565);
-        Utils.matToBitmap(oriSizeMat, canvasBitmap);
+        UtilsCustom.canvasBitmap = Bitmap.createBitmap(oriSizeMat.width(), oriSizeMat.height(), Bitmap.Config.RGB_565);
+        Utils.matToBitmap(oriSizeMat, UtilsCustom.canvasBitmap);
 
-        Canvas canvas = new Canvas(canvasBitmap);
+        Canvas canvas = new Canvas(UtilsCustom.canvasBitmap);
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setStrokeWidth(5);
         paint.setStyle(Paint.Style.STROKE);
@@ -222,12 +218,6 @@ public class ThickSmearProcessor {
 
         return imgFile;
     }
-
-
-    public Bitmap getResultBitmap() {
-        return canvasBitmap;
-    }
-
 
     public native int processThickImage(long mat, long result, int[] x, int[] y, long extraMat);
 }
