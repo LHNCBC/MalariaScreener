@@ -1,4 +1,4 @@
-package gov.nih.nlm.malaria_screener;
+﻿package gov.nih.nlm.malaria_screener;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -22,9 +22,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Spinner;
 import android.widget.Toast;
-
-//import com.github.amlcurran.showcaseview.ShowcaseView;
-//import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
 import gov.nih.nlm.malaria_screener.camera.CameraActivity;
 import gov.nih.nlm.malaria_screener.database.DatabasePage;
