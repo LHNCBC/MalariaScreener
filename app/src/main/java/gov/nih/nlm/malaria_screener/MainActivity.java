@@ -28,8 +28,6 @@ import gov.nih.nlm.malaria_screener.database.DatabasePage;
 import gov.nih.nlm.malaria_screener.tutorial.About;
 import gov.nih.nlm.malaria_screener.tutorial.Diagram;
 import gov.nih.nlm.malaria_screener.tutorial.TutorialActivity;
-//import gov.nih.nlm.malaria_screener.tutorial.Diagram;
-//import gov.nih.nlm.malaria_screener.tutorial.TutorialActivity;
 
 import org.opencv.android.OpenCVLoader;
 
