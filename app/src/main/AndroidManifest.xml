@@ -9,35 +9,36 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
 
     <uses-feature
         android:name="android.hardware.camera"
         android:required="true" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
-    <!-- <uses-permission android:name="android.permission.READ_USER_DICTIONARY" /> -->
-    <!--
- To auto-complete the email text field in the login form with the user's emails
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.READ_PROFILE" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
-    -->
     <application
         android:allowBackup="true"
         android:hardwareAccelerated="true"
         android:icon="@drawable/appicon"
         android:label="@string/app_name"
         android:largeHeap="true"
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-        >
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        <service
+            android:name=".frontEnd.UploadService"
+            android:enabled="true"
+            android:exported="true"/>
 
+        <activity
+            android:name=".userOnboard.DisclaimerActivity"
+            android:label="@string/title_activity_disclaimer"
+            android:theme="@style/NoActionBar" />
+        <activity android:name=".userOnboard.UserOnBoardActivity" />
         <!--
             <provider
             android:name=".frontEnd.MySuggestionProvider"
             android:authorities="com.example.hang.malaria.SuggestionProvider"
             android:exported="true" />
         -->
-
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|screenSize"
@@ -50,18 +51,20 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".camera.CameraActivity"
+            android:name=".CameraActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="fullSensor">
 
             <!-- android:label="@string/title_activity_camera" -->
         </activity>
-       <!-- <activity
+        <!--
+ <activity
             android:name=".frontEnd.getResultNdisplay"
             android:configChanges="orientation|screenSize"
             android:label="Results"
             android:parentActivityName=".CameraActivity"
-            android:screenOrientation="fullSensor" />-->
+            android:screenOrientation="fullSensor" />
+        -->
         <activity
             android:name=".frontEnd.PatientInfoActivity"
             android:configChanges="orientation|screenSize"
@@ -138,33 +141,38 @@
             android:name=".database.ImageGallery"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="fullSensor" />
-        <activity android:name=".frontEnd.EnterManualCounts"
+        <activity
+            android:name=".frontEnd.EnterManualCounts"
             android:configChanges="orientation|screenSize"
-            android:screenOrientation="fullSensor"/>
+            android:screenOrientation="fullSensor" />
         <activity android:name=".tutorial.Diagram" />
         <activity
             android:name=".frontEnd.ResultDisplayer_thickSmear"
             android:configChanges="orientation|screenSize"
             android:label="Results"
-            android:parentActivityName=".camera.CameraActivity"
+            android:parentActivityName=".CameraActivity"
             android:screenOrientation="fullSensor" />
-        <activity android:name=".frontEnd.SummarySheetActivity_thick"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="fullSensor"/>
-        <activity android:name=".database.DB_SlideInfoActivity_thick"
+        <activity
+            android:name=".frontEnd.SummarySheetActivity_thick"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="fullSensor" />
-        <activity android:name=".database.ImageGalleryActivity_thick"
+        <activity
+            android:name=".database.DB_SlideInfoActivity_thick"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="fullSensor" />
-        <activity android:name=".frontEnd.EnterManualCounts_thick"
+        <activity
+            android:name=".database.ImageGalleryActivity_thick"
             android:configChanges="orientation|screenSize"
-            android:screenOrientation="fullSensor"/>
+            android:screenOrientation="fullSensor" />
+        <activity
+            android:name=".frontEnd.EnterManualCounts_thick"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="fullSensor" />
         <activity
             android:name=".frontEnd.ResultDisplayer"
             android:configChanges="orientation|screenSize"
             android:label="Results"
-            android:parentActivityName=".camera.CameraActivity"
+            android:parentActivityName=".CameraActivity"
             android:screenOrientation="fullSensor" />
     </application>
 

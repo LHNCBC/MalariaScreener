@@ -17,13 +17,14 @@ public class TensorFlowClassifier {
 
     private String inputName;
     private String outputName;
-    private int inputSize;
+    private int width;
+    private int height;
 
     private String[] outputNames;
 
     int numClasses = 2;
 
-    public static TensorFlowClassifier create(AssetManager assetManager, String modelName, int inputSize, String inputName, String outputName) throws IOException {
+    public static TensorFlowClassifier create(AssetManager assetManager, String modelName, int width, int height, String inputName, String outputName) throws IOException {
 
         // initialize a classifier
         TensorFlowClassifier c = new TensorFlowClassifier();
@@ -36,7 +37,8 @@ public class TensorFlowClassifier {
 
         c.tfHelper = new TensorFlowInferenceInterface(assetManager, modelName);
 
-        c.inputSize = inputSize;
+        c.width = width;
+        c.height = height;
 
         return c;
     }
@@ -45,7 +47,7 @@ public class TensorFlowClassifier {
 
         float[] output = new float[numClasses * dims];
 
-        tfHelper.feed(inputName, pixels, dims, inputSize, inputSize, 3);
+        tfHelper.feed(inputName, pixels, dims, width, height, 3);
 
         //tfHelper.feed("keep_prob", new float[] { 1 });
 
@@ -73,7 +75,7 @@ public class TensorFlowClassifier {
 
             float[] output = new float[numClasses * dims];
 
-            tfHelper.feed(inputName, pixels, dims, inputSize, inputSize, 3);
+            tfHelper.feed(inputName, pixels, dims, height, width, 3);
 
             //get the possible outputs
             tfHelper.run(outputNames);
@@ -82,6 +84,8 @@ public class TensorFlowClassifier {
             tfHelper.fetch(outputName, output);
 
             for (int i = 0; i < output.length / 2; i++) {
+
+                //Log.d(TAG, "DL chip output: " + i + " , " + output[i*2] + ", " + output[i*2+1]);
 
                 if (output[i*2] > output[i*2+1]) {  // in the loaded TF model(Shiva's) 0 is infected, 1 is normal
                     UtilsCustom.results.add(1);
@@ -92,7 +96,7 @@ public class TensorFlowClassifier {
                 }
             }
 
-            Log.d(TAG, "One batch over");
+            //Log.d(TAG, "One batch over");
     }
 
     // for thick smear classifier
@@ -100,7 +104,7 @@ public class TensorFlowClassifier {
 
         float[] output = new float[numClasses * dims];
 
-        tfHelper.feed(inputName, pixels, dims, inputSize, inputSize, 3);
+        tfHelper.feed(inputName, pixels, dims, height, width, 3);
 
         //get the possible outputs
         tfHelper.run(outputNames);
@@ -119,6 +123,37 @@ public class TensorFlowClassifier {
             }
         }
 
+    }
+
+    // for focus measure
+    public void recongnize_fm_batch(float[] pixels, int dims) {
+
+        float[] output = new float[numClasses * dims];
+
+        tfHelper.feed(inputName, pixels, dims, height, width, 3);
+
+        //get the possible outputs
+        tfHelper.run(outputNames);
+
+        //get the output
+        tfHelper.fetch(outputName, output);
+
+        for (int i = 0; i < output.length / 2; i++) {
+
+            //Log.d(TAG, "DL chip output: " + i + " , " + output[i*2] + ", " + output[i*2+1]);
+
+            if (output[i*2] > output[i*2+1]) {  // in the loaded TF model(Shiva's) 0 is infected, 1 is normal
+                UtilsCustom.results_fm.add(0);
+                //Log.d(TAG, "result: " + output[i*2] + ", " + output[i*2+1]);
+            } else {
+                UtilsCustom.results_fm.add(1);
+                //Log.d(TAG, "result: " + output[i*2] + ", " + output[i*2+1]);
+            }
+
+            UtilsCustom.conf_fm.add(output[i*2+1]);
+        }
+
+        //Log.d(TAG, "One batch over");
     }
 
 }

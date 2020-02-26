@@ -12,7 +12,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
-import androidx.appcompat.widget.Toolbar;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -103,7 +103,8 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
         TextView progressText = findViewById(R.id.textView_progress);
         TouchImageView imageView = findViewById(R.id.processed);
         Button continueButton = findViewById(R.id.continueButton);
-        Button endButton = findViewById(R.id.finishButton);
+        Button endButton = findViewById(R.id.endButton);
+        TextView numOfImageText = findViewById(R.id.textView_numofimages);
 
         Intent intent = getIntent();
         bundle = intent.getExtras();
@@ -124,6 +125,7 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
                         // save results image
                         createDirectoryAndSaveResultImage(bundle);
                         writeLogFile();
+                        UtilsCustom.write_fm_conf_File(bundle); // for fm conf
 
                         setManualCounts();
 
@@ -146,6 +148,7 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
                 }
         );
 
+
         endButton.setOnClickListener(
                 new Button.OnClickListener() {
                     public void onClick(View view) {
@@ -153,6 +156,7 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
                         // save results image
                         createDirectoryAndSaveResultImage(bundle);
                         writeLogFile();
+                        UtilsCustom.write_fm_conf_File(bundle); // for fm conf
 
                         setManualCounts();
 
@@ -189,6 +193,8 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
         progressBar.setProgress(progressStatus);
         progressBar.setMax(totalWBCNeeded);
         progressText.setText(UtilsData.WBCTotal + "/" + totalWBCNeeded);
+
+        numOfImageText.setText("Image: " + bundle.getInt("imgCount"));
 
         // when get enough cells
         if (UtilsData.WBCTotal > totalWBCNeeded) {

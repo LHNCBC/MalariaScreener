@@ -1,4 +1,4 @@
-﻿package gov.nih.nlm.malaria_screener;
+package gov.nih.nlm.malaria_screener;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -7,12 +7,16 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
-import androidx.core.app.ActivityCompat;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,12 +27,30 @@ import android.widget.CheckBox;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import gov.nih.nlm.malaria_screener.camera.CameraActivity;
+import android.app.FragmentTransaction;
+
+//import com.github.amlcurran.showcaseview.ShowcaseView;
+//import com.github.amlcurran.showcaseview.targets.ViewTarget;
+
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
+
 import gov.nih.nlm.malaria_screener.database.DatabasePage;
+import gov.nih.nlm.malaria_screener.database.MyDBHandler;
+import gov.nih.nlm.malaria_screener.database.ProgressBarEvent;
+import gov.nih.nlm.malaria_screener.frontEnd.UploadService;
 import gov.nih.nlm.malaria_screener.tutorial.About;
 import gov.nih.nlm.malaria_screener.tutorial.Diagram;
 import gov.nih.nlm.malaria_screener.tutorial.TutorialActivity;
+import gov.nih.nlm.malaria_screener.userOnboard.UserOnBoardActivity;
+//import gov.nih.nlm.malaria_screener.tutorial.Diagram;
+//import gov.nih.nlm.malaria_screener.tutorial.TutorialActivity;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+import org.opencv.android.BaseLoaderCallback;
+import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 
 import java.io.File;
@@ -56,6 +78,8 @@ public class MainActivity extends AppCompatActivity {
     static final int REQUEST_CAM = 2;
 
     final private int REQUEST_CODE_ASK_PERMISSIONS = 123;
+
+    private static final int APP_PERMISSION_REQUEST = 102;
 
     private Button newSessionButton;
     private Button databaseButton;
@@ -87,13 +111,23 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean doNotShow_register = settings.getBoolean("do_not_show_again_register", false);
+        boolean registered = settings.getBoolean("registered", false);
+
+        if (!doNotShow_register & !registered) {
+
+            Intent onBoardIntent = new Intent(getApplicationContext(), UserOnBoardActivity.class);
+            startActivity(onBoardIntent);
+        }
+
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = findViewById(R.id.app_bar);
-        //toolbar.setTitle(R.string.app_name_bar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+        toolbar.setTitle(R.string.app_name_bar);
         toolbar.setTitleTextColor(getResources().getColor(R.color.toolbar_title));
         setSupportActionBar(toolbar);
-        toolbar.setLogo(R.mipmap.nlm_logo_white);
+        toolbar.setLogo(R.mipmap.logo_toolbar);
 
         newSessionButton = (Button) findViewById(R.id.newSession_button);
         databaseButton = (Button) findViewById(R.id.database_button);
@@ -168,21 +202,36 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
 
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
-        boolean firstTime = settings.getBoolean("firstTime_main", true);
+        boolean firstTime = settings.getBoolean("firstTime_mainpage", true);
         if (firstTime) {
 
-            PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("firstTime_main", false).commit();
+            PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("firstTime_mainpage", false).apply();
 
-//            ShowcaseView sv = new ShowcaseView.Builder(this)
-//                    .withMaterialShowcase()
-//                    .setTarget(new ViewTarget(R.id.newSession_button, this))
-//                    .setContentTitle(R.string.new_session_btn_title)
-//                    .setContentText(R.string.new_session_btn)
-//                    .setStyle(R.style.CustomShowcaseTheme2)
-//                    .build();
-//
-//            sv.show();
+            ShowcaseView sv = new ShowcaseView.Builder(this)
+                    .withMaterialShowcase()
+                    .setTarget(new ViewTarget(R.id.newSession_button, this))
+                    .setContentTitle(R.string.new_session_btn_title)
+                    .setContentText(R.string.new_session_btn)
+                    .setStyle(R.style.CustomShowcaseTheme2)
+                    .build();
+
+            sv.show();
+        }
+
+        boolean first_session_done = settings.getBoolean("first_session_done", false);
+        if (first_session_done) {
+
+            PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("first_session_done", false).apply();
+
+            ShowcaseView sv_upload = new ShowcaseView.Builder(this)
+                    .withMaterialShowcase()
+                    .setTarget(new ViewTarget(R.id.database_button, this))
+                    .setContentTitle(R.string.upload_title)
+                    .setContentText(R.string.upload_text)
+                    .setStyle(R.style.CustomShowcaseTheme2)
+                    .build();
+
+            sv_upload.show();
         }
 
         // check for permissions, camera & read/write storage, internet
@@ -213,7 +262,28 @@ public class MainActivity extends AppCompatActivity {
             recreate();
         }
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
+            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    Uri.parse("package:" + getPackageName()));
+            startActivityForResult(intent, APP_PERMISSION_REQUEST);
+        } else {
+            initializeView();
+        }
 
+    }
+
+    private void initializeView() {
+        startService(new Intent(MainActivity.this, UploadService.class));
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == APP_PERMISSION_REQUEST && resultCode == RESULT_OK) {
+            initializeView();
+        } else {
+            Toast.makeText(this, "Draw over other app permission not enable.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private boolean addPermission(List<String> permissionsList, String permission) {
@@ -397,6 +467,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+
+    }
+
+    @Override
     protected void onStop(){
         super.onStop();
 
@@ -407,7 +483,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
         editor.putInt(DROPBOX_PROGRESS, 0);
-        editor.commit();
+        editor.apply();
         
     }
 

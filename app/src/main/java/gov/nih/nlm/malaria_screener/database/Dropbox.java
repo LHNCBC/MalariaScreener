@@ -1,13 +1,14 @@
 package gov.nih.nlm.malaria_screener.database;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Environment;
-import androidx.appcompat.app.AppCompatActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import androidx.appcompat.widget.Toolbar;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,7 +17,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.dropbox.client2.DropboxAPI;
 import com.dropbox.client2.android.AndroidAuthSession;
+import com.dropbox.client2.exception.DropboxException;
 import com.dropbox.client2.session.AppKeyPair;
 import com.dropbox.client2.session.Session;
 import com.dropbox.core.DbxException;
@@ -38,7 +41,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
+import gov.nih.nlm.malaria_screener.MainActivity;
 import gov.nih.nlm.malaria_screener.R;
+import gov.nih.nlm.malaria_screener.custom.ImageUploadEvent;
+import gov.nih.nlm.malaria_screener.frontEnd.UploadService;
 
 public class Dropbox extends AppCompatActivity {
 
@@ -150,7 +156,7 @@ public class Dropbox extends AppCompatActivity {
 
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putInt(DROPBOX_UPDATE_STATE, 0);
-            editor.commit();
+            editor.apply();
 
         } else if (sharedPreferences.getInt(DROPBOX_UPDATE_STATE, 0) == 2) {
             textView.setVisibility(View.VISIBLE);
@@ -171,6 +177,8 @@ public class Dropbox extends AppCompatActivity {
 //                            uploadFolderLayout.setErrorEnabled(true);
 //                            uploadFolderLayout.setError("Name of upload folder can not be empty!");
 //                        } else {
+
+                        startService(new Intent(Dropbox.this, UploadService.class));
 
                         exportDB();
 
@@ -366,7 +374,7 @@ public class Dropbox extends AppCompatActivity {
         SharedPreferences sharedPreferences = getBaseContext().getSharedPreferences(DROPBOX_NAME, 0);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt(DROPBOX_UPDATE_STATE, 3);
-        editor.commit();
+        editor.apply();
     }
 
     @Subscribe
@@ -414,13 +422,11 @@ public class Dropbox extends AppCompatActivity {
     protected void onStop() {
         EventBus.getDefault().unregister(this);
         super.onStop();
-
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
     }
 
     @Override
@@ -510,7 +516,7 @@ public class Dropbox extends AppCompatActivity {
 
                     SharedPreferences sharedPreferences = getBaseContext().getSharedPreferences(DROPBOX_NAME, 0);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.commit();
+                    editor.apply();
 
                     new Upload(getApplicationContext(), dbxClientV2, path).execute();
                     //}
@@ -523,7 +529,7 @@ public class Dropbox extends AppCompatActivity {
 
     }
 
-    private class DB_connect extends AsyncTask<Void, Void, Void> {
+    /*private class DB_connect extends AsyncTask<Void, Void, Void> {
 
         private static final String URL = "jdbc:mysql://130.14.109.11:3306/mydb";
         private static final String userName = "yuh5";
@@ -663,8 +669,7 @@ public class Dropbox extends AppCompatActivity {
             super.onPostExecute(aVoid);
 
         }
-    }
-
+    }*/
 
 }
 

@@ -192,7 +192,7 @@
 
     <!-- Strings for Dropbox-->
     <string name="upload_succeeded">您的最近一次上传操作是成功的</string>
-    <string name="upload_failed">您的最近一次上传操作失败了</string>
+    <string name="upload_failed">您的最近一次上传提前中断，未完成</string>
     <string name="uploading">上传过程中请不要关闭此应用</string>
     <string name="upload_finished">上传已完成</string>
     <string name="no_internet">无法连接到服务器，请检查您的网络连接。</string>

@@ -1,24 +1,44 @@
 package gov.nih.nlm.malaria_screener.custom;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.graphics.Point;
-
-import androidx.recyclerview.widget.RecyclerView;
-
+import android.graphics.Rect;
+import android.os.Environment;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.util.Size;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
+import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import gov.nih.nlm.malaria_screener.R;
+import gov.nih.nlm.malaria_screener.database.MyDBHandler;
 
 /**
  * Created by yuh5 on 3/22/2017.

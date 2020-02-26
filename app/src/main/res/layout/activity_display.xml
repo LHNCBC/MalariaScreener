@@ -5,13 +5,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/navigate_bar_result"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentTop="true"
         android:background="#1F568a"
-        android:textAlignment="center"></androidx.appcompat.widget.Toolbar>
+        android:textAlignment="center"></android.support.v7.widget.Toolbar>
 
     <ListView
         android:id="@+id/listView_counts"
@@ -30,62 +30,101 @@
         android:layout_marginTop="147dp"
         android:max="1000" />
 
-    <TextView
-        android:id="@+id/textView_progress"
-        android:layout_width="wrap_content"
+    <TableLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
+        android:orientation="horizontal"
         android:layout_below="@+id/progressBar2"
-        />
+        android:id="@+id/tableLayout"
+        android:layout_marginBottom="2dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        >
 
-    <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        <TableRow
+            android:id="@+id/tableRow1"
+            android:paddingTop="2dp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            >
+
+            <Switch
+                android:id="@+id/switch_image"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight=".5"
+                android:gravity="center"
+                android:text="@string/original_image_switch" />
+
+            <TextView
+                android:id="@+id/textView_numofimages"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight=".2"
+                android:gravity="center"
+                android:layout_toLeftOf="@+id/textView_progress"
+                android:text="Images:"
+                android:textStyle="bold"
+                />
+
+            <TextView
+                android:id="@+id/textView_progress"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_weight=".2"
+                android:gravity="center"
+                android:text="0/1000" />
+
+        </TableRow>
+
+    </TableLayout>
+
+    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:cardView="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/card_view"
         android:layout_width="match_parent"
-        android:layout_height="370dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:layout_marginTop="190dp">
+        android:layout_height="350dp"
+        android:layout_margin="5dp"
+        android:layout_below="@+id/tableLayout"
+        android:layout_above="@+id/continueButton">
+
 
         <gov.nih.nlm.malaria_screener.custom.TouchImageView
             android:id="@+id/processed"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="center"/>
+            android:scaleType="centerCrop" />
 
-    </androidx.cardview.widget.CardView>
+    </android.support.v7.widget.CardView>
 
     <Button
         android:id="@+id/continueButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#d95891ec"
         android:text="@string/continue_button"
         android:textColor="#FFFFFF"
-        android:background="#d95891ec"
-        android:layout_above="@+id/finishButton"
+        android:layout_above="@+id/endButton"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginBottom="10dp"/>
+        android:layout_marginBottom="7dp"/>
 
     <Button
-        android:id="@+id/finishButton"
+        android:id="@+id/endButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:background="#d95891ec"
-        android:text="End Session"
+        android:text="@string/end_session"
         android:textColor="#FFFFFF" />
 
-    <Switch
-        android:id="@+id/switch_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/card_view"
-        android:layout_below="@+id/progressBar2"
-        android:text="@string/original_image_switch" />
+
+
 
 
 </RelativeLayout>

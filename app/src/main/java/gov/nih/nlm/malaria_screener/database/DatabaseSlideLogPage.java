@@ -2,9 +2,9 @@ package gov.nih.nlm.malaria_screener.database;
 
 import android.content.Intent;
 import android.database.Cursor;
-import androidx.appcompat.app.AppCompatActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import androidx.appcompat.widget.Toolbar;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;

@@ -1,21 +1,21 @@
 {
   "buildFiles": [
-    "Q:\\Malaria\\AndroidProject\\MalariaScreener\\app\\CMakeLists.txt"
+    "C:\\Users\\yuh5\\MS_branch\\MalariaScreener\\app\\CMakeLists.txt"
   ],
   "cleanCommands": [
-    "C:\\Users\\yuh5\\AppData\\Local\\Android\\sdk\\cmake\\3.6.4111459\\bin\\cmake.exe --build Q:\\Malaria\\AndroidProject\\MalariaScreener\\app\\.externalNativeBuild\\cmake\\release\\arm64-v8a --target clean"
+    "C:\\Users\\yuh5\\AppData\\Local\\Android\\Sdk\\cmake\\3.6.4111459\\bin\\cmake.exe --build C:\\Users\\yuh5\\MS_branch\\MalariaScreener\\app\\.externalNativeBuild\\cmake\\release\\arm64-v8a --target clean"
   ],
   "libraries": {
     "native-lib-Release-arm64-v8a": {
       "artifactName": "native-lib",
-      "buildCommand": "C:\\Users\\yuh5\\AppData\\Local\\Android\\sdk\\cmake\\3.6.4111459\\bin\\cmake.exe --build Q:\\Malaria\\AndroidProject\\MalariaScreener\\app\\.externalNativeBuild\\cmake\\release\\arm64-v8a --target native-lib",
+      "buildCommand": "C:\\Users\\yuh5\\AppData\\Local\\Android\\Sdk\\cmake\\3.6.4111459\\bin\\cmake.exe --build C:\\Users\\yuh5\\MS_branch\\MalariaScreener\\app\\.externalNativeBuild\\cmake\\release\\arm64-v8a --target native-lib",
       "abi": "arm64-v8a",
-      "output": "Q:\\Malaria\\AndroidProject\\MalariaScreener\\app\\build\\intermediates\\cmake\\release\\obj\\arm64-v8a\\libnative-lib.so"
+      "output": "C:\\Users\\yuh5\\MS_branch\\MalariaScreener\\app\\build\\intermediates\\cmake\\release\\obj\\arm64-v8a\\libnative-lib.so"
     },
     "lib_opencv-Release-arm64-v8a": {
       "artifactName": "lib_opencv",
       "abi": "arm64-v8a",
-      "output": "Q:\\Malaria\\AndroidProject\\MalariaScreener\\app\\src\\main\\jniLibs\\arm64-v8a\\libopencv_java3.so"
+      "output": "C:\\Users\\yuh5\\MS_branch\\MalariaScreener\\app\\src\\main\\jniLibs\\arm64-v8a\\libopencv_java3.so"
     }
   }
 }

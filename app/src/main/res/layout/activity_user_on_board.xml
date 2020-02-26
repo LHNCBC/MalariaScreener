@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    >
+
+    <ImageView
+        android:id="@+id/imageView_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.05"
+        android:src="@drawable/background" />
+
+    <TextView
+        android:id="@+id/textView_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:text="@string/on_board_title"
+        android:textColor="#1F568a"
+        android:textSize="28sp" />
+
+    <TextView
+        android:id="@+id/textView_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView_title"
+        android:layout_marginTop="15dp"
+        android:gravity="center"
+        android:text="@string/on_board_text"
+        android:textColor="#1F568a"
+        android:textSize="14sp" />
+
+    <Button
+        android:id="@+id/button_register"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/button_skip"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/button_border"
+        android:text="@string/register"
+        android:textAppearance="@android:style/TextAppearance.Large"
+        android:textColor="#1F568a"
+        />
+
+    <Button
+        android:id="@+id/button_skip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/checkBox_doNotShowAgain"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="15dp"
+        android:background="#00FAFAFA"
+        android:text="Skip"
+        android:textAllCaps="false"
+        android:textColor="#1F568a" />
+
+    <CheckBox
+        android:id="@+id/checkBox_doNotShowAgain"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="35dp"
+        android:layout_centerHorizontal="true"
+        android:text="Do not show this page again" />
+
+
+
+
+</RelativeLayout>

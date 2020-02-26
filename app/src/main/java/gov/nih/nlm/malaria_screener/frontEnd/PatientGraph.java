@@ -1,8 +1,8 @@
 package gov.nih.nlm.malaria_screener.frontEnd;
 
-import androidx.appcompat.app.AppCompatActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import androidx.appcompat.widget.Toolbar;
+import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.view.MenuItem;
 

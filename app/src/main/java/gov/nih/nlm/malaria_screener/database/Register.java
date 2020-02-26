@@ -3,10 +3,11 @@ package gov.nih.nlm.malaria_screener.database;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Environment;
-import androidx.appcompat.app.AppCompatActivity;
+import android.preference.PreferenceManager;
+import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import androidx.appcompat.widget.Toolbar;
-
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,10 +15,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import org.opencv.core.Mat;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import gov.nih.nlm.malaria_screener.MainActivity;
 import gov.nih.nlm.malaria_screener.R;
 
 public class Register extends AppCompatActivity {
@@ -27,7 +31,7 @@ public class Register extends AppCompatActivity {
     static final int REQUEST_DROPBOX = 1;
     private final static String DROPBOX_FILE_DIR = "/NLM_Malaria_Screener/";
     private final static String DROPBOX_NAME = "dropbox_prefs";
-    private final static String DROPBOX_REGISTERED = "register";
+    private final static String DROPBOX_REGISTERED = "registered";
     private final static String DROPBOX_DIR = "dropbox_dir";
 
 
@@ -36,6 +40,8 @@ public class Register extends AppCompatActivity {
     private String firstName, lastName, email, organization, department, address1, address2, city, zip, country;
 
     Button registerButton;
+
+    Boolean fromDisclaimer = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +65,10 @@ public class Register extends AppCompatActivity {
         et_city = (EditText) findViewById(R.id.editText_city);
         et_zip = (EditText) findViewById(R.id.editText_zip);
         et_country = (EditText) findViewById(R.id.editText_country);
+
+
+        Bundle extras = getIntent().getExtras();
+        fromDisclaimer = extras.getBoolean("from_disclaimer");
 
         registerButton = (Button) findViewById(R.id.button_register);
         registerButton.setOnClickListener(
@@ -88,15 +98,23 @@ public class Register extends AppCompatActivity {
             SharedPreferences sharedPreferences = getSharedPreferences(DROPBOX_NAME, 0);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean(DROPBOX_REGISTERED, true);
-            editor.putString(DROPBOX_DIR, firstName + lastName);
-            editor.commit();
+            editor.putString(DROPBOX_DIR, firstName + lastName + "_" + email);
+            editor.apply();
 
             OutputTextFile();
 
-            Intent dropboxIntent = new Intent(getApplicationContext(), Dropbox.class);
-            startActivityForResult(dropboxIntent, REQUEST_DROPBOX);
+            PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("do_not_show_again_register", true).apply();
 
-            finish();
+            /*Intent dropboxIntent = new Intent(getApplicationContext(), Dropbox.class);
+            startActivityForResult(dropboxIntent, REQUEST_DROPBOX);*/
+
+            if (fromDisclaimer){
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // kill all the other activities on top of the old MainActivity.class activity
+                startActivity(intent);
+            } else {
+                finish();
+            }
         }
     }
 

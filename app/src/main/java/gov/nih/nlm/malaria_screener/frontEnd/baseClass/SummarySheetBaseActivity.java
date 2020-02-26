@@ -2,9 +2,11 @@ package gov.nih.nlm.malaria_screener.frontEnd.baseClass;
 
 import android.os.Bundle;
 import android.os.Environment;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 
 import java.io.File;
@@ -15,6 +17,8 @@ import gov.nih.nlm.malaria_screener.R;
 import gov.nih.nlm.malaria_screener.custom.CustomAdapter;
 import gov.nih.nlm.malaria_screener.custom.CustomAdapterBold;
 import gov.nih.nlm.malaria_screener.custom.RowItem;
+import gov.nih.nlm.malaria_screener.custom.Utils.UtilsData;
+import gov.nih.nlm.malaria_screener.database.MyDBHandler;
 
 public abstract class SummarySheetBaseActivity extends AppCompatActivity {
 

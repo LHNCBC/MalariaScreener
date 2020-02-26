@@ -531,9 +531,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         String query = "SELECT * FROM " + TABLE_PATIENTS + " WHERE 1 ";
         Cursor c = db.rawQuery(query, null);
 
-        int dbLength = c.getCount();
-
-        return dbLength;
+        return c.getCount();
     }
 
     public void updateImageManulCounts(String PID, String SID, String ImageID, String cellCountGT, String infectedCountGT){
@@ -563,5 +561,15 @@ public class MyDBHandler extends SQLiteOpenHelper {
         db.update(TABLE_IMAGES_THICK, contentValues, where, null);
 
     }
+
+    public int checkNumberOfSlides(){
+
+        SQLiteDatabase db = getWritableDatabase();
+        String query = "SELECT * FROM " + TABLE_SLIDES + " WHERE 1 ";
+        Cursor c = db.rawQuery(query, null);
+
+        return c.getCount();
+    }
+
 
 }

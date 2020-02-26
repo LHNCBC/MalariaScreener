@@ -1,8 +1,8 @@
 package gov.nih.nlm.malaria_screener.custom;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.viewpager.widget.ViewPager;
+import android.support.annotation.NonNull;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

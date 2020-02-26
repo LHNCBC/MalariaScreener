@@ -8,13 +8,13 @@
     android:focusableInTouchMode="true"
     tools:context="gov.nih.nlm.malaria_screener.database.Dropbox">
 
-    <androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/navigate_bar_dropbox"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentTop="true"
         android:background="#1F568a"
-        android:textAlignment="center"></androidx.appcompat.widget.Toolbar>
+        android:textAlignment="center"></android.support.v7.widget.Toolbar>
 
     <ProgressBar
         android:id="@+id/progressBar_upload"

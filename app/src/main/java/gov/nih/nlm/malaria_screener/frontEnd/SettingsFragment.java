@@ -15,7 +15,7 @@ import gov.nih.nlm.malaria_screener.R;
 public class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener{
 
     CharSequence[] cs_entry, clssifier_entry = {"Deep Learning", "SVM"};
-    //public static final String KEY_PREF_WB = "whitebalance";
+    public static final String KEY_PREF_WB = "whitebalance";
     public static final String KEY_PREF_CLASSIFIER = "classifier";
 
     @Override
@@ -27,7 +27,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-        /*cs_entry = getArguments().getCharSequenceArray("WB_list");
+        cs_entry = getArguments().getCharSequenceArray("WB_list");
 
         ListPreference listPreference = (ListPreference) findPreference("whitebalance");
 
@@ -39,7 +39,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             listPreference.setEntries(cs_entry);
             listPreference.setEntryValues(entryValues);
             listPreference.setSummary(cs_entry[Integer.valueOf(sharedPreferences.getString("whitebalance", "0"))]);
-        }*/
+        }
 
         ListPreference listPreference_classifier = (ListPreference) findPreference("classifier");
         if (listPreference_classifier!=null){
@@ -71,13 +71,13 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 
-        /*if (key.equals(KEY_PREF_WB)) {
+        if (key.equals(KEY_PREF_WB)) {
             Preference connectionPref = findPreference(key);
             // Set summary to be the user-description for the selected value
             int index = Integer.valueOf(sharedPreferences.getString(key, "0"));
             connectionPref.setSummary(cs_entry[index]);
 
-        } else*/ if (key.equals(KEY_PREF_CLASSIFIER)){
+        } else if (key.equals(KEY_PREF_CLASSIFIER)){
             Preference connectionPref = findPreference(key);
             // Set summary to be the user-description for the selected value
             int index = Integer.valueOf(sharedPreferences.getString(key, "0"));

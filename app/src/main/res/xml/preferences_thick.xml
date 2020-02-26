@@ -5,11 +5,11 @@
     <PreferenceCategory
         android:key="category1_key"
         android:title="@string/category1">
-        <!--<ListPreference
+        <ListPreference
             android:defaultValue="0"
             android:key="whitebalance"
             android:summary="@string/wbsum"
-            android:title="@string/whitebalance" />-->
+            android:title="@string/whitebalance" />
 
         <gov.nih.nlm.malaria_screener.custom.SeekBarPreference_Exposure
             android:defaultValue="0"

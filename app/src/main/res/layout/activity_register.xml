@@ -9,13 +9,13 @@
     android:focusableInTouchMode="true"
     tools:context="gov.nih.nlm.malaria_screener.database.Register">
 
-    <androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/navigate_bar_register"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentTop="true"
         android:background="#1F568a"
-        android:textAlignment="center"></androidx.appcompat.widget.Toolbar>
+        android:textAlignment="center"></android.support.v7.widget.Toolbar>
 
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_height="match_parent"
@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:text="@string/fill_in"/>
 
-        <com.google.android.material.textfield.TextInputLayout
+        <android.support.design.widget.TextInputLayout
             android:id="@+id/layout_firstName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -48,9 +48,9 @@
                 android:ems="10"
                 android:hint="@string/first_name1"
                 android:inputType="textCapSentences" />
-        </com.google.android.material.textfield.TextInputLayout>
+        </android.support.design.widget.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
+        <android.support.design.widget.TextInputLayout
             android:id="@+id/layout_lastName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -62,9 +62,9 @@
                 android:ems="10"
                 android:hint="@string/last_name1"
                 android:inputType="textCapSentences" />
-        </com.google.android.material.textfield.TextInputLayout>
+        </android.support.design.widget.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
+        <android.support.design.widget.TextInputLayout
             android:id="@+id/layout_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -76,9 +76,9 @@
                 android:ems="10"
                 android:hint="@string/email1"
                 android:inputType="textEmailAddress" />
-        </com.google.android.material.textfield.TextInputLayout>
+        </android.support.design.widget.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
+        <android.support.design.widget.TextInputLayout
             android:id="@+id/layout_organization"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -90,9 +90,9 @@
                 android:ems="10"
                 android:hint="@string/organization1"
                 android:inputType="textCapSentences" />
-        </com.google.android.material.textfield.TextInputLayout>
+        </android.support.design.widget.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
+        <android.support.design.widget.TextInputLayout
             android:id="@+id/layout_department"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -104,9 +104,9 @@
                 android:ems="10"
                 android:hint="@string/department1"
                 android:inputType="textCapSentences" />
-        </com.google.android.material.textfield.TextInputLayout>
+        </android.support.design.widget.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
+        <android.support.design.widget.TextInputLayout
             android:id="@+id/layout_address1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -118,9 +118,9 @@
                 android:ems="10"
                 android:hint="@string/address1"
                 android:inputType="text" />
-        </com.google.android.material.textfield.TextInputLayout>
+        </android.support.design.widget.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
+        <android.support.design.widget.TextInputLayout
             android:id="@+id/layout_address2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -132,9 +132,9 @@
                 android:ems="10"
                 android:hint="@string/address2"
                 android:inputType="text" />
-        </com.google.android.material.textfield.TextInputLayout>
+        </android.support.design.widget.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
+        <android.support.design.widget.TextInputLayout
             android:id="@+id/layout_city"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -146,9 +146,9 @@
                 android:ems="10"
                 android:hint="@string/city1"
                 android:inputType="textCapSentences" />
-        </com.google.android.material.textfield.TextInputLayout>
+        </android.support.design.widget.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
+        <android.support.design.widget.TextInputLayout
             android:id="@+id/layout_zip"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -160,9 +160,9 @@
                 android:ems="10"
                 android:hint="@string/zip_code1"
                 android:inputType="number" />
-        </com.google.android.material.textfield.TextInputLayout>
+        </android.support.design.widget.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
+        <android.support.design.widget.TextInputLayout
             android:id="@+id/layout_country"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -174,7 +174,7 @@
                 android:ems="10"
                 android:hint="@string/country1"
                 android:inputType="textCapSentences" />
-        </com.google.android.material.textfield.TextInputLayout>
+        </android.support.design.widget.TextInputLayout>
 
         <Button
             android:text="@string/register"

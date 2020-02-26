@@ -26,6 +26,10 @@ public class ThickSmearProcessor {
 
     int inputSize = 44;
 
+    //Bitmap canvasBitmap;
+
+    Bitmap output;
+
     int num_th = 400;
 
     int batch_size = UtilsCustom.batch_size;
@@ -218,6 +222,7 @@ public class ThickSmearProcessor {
 
         return imgFile;
     }
+
 
     public native int processThickImage(long mat, long result, int[] x, int[] y, long extraMat);
 }

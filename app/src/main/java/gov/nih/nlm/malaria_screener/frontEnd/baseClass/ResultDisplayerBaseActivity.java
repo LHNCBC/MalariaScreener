@@ -1,12 +1,12 @@
 package gov.nih.nlm.malaria_screener.frontEnd.baseClass;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.os.Bundle;
 import android.os.Environment;
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.Surface;
@@ -16,6 +16,7 @@ import android.widget.Switch;
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
+import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
 import java.io.File;
@@ -55,8 +56,6 @@ public abstract class ResultDisplayerBaseActivity extends AppCompatActivity {
 
         if (takenFromCam) {
             int orientation = bundle.getInt("Orientation");
-
-            Log.d(TAG, "ori result: " + orientation);
 
             Matrix m = new Matrix(); // rotate image according to phone orientation when image was taken
             if (orientation == Surface.ROTATION_0) {
@@ -101,7 +100,6 @@ public abstract class ResultDisplayerBaseActivity extends AppCompatActivity {
         imageView.changeEnlargedFlag(true);
         imageView.setImageBitmap(UtilsCustom.canvasBitmap);
         imageView.setMaxZoom(10.0f);
-
 
     }
 

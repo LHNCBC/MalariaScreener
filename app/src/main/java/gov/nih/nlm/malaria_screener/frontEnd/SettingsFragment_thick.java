@@ -26,7 +26,7 @@ public class SettingsFragment_thick extends PreferenceFragment implements Shared
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-        /*cs_entry = getArguments().getCharSequenceArray("WB_list");
+        cs_entry = getArguments().getCharSequenceArray("WB_list");
 
         ListPreference listPreference = (ListPreference) findPreference("whitebalance");
 
@@ -38,7 +38,7 @@ public class SettingsFragment_thick extends PreferenceFragment implements Shared
             listPreference.setEntries(cs_entry);
             listPreference.setEntryValues(entryValues);
             listPreference.setSummary(cs_entry[Integer.valueOf(sharedPreferences.getString("whitebalance", "0"))]);
-        }*/
+        }
 
     }
 
@@ -59,12 +59,12 @@ public class SettingsFragment_thick extends PreferenceFragment implements Shared
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 
-        /*if (key.equals(KEY_PREF_WB)) {
+        if (key.equals(KEY_PREF_WB)) {
             Preference connectionPref = findPreference(key);
             // Set summary to be the user-description for the selected value
             int index = Integer.valueOf(sharedPreferences.getString(key, "0"));
             connectionPref.setSummary(cs_entry[index]);
 
-        }*/
+        }
     }
 }

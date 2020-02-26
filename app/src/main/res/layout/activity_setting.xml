@@ -2,13 +2,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent">
 
-    <androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/navigate_bar_setting"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentTop="true"
         android:background="#1F568a"
-        android:textAlignment="center"></androidx.appcompat.widget.Toolbar>
+        android:textAlignment="center"></android.support.v7.widget.Toolbar>
 
     <FrameLayout
         android:id="@+id/container"

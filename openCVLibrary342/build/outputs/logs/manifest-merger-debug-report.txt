@@ -1,37 +1,37 @@
 -- Merging decision tree log ---
 manifest
-ADDED from Q:\Malaria\AndroidProject\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml:2:1-7:12
-INJECTED from Q:\Malaria\AndroidProject\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml:2:1-7:12
-INJECTED from Q:\Malaria\AndroidProject\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml:2:1-7:12
-INJECTED from Q:\Malaria\AndroidProject\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml:2:1-7:12
-INJECTED from Q:\Malaria\AndroidProject\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml:2:1-7:12
-INJECTED from Q:\Malaria\AndroidProject\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml:2:1-7:12
-INJECTED from Q:\Malaria\AndroidProject\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml:2:1-7:12
+ADDED from C:\Users\yuh5\MS_branch\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml:2:1-7:12
+INJECTED from C:\Users\yuh5\MS_branch\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml:2:1-7:12
+INJECTED from C:\Users\yuh5\MS_branch\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml:2:1-7:12
+INJECTED from C:\Users\yuh5\MS_branch\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml:2:1-7:12
+INJECTED from C:\Users\yuh5\MS_branch\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml:2:1-7:12
+INJECTED from C:\Users\yuh5\MS_branch\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml:2:1-7:12
+INJECTED from C:\Users\yuh5\MS_branch\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml:2:1-7:12
 	package
-		ADDED from Q:\Malaria\AndroidProject\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml:3:7-27
-		INJECTED from Q:\Malaria\AndroidProject\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml
-		INJECTED from Q:\Malaria\AndroidProject\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml
+		ADDED from C:\Users\yuh5\MS_branch\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml:3:7-27
+		INJECTED from C:\Users\yuh5\MS_branch\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\yuh5\MS_branch\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml
 	android:versionName
-		ADDED from Q:\Malaria\AndroidProject\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml:5:7-34
-		INJECTED from Q:\Malaria\AndroidProject\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml
-		INJECTED from Q:\Malaria\AndroidProject\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml
+		ADDED from C:\Users\yuh5\MS_branch\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml:5:7-34
+		INJECTED from C:\Users\yuh5\MS_branch\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\yuh5\MS_branch\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml
 	xmlns:android
-		ADDED from Q:\Malaria\AndroidProject\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml:2:11-69
+		ADDED from C:\Users\yuh5\MS_branch\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml:2:11-69
 	android:versionCode
-		ADDED from Q:\Malaria\AndroidProject\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml:4:7-33
-		INJECTED from Q:\Malaria\AndroidProject\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml
-		INJECTED from Q:\Malaria\AndroidProject\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml
+		ADDED from C:\Users\yuh5\MS_branch\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml:4:7-33
+		INJECTED from C:\Users\yuh5\MS_branch\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\yuh5\MS_branch\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml
 uses-sdk
-INJECTED from Q:\Malaria\AndroidProject\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml reason: use-sdk injection requested
-INJECTED from Q:\Malaria\AndroidProject\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml
-INJECTED from Q:\Malaria\AndroidProject\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml
-INJECTED from Q:\Malaria\AndroidProject\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml
-INJECTED from Q:\Malaria\AndroidProject\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml
+INJECTED from C:\Users\yuh5\MS_branch\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from C:\Users\yuh5\MS_branch\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml
+INJECTED from C:\Users\yuh5\MS_branch\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml
+INJECTED from C:\Users\yuh5\MS_branch\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml
+INJECTED from C:\Users\yuh5\MS_branch\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml
 	android:targetSdkVersion
-		INJECTED from Q:\Malaria\AndroidProject\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml
-		ADDED from Q:\Malaria\AndroidProject\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml
-		INJECTED from Q:\Malaria\AndroidProject\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\yuh5\MS_branch\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml
+		ADDED from C:\Users\yuh5\MS_branch\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\yuh5\MS_branch\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml
 	android:minSdkVersion
-		INJECTED from Q:\Malaria\AndroidProject\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml
-		ADDED from Q:\Malaria\AndroidProject\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml
-		INJECTED from Q:\Malaria\AndroidProject\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\yuh5\MS_branch\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml
+		ADDED from C:\Users\yuh5\MS_branch\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\yuh5\MS_branch\MalariaScreener\openCVLibrary342\src\main\AndroidManifest.xml

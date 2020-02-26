@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@drawable/pressed_button_no" android:state_pressed="true"/>
-    <item android:drawable="@drawable/rsz_button_no_red"/>
+    <item android:state_pressed="true" android:drawable="@drawable/pressed_button_no" />
+    <item android:drawable="@drawable/rsz_button_no_red" />
 </selector>

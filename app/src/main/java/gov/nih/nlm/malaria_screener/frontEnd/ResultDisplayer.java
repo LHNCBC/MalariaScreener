@@ -12,8 +12,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
-import androidx.appcompat.widget.Toolbar;
-
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -62,13 +61,9 @@ public class ResultDisplayer extends ResultDisplayerBaseActivity {
 
     String classifierType;
 
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Log.d(TAG, " in result displayer");
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         final int totalCellNeeded = sharedPreferences.getInt("celltotal", 1000);
@@ -85,6 +80,34 @@ public class ResultDisplayer extends ResultDisplayerBaseActivity {
 
         imageAcquisition = sharedPreferences.getBoolean("image_acquire", false);
 
+        /*if (imageAcquisition) {
+            setContentView(R.layout.activity_display_acquisition_mode);
+
+            Button finishButton = findViewById(R.id.finishButton);
+
+            finishButton.setOnClickListener(
+                    new Button.OnClickListener() {
+                        public void onClick(View view) {
+
+                            // save results image
+                            createDirectoryAndSaveResultImage(resultBitmap, bundle);
+                            writeLogFile();
+
+                            setManualCounts();
+
+                            finishActivity(REQUEST_CAM);
+
+                            Intent PatientInfoIntent = new Intent(view.getContext(), PatientInfoActivity.class);
+
+                            PatientInfoIntent.putExtras(bundle);
+                            startActivity(PatientInfoIntent);
+                            finish();
+
+                        }
+                    }
+            );
+        }*/
+
         Toolbar toolbar = findViewById(R.id.navigate_bar_result);
         toolbar.setTitle(R.string.title_result);
         toolbar.setTitleTextColor(getResources().getColor(R.color.toolbar_title));
@@ -95,7 +118,8 @@ public class ResultDisplayer extends ResultDisplayerBaseActivity {
         TextView progressText = findViewById(R.id.textView_progress);
         TouchImageView imageView = findViewById(R.id.processed);
         Button continueButton = findViewById(R.id.continueButton);
-        Button endButton = findViewById(R.id.finishButton);
+        Button endButton = findViewById(R.id.endButton);
+        TextView numOfImageText = findViewById(R.id.textView_numofimages);
 
         Intent intent = getIntent();
         bundle = intent.getExtras();
@@ -116,6 +140,7 @@ public class ResultDisplayer extends ResultDisplayerBaseActivity {
                         // save results image
                         createDirectoryAndSaveResultImage(bundle);
                         writeLogFile();
+                        UtilsCustom.write_fm_conf_File(bundle); // for fm conf
 
                         setManualCounts();
 
@@ -145,6 +170,7 @@ public class ResultDisplayer extends ResultDisplayerBaseActivity {
                         // save results image
                         createDirectoryAndSaveResultImage(bundle);
                         writeLogFile();
+                        UtilsCustom.write_fm_conf_File(bundle); // for fm conf
 
                         setManualCounts();
 
@@ -181,6 +207,8 @@ public class ResultDisplayer extends ResultDisplayerBaseActivity {
         progressBar.setProgress(progressStatus);
         progressBar.setMax(totalCellNeeded);
         progressText.setText(UtilsData.cellTotal + "/" + totalCellNeeded);
+
+        numOfImageText.setText("Image: " + bundle.getInt("imgCount"));
 
         // when get enough cells
         if (UtilsData.cellTotal > totalCellNeeded) {

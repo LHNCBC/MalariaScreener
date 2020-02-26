@@ -1,15 +1,20 @@
 package gov.nih.nlm.malaria_screener.custom;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.appcompat.widget.Toolbar;
-
+import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+
+import java.util.ArrayList;
 
 import gov.nih.nlm.malaria_screener.R;
 

@@ -12,4 +12,4 @@
 -- Detecting CXX compile features - done
 -- Configuring done
 -- Generating done
--- Build files have been written to: Q:/Malaria/AndroidProject/MalariaScreener/app/.externalNativeBuild/cmake/debug/armeabi-v7a
+-- Build files have been written to: C:/Users/yuh5/MS_branch/MalariaScreener/app/.externalNativeBuild/cmake/debug/armeabi-v7a

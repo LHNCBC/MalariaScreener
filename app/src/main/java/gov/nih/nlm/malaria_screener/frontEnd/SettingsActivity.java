@@ -5,8 +5,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import gov.nih.nlm.malaria_screener.R;
@@ -24,8 +24,8 @@ public class SettingsActivity extends AppCompatActivity{
 
         setContentView(R.layout.activity_setting);
 
-        //Intent intent = getIntent();
-        //Bundle bundle = intent.getExtras();
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
         //CharSequence[] cs = bundle.getCharSequenceArray("WB_list");
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.navigate_bar_setting);
@@ -40,15 +40,15 @@ public class SettingsActivity extends AppCompatActivity{
         String smearType = sharedPreferences.getString("smeartype", "Thin");
 
         // Display the fragment as the main content.
-        if (smearType.equals("Thin")){
+        if (smearType.equals("Thin")) {
             SettingsFragment fragment = new SettingsFragment();
-            //fragment.setArguments(bundle);
+            fragment.setArguments(bundle);
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             transaction.add(R.id.container, fragment);
             transaction.commit();
         } else if (smearType.equals("Thick")){
             SettingsFragment_thick fragment = new SettingsFragment_thick();
-            //fragment.setArguments(bundle);
+            fragment.setArguments(bundle);
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             transaction.add(R.id.container, fragment);
             transaction.commit();

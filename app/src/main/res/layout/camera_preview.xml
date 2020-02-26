@@ -5,25 +5,33 @@
     android:orientation="horizontal"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#1D1C1C"
-    android:id="@+id/cam_preview"
+    android:background="#ffffff"
     >
 
+    <FrameLayout
+        android:id="@+id/camera_preview"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        />
     <!--android:layout_above="@+id/include_bottom"-->
 
-    <gov.nih.nlm.malaria_screener.camera.AutoFitTextureView
-        android:id="@+id/texture_view"
+    <ViewStub
+        android:id="@+id/stub"
+        android:inflatedId="@id/stub"
+        android:layout="@layout/app_bar_cam"
+        android:layout_width="match_parent"
+        android:layout_height="90dp" />
+
+     <ImageButton
+        android:id="@+id/button_gallery"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/stub"
-        />
+         android:layout_marginEnd="31dp"
+         android:layout_alignTop="@+id/settingButton"
+         android:layout_alignParentEnd="true"
+         android:background="@drawable/button_gallery_selector"/>
 
-    <include
-        android:id="@+id/stub"
-        layout="@layout/app_bar_cam"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+    <!-- To auto-complete the email text field in the login form with the user's emails -->
 
     <ProgressBar
         style="?android:attr/progressBarStyleHorizontal"
@@ -35,18 +43,17 @@
         android:layout_alignParentEnd="true"
         android:max="1000"
         android:background="#121f568a"
-        android:indeterminate="false"
-        />
+        android:indeterminate="false" />
     <!--android:background="#90f7f7f7"-->
 
-     <ImageButton
-        android:id="@+id/button_gallery"
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-         android:layout_marginEnd="31dp"
-         android:layout_alignTop="@+id/settingButton"
-         android:layout_alignParentEnd="true"
-         android:background="@drawable/button_gallery_selector"/>
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:id="@+id/textView_progress"
+        android:layout_above="@+id/progressBar"
+        android:layout_alignParentEnd="true"
+        android:textColor="#ffffff" />
 
     <!--<include
         layout="@layout/bottombar"
@@ -73,10 +80,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/button_capture"
         android:background="@drawable/capturebuttonstyle"
-        android:layout_marginBottom="5dp"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/texture_view"
-        android:layout_marginTop="5dp"/>
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
 
     <!--<ImageButton
         android:id="@+id/button_bluetooth"

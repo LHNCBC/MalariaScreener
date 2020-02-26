@@ -36,5 +36,12 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true" />
 
+    <FrameLayout
+        android:id="@+id/container_onBoard"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+    </FrameLayout>
+
 
 </RelativeLayout>

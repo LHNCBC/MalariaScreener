@@ -243,7 +243,7 @@ public class Upload extends AsyncTask<Void, Integer, Boolean> {
         SharedPreferences sharedPreferences = context.getSharedPreferences(DROPBOX_NAME, 0);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt(DROPBOX_PROGRESS, values[0]);
-        editor.commit();
+        editor.apply();
 
     }
 
@@ -265,7 +265,7 @@ public class Upload extends AsyncTask<Void, Integer, Boolean> {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt(DROPBOX_PROGRESS, 0);
         editor.putInt(DROPBOX_UPDATE_STATE, 1);
-        editor.commit();
+        editor.apply();
 
     }
 
