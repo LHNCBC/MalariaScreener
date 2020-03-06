@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.box.androidsdk.content.auth.BoxAuthentication;
 import com.dropbox.client2.DropboxAPI;
 import com.dropbox.client2.android.AndroidAuthSession;
 import com.dropbox.client2.exception.DropboxException;
@@ -88,7 +89,7 @@ public class Dropbox extends AppCompatActivity {
         setContentView(R.layout.activity_dropbox);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.navigate_bar_dropbox);
-        toolbar.setTitle(R.string.title_dropbox);
+        toolbar.setTitle(R.string.title_upload);
         toolbar.setTitleTextColor(getResources().getColor(R.color.toolbar_title));
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

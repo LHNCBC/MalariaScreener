@@ -42,7 +42,7 @@ public class Cells {
     private ArrayList<Mat> cellChip = new ArrayList<>();
 
     int CCAreaTh = 2500;
-    int chipIndex = 1;
+    //int chipIndex = 1;
 
     double ori_height = 2988;
     double ori_width = 5312;
@@ -227,6 +227,7 @@ public class Cells {
                 featureVecs.add(featureVec);
 
                 cellCount++;
+                outputChipFiles(newChip);
             }
 
         }
@@ -492,10 +493,15 @@ public class Cells {
 
     private File createChipFile() throws IOException {
 
-        File Dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-        File imgFile = new File(Dir, "chip_" + chipIndex + ".PNG");
+        File Dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "Chip");
 
-        chipIndex++;
+        if (!Dir.exists()) {
+            Dir.mkdirs();
+        }
+
+        File imgFile = new File(Dir, "chip_" + cellCount + ".PNG");
+
+        //chipIndex++;
 
         return imgFile;
     }

@@ -73,7 +73,7 @@
                     android:id="@+id/textView_upload_float"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/title_dropbox"
+                    android:text="@string/title_upload"
                     android:textColor="@android:color/white"
                     android:textSize="17sp"
                     android:textStyle="bold"

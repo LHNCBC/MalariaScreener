@@ -30,6 +30,12 @@ import gov.nih.nlm.malaria_screener.database.ProgressBarEvent;
 import gov.nih.nlm.malaria_screener.database.ProgressDoneEvent;
 import gov.nih.nlm.malaria_screener.database.Register;
 
+/*
+*
+* This class checks for the upload progress. It also displays a floating widget on screen.   02/27/2020
+*
+*
+* */
 public class UploadService extends Service {
 
     private static final String TAG = "MyDebug";
@@ -266,7 +272,7 @@ public class UploadService extends Service {
     @Subscribe
     public void onProgressDone(ProgressDoneEvent event) {
         textView.setText(R.string.upload_finished);
-        //stopSelf();
+        stopSelf();
     }
 
     private boolean isViewCollapsed() {

@@ -140,7 +140,6 @@ public class ResultDisplayer extends ResultDisplayerBaseActivity {
                         // save results image
                         createDirectoryAndSaveResultImage(bundle);
                         writeLogFile();
-                        UtilsCustom.write_fm_conf_File(bundle); // for fm conf
 
                         setManualCounts();
 
@@ -170,7 +169,6 @@ public class ResultDisplayer extends ResultDisplayerBaseActivity {
                         // save results image
                         createDirectoryAndSaveResultImage(bundle);
                         writeLogFile();
-                        UtilsCustom.write_fm_conf_File(bundle); // for fm conf
 
                         setManualCounts();
 

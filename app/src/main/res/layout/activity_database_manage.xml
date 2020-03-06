@@ -85,7 +85,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#d95891ec"
-        android:text="@string/title_dropbox"
+        android:text="@string/title_upload"
         android:textColor="#FFFFFF"
         android:textSize="15dp"
         android:layout_marginBottom="15dp"

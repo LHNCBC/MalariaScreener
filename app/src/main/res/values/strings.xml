@@ -21,7 +21,7 @@
     <string name="title_setting">Settings</string>
     <string name="title_tutorial">User Manual</string>
     <string name="title_about">About</string>
-    <string name="title_dropbox">Upload</string>
+    <string name="title_upload">Upload</string>
     <string name="title_register">Register</string>
     <string name="title_image_view">Slide Images</string>
     <string name="title_manual_counts">Manual Counts</string>
@@ -124,10 +124,13 @@
     <string name="perm_denied">Permission denied</string>
 
     <!-- Strings for MainActivity unsaved dialog-->
-    <string name="unsaved_title">Move unsaved files to Extras...</string>
-    <string name="unsaved_message">You have unsaved files, click YES to move files to Extras folder, click NO to delete</string>
-    <string name="unsaved_moved">Files moved to Extras folder</string>
+    <string name="unsaved_title">Unsaved files...</string>
+    <string name="unsaved_message">You have unsaved files from a previous unfinished session</string>
+    <string name="unsaved_moved">Files saved to Extras folder</string>
     <string name="unsaved_deleted">Unsaved files removed</string>
+
+    <string name="save">save</string>
+    <string name="delete1">delete</string>
 
     <!-- Strings for CameraActivity-->
     <string name="smear_type">Smear Type: Thin</string>

@@ -266,21 +266,21 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                     Uri.parse("package:" + getPackageName()));
             startActivityForResult(intent, APP_PERMISSION_REQUEST);
-        } else {
+        } /*else {
             initializeView();
-        }
+        }*/
 
     }
 
-    private void initializeView() {
+    /*private void initializeView() {
         startService(new Intent(MainActivity.this, UploadService.class));
-    }
+    }*/
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == APP_PERMISSION_REQUEST && resultCode == RESULT_OK) {
-            initializeView();
+            //initializeView();
         } else {
             Toast.makeText(this, "Draw over other app permission not enable.", Toast.LENGTH_SHORT).show();
         }
@@ -398,7 +398,7 @@ public class MainActivity extends AppCompatActivity {
                 alertDialog.setMessage(R.string.unsaved_message);
 
                 // Setting Positive "Yes" Button
-                String string = getResources().getString(R.string.yes);
+                String string = getResources().getString(R.string.save);
                 alertDialog.setPositiveButton(string, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
@@ -440,7 +440,7 @@ public class MainActivity extends AppCompatActivity {
                 });
 
                 // Setting Negative "NO" Button
-                String string1 = getResources().getString(R.string.no);
+                String string1 = getResources().getString(R.string.delete1);
                 alertDialog.setNegativeButton(string1, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 

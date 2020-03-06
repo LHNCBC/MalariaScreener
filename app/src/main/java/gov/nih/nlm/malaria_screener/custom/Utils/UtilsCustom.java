@@ -40,6 +40,7 @@ public final class UtilsCustom {
 
     public static int whichClassifier = 0; // 0 is DL, 1 is SVM
     public static double SVM_Th = 0.65;
+    public static double DL_Th = 0.5;
 
     // Cell global variables
     public static ArrayList<Integer> results = new ArrayList<>();

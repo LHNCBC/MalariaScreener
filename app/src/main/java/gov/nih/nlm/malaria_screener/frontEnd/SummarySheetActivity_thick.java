@@ -23,7 +23,7 @@ import gov.nih.nlm.malaria_screener.frontEnd.baseClass.SummarySheetBaseActivity;
 public class SummarySheetActivity_thick extends SummarySheetBaseActivity {
 
     private final static String DROPBOX_NAME = "dropbox_prefs";
-    private final static String DROPBOX_REGISTER = "register";
+    private final static String DROPBOX_REGISTER = "registered";
 
     private static final String TAG = "MyDebug";
 
@@ -88,18 +88,22 @@ public class SummarySheetActivity_thick extends SummarySheetBaseActivity {
                             PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putBoolean("first_session_done", true).apply();
                         }
 
-                        Intent intent = new Intent(view.getContext(), MainActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // kill all the other activities on top of the old MainActivity.class activity
-                        startActivity(intent);
-                        finish();
-
                         // start upload event
                         SharedPreferences sharedPreferences = getSharedPreferences(DROPBOX_NAME, 0);
 
                         if (sharedPreferences.getBoolean(DROPBOX_REGISTER, false)) { // if registered
                             Uploader uploader = new Uploader(getApplicationContext());
                             uploader.checkConnectionAndUpload();
+
+                            startService(new Intent(SummarySheetActivity_thick.this, UploadService.class));
                         }
+
+                        Intent intent = new Intent(view.getContext(), MainActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // kill all the other activities on top of the old MainActivity.class activity
+                        startActivity(intent);
+                        finish();
+
+
                     }
                 }
         );

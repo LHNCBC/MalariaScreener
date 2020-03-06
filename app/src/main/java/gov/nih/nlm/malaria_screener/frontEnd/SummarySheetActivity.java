@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Html;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -27,7 +28,7 @@ import java.io.File;
 public class SummarySheetActivity extends SummarySheetBaseActivity {
 
     private final static String DROPBOX_NAME = "dropbox_prefs";
-    private final static String DROPBOX_REGISTER = "register";
+    private final static String DROPBOX_REGISTER = "registered";
 
     private static final String TAG = "MyDebug";
 
@@ -94,18 +95,25 @@ public class SummarySheetActivity extends SummarySheetBaseActivity {
                             PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putBoolean("first_session_done", true).apply();
                         }
 
+                        // start upload event
+                        SharedPreferences sharedPreferences = getSharedPreferences(DROPBOX_NAME, 0);
+
+                        if (sharedPreferences.getBoolean(DROPBOX_REGISTER, false)) { // if registered
+                            Log.d(TAG, "try to start upload event");
+
+                            Uploader uploader = new Uploader(getApplicationContext());
+                            uploader.checkConnectionAndUpload();
+
+                            startService(new Intent(SummarySheetActivity.this, UploadService.class));
+
+                        }
+
                         Intent intent = new Intent(view.getContext(), MainActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // kill all the other activities on top of the old MainActivity.class activity
                         startActivity(intent);
                         finish();
 
-                        // start upload event
-                        SharedPreferences sharedPreferences = getSharedPreferences(DROPBOX_NAME, 0);
 
-                        if (sharedPreferences.getBoolean(DROPBOX_REGISTER, false)) { // if registered
-                            Uploader uploader = new Uploader(getApplicationContext());
-                            uploader.checkConnectionAndUpload();
-                        }
                     }
                 }
         );

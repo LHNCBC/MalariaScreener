@@ -73,6 +73,7 @@ import org.opencv.imgproc.Imgproc;
 
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -182,7 +183,10 @@ public class CameraActivity extends AppCompatActivity {
 
     private boolean imageAcquisition = false;
 
-    boolean blurFlag;
+    //boolean blurFlag;
+
+    private int img_width;
+    private int img_height;
 
     // for bluetooth ------------------------------
     private String MY_UUID = "ddec19b4-a607-43bc-b8fe-a2e61161046b";
@@ -296,7 +300,7 @@ public class CameraActivity extends AppCompatActivity {
                         //UtilsCustom.tensorFlowClassifier_thick = TensorFlowClassifier.create(context.getAssets(), "ThickSmearModel_7LayerConv.h5.pb", UtilsCustom.TF_input_size, "conv2d_1_input", "output_node0");
 
                         //for blur detection
-                        UtilsCustom.tensorFlowClassifier_fMeasure_thin = TensorFlowClassifier.create(context.getAssets(), "ThinSmear_7LayerConv_fMeasure_115x85.h5.pb", UtilsCustom.TF_input_width, UtilsCustom.TF_input_height, "conv2d_1_input", "output_node0");
+                        //UtilsCustom.tensorFlowClassifier_fMeasure_thin = TensorFlowClassifier.create(context.getAssets(), "ThinSmear_7LayerConv_fMeasure_115x85.h5.pb", UtilsCustom.TF_input_width, UtilsCustom.TF_input_height, "conv2d_1_input", "output_node0");
 
 
                     } catch (IOException e) {
@@ -520,6 +524,35 @@ public class CameraActivity extends AppCompatActivity {
 
         // set camera parameters
         Camera.Parameters parameters = cam.getParameters();
+
+        //---------------------------temp cam res--------------------------------------------
+        // choose the highest resolution to take picture
+        List<Camera.Size> pictureSizes = parameters.getSupportedPictureSizes();
+
+        int tempSize;
+        int maxSize = 0;
+        int maxWidth = 0; int maxHeight = 0;
+        for (Camera.Size s: pictureSizes){
+
+            int width = s.width;
+            int height = s.height;
+
+            tempSize = width * height;
+
+            if (tempSize > maxSize){
+                maxSize = tempSize;
+                maxWidth = width; maxHeight = height;
+            }
+
+            Log.d(TAG, "pictureSizes: " + s.width + "x" + s.height);
+        }
+
+        Log.d(TAG, "maxSizes: " + maxSize);
+        parameters.setPictureSize(maxWidth, maxHeight);
+
+        writeToCamResFile(pictureSizes, maxWidth, maxHeight);
+        //---------------------------temp cam res--------------------------------------------
+
         //parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE); //make camera focus quickly
         //parameters.setAutoExposureLock(true);
 
@@ -541,17 +574,17 @@ public class CameraActivity extends AppCompatActivity {
         UtilsCustom.maxExposure = maxExposure;
         UtilsCustom.minExposure = minExposure;
 
-        Log.d(TAG, "aperture: " +cam.getParameters().get("aperture"));
+        //Log.d(TAG, "aperture: " +cam.getParameters().get("aperture"));
 
         //Log.d(TAG, "all: " + cam.getParameters().flatten());
 
         /*parameters.set("iso", 800);
         parameters.set("exposure-time", 32);*/
 
-        Log.d(TAG, "iso: " + parameters.get("iso"));
+        /*Log.d(TAG, "iso: " + parameters.get("iso"));
 //
         Log.d(TAG, "iso-values: " + parameters.get("iso-values"));
-        Log.d(TAG, "exposure-time: " + parameters.get("exposure-time"));
+        Log.d(TAG, "exposure-time: " + parameters.get("exposure-time"));*/
 
         parameters.setExposureCompensation(exposure);
 
@@ -967,14 +1000,17 @@ public class CameraActivity extends AppCompatActivity {
 
                     Imgproc.cvtColor(UtilsCustom.oriSizeMat, UtilsCustom.oriSizeMat, Imgproc.COLOR_BGR2RGB);
 
-                    long startTimeNN = System.currentTimeMillis();
+                    img_width = UtilsCustom.oriSizeMat.width();
+                    img_height = UtilsCustom.oriSizeMat.height();
+
+                   /* long startTimeNN = System.currentTimeMillis();
 
                     //blurry detection
                     blurFlag = BlurDetection.computeBlur();
 
                     long endTime_NN = System.currentTimeMillis();
                     long totalTime_NN = endTime_NN - startTimeNN;
-                    Log.d(TAG, "Blur detection Time (DL): " + totalTime_NN);
+                    Log.d(TAG, "Blur detection Time (DL): " + totalTime_NN);*/
 
                     resizeImage();
 
@@ -1086,23 +1122,22 @@ public class CameraActivity extends AppCompatActivity {
         imageButton_NO = findViewById(R.id.imageButton_no);
         imageButton_YES = findViewById(R.id.imageButton_yes);
 
-        TextView textView_blur = findViewById(R.id.textView_blur);
+        //for blur detection-----------------------------------------------
+        /*TextView textView_blur = findViewById(R.id.textView_blur);
 
         if (blurFlag){
             textView_blur.setText("Blurry.");
         }else {
             textView_blur.setText("Sharp.");
-        }
+        }*/
 
-        /*Bitmap rotatedBitmap = Bitmap.createBitmap(resizedMat.width(), resizedMat.height(), Bitmap.Config.RGB_565);
-        //Mat temp4View = new Mat();
-        //Imgproc.cvtColor(resizedMat, temp4View, Imgproc.COLOR_BGR2RGB);
+        /*Bitmap rotatedBitmap = Bitmap.createBitmap(UtilsCustom.rectMat.width(), UtilsCustom.rectMat.height(), Bitmap.Config.RGB_565);
+        Utils.matToBitmap(UtilsCustom.rectMat, rotatedBitmap);*/
+        //for blur detection-----------------------------------------------
 
-        Utils.matToBitmap(resizedMat, rotatedBitmap);*/
+        Bitmap rotatedBitmap = Bitmap.createBitmap(resizedMat.width(), resizedMat.height(), Bitmap.Config.RGB_565);
+        Utils.matToBitmap(resizedMat, rotatedBitmap);
 
-        //for blur detection
-        Bitmap rotatedBitmap = Bitmap.createBitmap(UtilsCustom.rectMat.width(), UtilsCustom.rectMat.height(), Bitmap.Config.RGB_565);
-        Utils.matToBitmap(UtilsCustom.rectMat, rotatedBitmap);
 
         // rotate preview image according to phone orientation when image was taken
         Matrix m = new Matrix();
@@ -1980,6 +2015,73 @@ public class CameraActivity extends AppCompatActivity {
                 + ":(id)" + l
                 + ":(priority)" + p
                 + ":(group)" + gname);
+    }
+
+    // this two functions below are temp func to output a txt file with cam resolution info
+    private File createCamResTextFile() throws IOException {
+
+        File direct = new File(Environment.getExternalStorageDirectory(), "NLM_Malaria_Screener/");
+
+        if (!direct.exists()) {
+            direct.mkdirs();
+        }
+
+        File Dir = new File(Environment.getExternalStorageDirectory(), "NLM_Malaria_Screener/");
+        File imgFile = new File(Dir, "camera_resolution.txt");
+        if (!imgFile.exists()) {
+            imgFile.createNewFile();
+        }
+
+        return imgFile;
+    }
+
+    private void writeToCamResFile(List<Camera.Size> sizes, int maxWidth, int maxHeight) {
+
+        File textFile = null;
+
+        try {
+            textFile = createCamResTextFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (textFile != null) {
+            FileOutputStream outText = null;
+
+            try {
+
+                outText = new FileOutputStream(textFile, true);
+
+                if (textFile.length() == 0) {
+
+                    outText.write(("pictureSizes:").getBytes());
+                    outText.write(("\n").getBytes());
+
+                    for (Camera.Size s: sizes){
+                        outText.write((s.width + "x" + s.height).getBytes());
+                        outText.write(("\n").getBytes());
+                    }
+                    outText.write(("\n").getBytes());
+
+                    outText.write(("Chosen picture size:").getBytes());
+                    outText.write(("\n").getBytes());
+                    outText.write((maxWidth + "x" + maxHeight).getBytes());
+                    outText.write(("\n").getBytes());
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (outText != null) {
+                        outText.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
     }
 
 

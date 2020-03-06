@@ -21,6 +21,7 @@ import android.widget.Toast;
 import gov.nih.nlm.malaria_screener.R;
 import gov.nih.nlm.malaria_screener.custom.CustomAdapter_PatientDB;
 import gov.nih.nlm.malaria_screener.custom.RowItem_Patient;
+import gov.nih.nlm.malaria_screener.uploadFunction.UploadActivity;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -129,8 +130,11 @@ public class DatabasePage extends AppCompatActivity {
                             alertDialog.show();
 
                         } else {
-                            Intent dropboxIntent = new Intent(v.getContext(), Dropbox.class);
-                            startActivityForResult(dropboxIntent, REQUEST_DROPBOX);
+                            /*Intent dropboxIntent = new Intent(v.getContext(), Dropbox.class);
+                            startActivityForResult(dropboxIntent, REQUEST_DROPBOX);*/
+                            Intent uploadIntent = new Intent(v.getContext(), UploadActivity.class);
+                            startActivity(uploadIntent);
+
                         }
                     }
                 }

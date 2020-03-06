@@ -91,11 +91,11 @@ android {
         implementation 'org.tensorflow:tensorflow-android:+'
         //implementation 'org.tensorflow:tensorflow-lite:0.0.0-nightly'
 
-        implementation 'com.android.support:support-v13:28.0.0-rc01'
-        implementation 'com.android.support:cardview-v7:28.0.0-rc01'
-        implementation 'com.android.support:appcompat-v7:28.0.0-rc01'
-        implementation 'com.android.support:design:28.0.0-rc01'
-        implementation 'com.android.support:recyclerview-v7:28.0.0-rc01'
+        implementation 'com.android.support:support-v13:28.0.0'
+        implementation 'com.android.support:cardview-v7:28.0.0'
+        implementation 'com.android.support:appcompat-v7:28.0.0'
+        implementation 'com.android.support:design:28.0.0'
+        implementation 'com.android.support:recyclerview-v7:28.0.0'
 
         implementation 'com.github.amlcurran.showcaseview:library:5.4.3'
 
