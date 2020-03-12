@@ -53,7 +53,6 @@ import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import gov.nih.nlm.malaria_screener.custom.TouchImageView;
 import gov.nih.nlm.malaria_screener.custom.Utils.UtilsCustom;
 import gov.nih.nlm.malaria_screener.custom.Utils.UtilsData;
-import gov.nih.nlm.malaria_screener.database.DatabasePage;
 import gov.nih.nlm.malaria_screener.frontEnd.ResultDisplayer;
 import gov.nih.nlm.malaria_screener.frontEnd.ResultDisplayer_thickSmear;
 import gov.nih.nlm.malaria_screener.imageProcessing.MarkerBasedWatershed;
@@ -61,7 +60,6 @@ import gov.nih.nlm.malaria_screener.imageProcessing.SVM_Classifier;
 import gov.nih.nlm.malaria_screener.imageProcessing.TensorFlowClassifier;
 import gov.nih.nlm.malaria_screener.frontEnd.SettingsActivity;
 import gov.nih.nlm.malaria_screener.imageProcessing.ThickSmearProcessor;
-import gov.nih.nlm.malaria_screener.imageProcessing.BlurDetection;
 
 import org.opencv.android.Utils;
 import org.opencv.core.CvType;
@@ -606,8 +604,8 @@ public class CameraActivity extends AppCompatActivity {
 
         UtilsCustom.whichClassifier = Integer.valueOf(sharedPreferences.getString("classifier", "0"));
 
-        double value = sharedPreferences.getInt("SVM_Th", 35);
-        UtilsCustom.SVM_Th = (100 - value) / 100;
+        double value = sharedPreferences.getInt("Th", 50);
+        UtilsCustom.Th = (100 - value) / 100;
 
         totalCellNeeded = sharedPreferences.getInt("celltotal", 1000);
 
@@ -1818,8 +1816,8 @@ public class CameraActivity extends AppCompatActivity {
 //        //ImgQ = sharedPreferences.getInt("imagequality", 3);
 //        //EC = sharedPreferences.getInt("exposure", 0);
 
-//        double value = sharedPreferences.getInt("SVM_Th", 65);
-//        SVM_Th = value/100;
+//        double value = sharedPreferences.getInt("Th", 65);
+//        Th = value/100;
 
         if (cam == null) {
             initCam();

@@ -75,7 +75,7 @@ public class ResultDisplayer extends ResultDisplayerBaseActivity {
             classifierType = "SVM";
         }
 
-        double value = sharedPreferences.getInt("SVM_Th", 35);
+        double value = sharedPreferences.getInt("Th", 35);
         SVM_Th = (100 - value) / 100;
 
         imageAcquisition = sharedPreferences.getBoolean("image_acquire", false);
@@ -430,7 +430,7 @@ public class ResultDisplayer extends ResultDisplayerBaseActivity {
                 outText = new FileOutputStream(textFile, true);
 
                 if (textFile.length() == 0) {
-                    outText.write(("ImageName,WhiteBalance,classifierType,SVM_Th,ProcessingTime(sec)").getBytes());
+                    outText.write(("ImageName,WhiteBalance,classifierType,Th,ProcessingTime(sec)").getBytes());
                     outText.write(("\n").getBytes());
                 }
 

@@ -102,7 +102,7 @@ public class TensorFlowClassifier {
                 }*/
 
 
-                if (output[i*2] < UtilsCustom.DL_Th) {  // in the loaded TF model(Shiva's) 0 is infected, 1 is normal. Therefore, output[i*2] contains confidence for infected class
+                if (output[i*2] < UtilsCustom.Th) {  // in the loaded TF model(Shiva's) 0 is infected, 1 is normal. Therefore, output[i*2] contains confidence for infected class
                     // infected confidence higher
                     UtilsCustom.results.add(0);
 

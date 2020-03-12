@@ -227,7 +227,7 @@ public class Cells {
                 featureVecs.add(featureVec);
 
                 cellCount++;
-                outputChipFiles(newChip);
+                //outputChipFiles(newChip);
             }
 
         }

@@ -56,7 +56,8 @@
 
     <string name="category2">OTHERS</string>
     <string name="SVM_Th">Sensitivity Level</string>
-    <string name="SVM_Th_summary">Adjust classifier sensitivity level. Default value:35 Only adjust this when SVM classifier is chosen.</string>
+    <string name="SVM_Th_summary">Adjust classifier sensitivity level. Default value for DL:50. Default value for SVM:35.</string>
+
     <string name="celltotal">Total Cells Needed</string>
     <string name="celltotal_summary">Number of Cells that should be counted for each patient. Default value: 1000</string>
 

@@ -105,7 +105,7 @@ public class SVM_Classifier {
 
             //Log.d(TAG, "classDists[" + j + "]: " + classDists[j]);
 
-            if (classDists[j] < UtilsCustom.SVM_Th) {
+            if (classDists[j] < UtilsCustom.Th) {
                 classLabels[j] = 1;
             } else {
                 classLabels[j] = 2;

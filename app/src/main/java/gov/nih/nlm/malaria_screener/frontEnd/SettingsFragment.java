@@ -6,17 +6,25 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import gov.nih.nlm.malaria_screener.R;
+import gov.nih.nlm.malaria_screener.custom.SeekBarPreference;
 
 /**
  * Created by yuh5 on 11/8/2016.
  */
 public class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener{
 
+    private static final String TAG = "MyDebug";
+
     CharSequence[] cs_entry, clssifier_entry = {"Deep Learning", "SVM"};
     public static final String KEY_PREF_WB = "whitebalance";
     public static final String KEY_PREF_CLASSIFIER = "classifier";
+
+    SharedPreferences sharedPreferences;
+
+    SeekBarPreference seekBarPreference;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -25,7 +33,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.preferences);
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         cs_entry = getArguments().getCharSequenceArray("WB_list");
 
@@ -42,6 +50,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         }
 
         ListPreference listPreference_classifier = (ListPreference) findPreference("classifier");
+
         if (listPreference_classifier!=null){
             CharSequence[] entryValues = new String[clssifier_entry.length];
             for (int i=0;i<clssifier_entry.length;i++){
@@ -82,6 +91,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             // Set summary to be the user-description for the selected value
             int index = Integer.valueOf(sharedPreferences.getString(key, "0"));
             connectionPref.setSummary(clssifier_entry[index]);
+
         }
     }
 }

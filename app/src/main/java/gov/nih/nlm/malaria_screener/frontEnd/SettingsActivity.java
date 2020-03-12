@@ -39,6 +39,7 @@ public class SettingsActivity extends AppCompatActivity{
         // smear type
         String smearType = sharedPreferences.getString("smeartype", "Thin");
 
+
         // Display the fragment as the main content.
         if (smearType.equals("Thin")) {
             SettingsFragment fragment = new SettingsFragment();

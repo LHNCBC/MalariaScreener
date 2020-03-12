@@ -171,7 +171,7 @@ public class getResultNdisplay extends AppCompatActivity {
         bundle = intent.getExtras();
 
         WB = intent.getStringExtra("WB");
-        SVM_Th = Double.valueOf(intent.getStringExtra("SVM_Th"));
+        SVM_Th = Double.valueOf(intent.getStringExtra("Th"));
         totalCellNeeded = Integer.valueOf(intent.getStringExtra("totalcell"));
 
         nameEachImage = intent.getStringExtra("nameStringEachImage");
