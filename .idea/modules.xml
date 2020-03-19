@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/MalariaScreener.iml" filepath="$PROJECT_DIR$/MalariaScreener.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/openCVLibrary342/openCVLibrary342.iml" filepath="$PROJECT_DIR$/openCVLibrary342/openCVLibrary342.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MalariaScreener.iml" filepath="$PROJECT_DIR$/MalariaScreener.iml" group="MalariaScreener" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="MalariaScreener/app" />
+      <module fileurl="file://$PROJECT_DIR$/openCVLibrary342/openCVLibrary342.iml" filepath="$PROJECT_DIR$/openCVLibrary342/openCVLibrary342.iml" group="MalariaScreener/openCVLibrary342" />
     </modules>
   </component>
 </project>

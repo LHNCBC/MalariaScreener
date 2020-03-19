@@ -88,13 +88,13 @@
 
     <!-- Strings for about-->
 
-    <string name="version">Version 1.5-beta</string>
+    <string name="version">Version 1.6-beta</string>
 
     <string name="description">NLM Malaria Screener is an R&amp;D project of the Lister Hill National Center of Biomedical Communications, a division of the National
     Library of Medicine (NLM), part of the National Institutes of Health (NIH), in collaboration with Mahidol University, University of Oxford, and University of Missouri.</string>
 
     <!-- Strings for personnel-->
-    <string name="personnel"><b>NIH Researchers:</b>\nStefan Jaeger (Project Lead)\nHang Yu\nSema Candemir\nMike Chung\nSameer Antani\nGeorge Thoma (Project Sponsor, NLM)\nAbhisheka Bansal (NIAID)
+    <string name="personnel"><b>NIH Researchers:</b>\nStefan Jaeger (Project Lead)\nFeng Yang\nHang Yu\nSema Candemir\nMike Chung\nSameer Antani\nGeorge Thoma (Project Sponsor, NLM)\nAbhisheka Bansal (NIAID)
         \nRick Fairhurst (NIAID)\n\n<b>Extramural Researchers:</b>\nKamolrat Silamut (Mahidol University, Thailand)\nRichard Maude (University of Oxford, UK)
         \nKannappan Palaniappan (University of Missouri)\nIlker Ersoy (University of Missouri)\nMahdieh Poostchi (University of Missouri)
         \n\n<b>NLM Interns:</b>\nAndrew Powell\nKatie McMenamin\nNila Palaniappan\nWilson Lin\nPaul LoBuglio</string>
@@ -382,10 +382,9 @@
     <string name="disclaimer_text">
         "<b>Medical Disclaimer.</b>\n\n"
 
-        "Malaria Screener is a research oriented software application. The app should be used as a preliminary screening tool which facilitates the health care provider.
-        Use of the app is not intended to be a substitute for professional medical judgment.
+        "Malaria Screener is a research oriented software application developed at the U.S. National Library of Medicine (NLM). Use of the app is not intended to be a substitute for professional medical judgment.
         THE APP DOES NOT OFFER MEDICAL ADVICE, AND NOTHING CONTAINED IN THE CONTENT IS INTENDED TO CONSTITUTE PROFESSIONAL ADVICE FOR MEDICAL DIAGNOSIS OR TREATMENT.
-        National Library of Medicine accepts no responsibility for the correctness of any diagnosis based in whole or in part upon the use of this app.\n"
+        NLM accepts no responsibility for the correctness of any diagnosis based in whole or in part upon the use of this app.\n"
 
         "Although great effort has been taken in developing and testing the algorithm to ensure accuracy, the organization, the researchers,
         the sponsors shall not be responsible or in any way liable for any errors, omissions, or inaccuracies, whether arising from negligence or otherwise,
@@ -393,23 +392,14 @@
 
         "DISCLAIMER OF WARRANTIES. WE DO NOT GUARANTEE THE TIMELINESS, VALIDITY, COMPLETENESS, OR ACCURACY OF THE APPLICATION.\n"
 
-        "<b>Who can access my information if I choose to register?</b>"
+        "<b>Who can access my registration information if I choose to register?</b>"
 
-        "Members of the MalariaScreener research team at LHNCBC, National Library of Medicine.
-        The purpose of collecting user information is solely to monitor the reach of our app, and
-        get in touch with you when potential research collaboration opportunities are identified.\n"
-
-        "<b>Who can access the image data if I choose to upload any to NIH server?</b>"
-
-        "Members of the MalariaScreener research team at LHNCBC, National Library of Medicine.
-        Data will be collected in a way that no one can identity which image come from which patient.
-        All data will remain securely stored at our data center.\n"
+        "Members of the Malaria Screener research team at at NLM can access the information.
+        The purpose of collecting user information is solely to monitor the reach of the app and providing important information to users such as updates and other app-related news.\n"
 
         "<b>What if I have questions?</b>"
 
-        "If you have questions about this research, please contact us at LHNCBC, NLM.
-        For software related questions and research collaboration, contact Hang Yu hang.yu@nih.gov
-        Principle Investigator, Dr. Stefan Jaeger stefan.jaeger@nih.gov\n\n\n\n"
+        "For questions about the software and research, please contact Mr. Hang Yu (hang.yu@nih.gov) or Dr. Stefan Jaeger (stefan.jaeger@nih.gov)\n\n\n\n"
     </string>
 
     <!-- Strings in Upload Service -->

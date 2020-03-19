@@ -118,8 +118,14 @@ public class ImageGallery extends AppCompatActivity implements CustomAdapter_Ima
 
                 if ((imagePath.indexOf("result") == -1) && (imagePath.indexOf("mask") == -1)) { // pick out the original image by checking the image name
                     originalImagePath.add(imagePath);
-                } else if (imagePath.indexOf("result") != -1) { // // pick out the result image by checking the image name
-                    resultImagePath.add(imagePath);
+
+                    int endIndex = imagePath.lastIndexOf(".");
+                    String path_till_imageName = imagePath.substring(0, endIndex);
+                    String extension = imagePath.substring(endIndex);
+                    String fullPath = path_till_imageName + "_result" + extension;
+
+                    resultImagePath.add(fullPath);
+
                 }
 
             }

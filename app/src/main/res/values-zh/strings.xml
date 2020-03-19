@@ -72,7 +72,7 @@
     Library of Medicine (NLM), part of the National Institutes of Health (NIH), in collaboration with Mahidol University, University of Oxford, and University of Missouri.</string>
 
     <!-- Strings for personnel-->
-    <string name="personnel"><b>NIH Researchers:</b>\nStefan Jaeger (Project Lead)\nHang Yu\nSema Candemir\nMike Chung\nSameer Antani\nGeorge Thoma (Project Sponsor, NLM)\nAbhisheka Bansal (NIAID)
+    <string name="personnel"><b>NIH Researchers:</b>\nStefan Jaeger (Project Lead)\nFeng Yang\nHang Yu\nSema Candemir\nMike Chung\nSameer Antani\nGeorge Thoma (Project Sponsor, NLM)\nAbhisheka Bansal (NIAID)
         \nRick Fairhurst (NIAID)\n\n<b>Extramural Researchers:</b>\nKamolrat Silamut (Mahidol University, Thailand)\nRichard Maude (University of Oxford, UK)
         \nKannappan Palaniappan (University of Missouri)\nIlker Ersoy (University of Missouri)\nMahdieh Poostchi (University of Missouri)
         \n\n<b>NLM Interns:</b>\nAndrew Powell\nKatie McMenamin\nNila Palaniappan\nWilson Lin\nPaul LoBuglio</string>
@@ -261,7 +261,7 @@
     <string name="delete_all_images_db">清空图像</string>
 
     <!-- Strings for about-->
-    <string name="version">版本号 1.1-beta</string>
+    <string name="version">版本号 1.6-beta</string>
 
     <!-- Strings shared for dialog-->
     <string name="quit_session_message">您确定要退出当前进程吗？</string>
