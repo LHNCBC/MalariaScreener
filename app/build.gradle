@@ -28,9 +28,6 @@ android {
             main {
                 jniLibs.srcDirs = ['src/main/jniLibs']
                 java {
-                    exclude '**/NN_Manager.java'
-                    exclude '**/NN_runnable.java'
-                    exclude '**/NNTask.java'
                     exclude '**/TFClassifier_Lite.java'
 
 
@@ -38,9 +35,6 @@ android {
             }
             androidTest {
                 java {
-                    exclude '**/TestNN_Manager.java'
-                    exclude '**/TestNN_runnable.java'
-                    exclude '**/TestNNTask.java'
                     exclude '**/TFClassifier_Lite.java'
 
                 }

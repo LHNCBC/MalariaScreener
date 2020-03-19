@@ -145,7 +145,6 @@ public class Cells {
             int nonZero = Core.countNonZero(And_res);
             And_res.release();
 
-
             if (nonZero > 0) {
                 OverlapwWBC_index[i - 1] = 1;
             }
@@ -227,7 +226,6 @@ public class Cells {
                 featureVecs.add(featureVec);
 
                 cellCount++;
-                //outputChipFiles(newChip);
             }
 
         }
