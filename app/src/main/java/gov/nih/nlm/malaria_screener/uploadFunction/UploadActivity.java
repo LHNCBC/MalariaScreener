@@ -3,9 +3,9 @@ package gov.nih.nlm.malaria_screener.uploadFunction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ListView;
 
 import com.box.androidsdk.content.BoxApiFile;
 import com.box.androidsdk.content.BoxApiFolder;
@@ -14,7 +14,6 @@ import com.box.androidsdk.content.auth.BoxAuthentication;
 import com.box.androidsdk.content.models.BoxSession;
 
 import gov.nih.nlm.malaria_screener.R;
-import gov.nih.nlm.malaria_screener.database.Upload;
 
 public class UploadActivity extends AppCompatActivity implements BoxAuthentication.AuthListener {
 
@@ -44,10 +43,11 @@ public class UploadActivity extends AppCompatActivity implements BoxAuthenticati
         uploadButton.setOnClickListener(
                 new Button.OnClickListener() {
                     public void onClick(View v) {
-                        new Uploader_box(getApplicationContext(), "").execute();
+                        new AllFile_Uploader_Box(getApplicationContext()).execute();
                     }
                 }
         );
+
     }
 
     /**
@@ -89,6 +89,17 @@ public class UploadActivity extends AppCompatActivity implements BoxAuthenticati
     @Override
     public void onLoggedOut(BoxAuthentication.BoxAuthenticationInfo info, Exception ex) {
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
 }
