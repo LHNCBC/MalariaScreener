@@ -6,6 +6,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.box.androidsdk.content.BoxApiFile;
 import com.box.androidsdk.content.BoxApiFolder;
@@ -13,15 +14,13 @@ import com.box.androidsdk.content.BoxConfig;
 import com.box.androidsdk.content.auth.BoxAuthentication;
 import com.box.androidsdk.content.models.BoxSession;
 
+import java.util.ArrayList;
+import java.util.Map;
+
 import gov.nih.nlm.malaria_screener.R;
+import gov.nih.nlm.malaria_screener.custom.Utils.UtilsMethods;
 
-public class UploadActivity extends AppCompatActivity implements BoxAuthentication.AuthListener {
-
-    public static BoxSession mSession = null;
-    BoxSession mOldSession = null;
-
-    private BoxApiFolder mFolderApi;
-    private BoxApiFile mFileApi;
+public class UploadActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,60 +34,55 @@ public class UploadActivity extends AppCompatActivity implements BoxAuthenticati
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        BoxConfig.IS_LOG_ENABLED = true;
-        configureClient();
-        initSession();
-
         Button uploadButton = (Button) findViewById(R.id.button_upload_box);
         uploadButton.setOnClickListener(
                 new Button.OnClickListener() {
                     public void onClick(View v) {
-                        new AllFile_Uploader_Box(getApplicationContext()).execute();
+
+                        if (!UploadHashManager.hashmap_for_upload.isEmpty()) {
+
+                            //export database for upload
+                            UtilsMethods.exportDB(getApplicationContext());
+
+                            ArrayList[] entries = returnImgFromMap_all();
+
+                            ArrayList<String> imageNameList = entries[0];
+                            ArrayList<String> folderNameList = entries[1];
+
+                            UploadSessionManager uploadSessionManager = new UploadSessionManager();
+                            uploadSessionManager.authticateSession(getApplicationContext());
+
+                            new UploadListOfImagesTask(getApplicationContext()).execute(imageNameList, folderNameList);
+
+                            //new AllFile_Uploader_Box(getApplicationContext()).execute();
+                        } else {
+                            String string = getApplicationContext().getResources().getString(R.string.empty_upload);
+                            Toast.makeText(getApplicationContext(), string, Toast.LENGTH_SHORT).show();
+                        }
+
                     }
                 }
         );
 
     }
 
-    /**
-     * Set required config parameters. Use values from your application settings in the box developer console.
-     */
-    private void configureClient() {
-        BoxConfig.CLIENT_ID = "ab45urhtlfkbg5tyvswkmeg385g97488";
-        BoxConfig.CLIENT_SECRET = "ydVkYwFsXS27ofYQ9HZ2srLK3sFEM2h0";
+    private ArrayList[] returnImgFromMap_all(){
 
-        // needs to match redirect uri in developer settings if set.
-        //   BoxConfig.REDIRECT_URL = "<YOUR_REDIRECT_URI>";
-    }
+        ArrayList[] enrties = new ArrayList[2];
 
-    private void initSession() {
+        ArrayList<String > imageNameList = new ArrayList<>();
+        ArrayList<String> folderNameList = new ArrayList<>();
 
-        mSession = new BoxSession(this);
-        mSession.setSessionAuthListener(this);
-        mSession.authenticate(this);
+        for(Map.Entry<String, String> entry: UploadHashManager.hashmap_for_upload.entrySet()){
 
-    }
+            imageNameList.add(entry.getKey());
+            folderNameList.add(entry.getValue());
+        }
 
-    @Override
-    public void onRefreshed(BoxAuthentication.BoxAuthenticationInfo info) {
+        enrties[0] = imageNameList;
+        enrties[1] = folderNameList;
 
-    }
-
-    @Override
-    public void onAuthCreated(BoxAuthentication.BoxAuthenticationInfo info) {
-        //Init file, and folder apis; and use them to fetch the root folder
-        mFolderApi = new BoxApiFolder(mSession);
-        mFileApi = new BoxApiFile(mSession);
-    }
-
-    @Override
-    public void onAuthFailure(BoxAuthentication.BoxAuthenticationInfo info, Exception ex) {
-
-    }
-
-    @Override
-    public void onLoggedOut(BoxAuthentication.BoxAuthenticationInfo info, Exception ex) {
-
+        return enrties;
     }
 
     @Override

@@ -37,7 +37,6 @@ public final class UtilsCustom {
     public static Mat rectMat;
     public static TensorFlowClassifier tensorFlowClassifier_fMeasure_thin;
 
-
     public static int whichClassifier = 0; // 0 is DL, 1 is SVM
     public static double Th = 0.5;
 
@@ -130,5 +129,7 @@ public final class UtilsCustom {
 
         return imgFile;
     }
+
+
 
 }

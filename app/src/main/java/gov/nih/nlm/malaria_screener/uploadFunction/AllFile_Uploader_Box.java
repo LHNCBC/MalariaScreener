@@ -23,7 +23,6 @@ import com.box.androidsdk.content.requests.BoxRequestsFolder;
 import java.io.File;
 import java.util.ArrayList;
 
-
 /* This class is to provide function that:
     1. create root folder in user's remote Box repository
     2. scans all files within each subfolder under the local "NLM_Malaria_screener" folder
@@ -44,14 +43,14 @@ public class AllFile_Uploader_Box extends AsyncTask<Void, Integer, Boolean> {
     private BoxApiFolder mFolderApi;
     private BoxApiFile mFileApi;
 
-
-
     public AllFile_Uploader_Box(Context context){
 
         this.context = context;
         //this.path = path;
 
-        mSession = UploadActivity.mSession;
+        UploadSessionManager uploadSessionManager = new UploadSessionManager();
+        uploadSessionManager.authticateSession(context);
+        mSession = UploadSessionManager.mSession;
 
         //Init file, and folder apis; and use them to fetch the root folder
         mFolderApi = new BoxApiFolder(mSession);
@@ -106,7 +105,7 @@ public class AllFile_Uploader_Box extends AsyncTask<Void, Integer, Boolean> {
 
             if (length > 0) {
 
-                // iterate through each folder
+                // iterate through folders
                 for (File folderFile : folderListing) {
 
                     String folderNameStr = folderFile.toString().substring(folderFile.toString().lastIndexOf("/") + 1);
@@ -138,7 +137,7 @@ public class AllFile_Uploader_Box extends AsyncTask<Void, Integer, Boolean> {
 
                     if (imageListing != null) {
 
-                        // iterate through each image
+                        // iterate through images
                         for (final File imgFile: imageListing){
 
                             Log.d(TAG, "imgFile: " + imgFile);
@@ -147,6 +146,8 @@ public class AllFile_Uploader_Box extends AsyncTask<Void, Integer, Boolean> {
                                 @Override
                                 public void run() {
 
+                                    long startTime = System.currentTimeMillis();
+
                                     BoxRequestsFile.UploadFile request = mFileApi.getUploadRequest(imgFile, cur_folder_id);
 
                                     try {
@@ -154,6 +155,10 @@ public class AllFile_Uploader_Box extends AsyncTask<Void, Integer, Boolean> {
                                     } catch (BoxException e) {
                                         e.printStackTrace();
                                     }
+
+                                    long endTime = System.currentTimeMillis();
+                                    long totalTime = endTime - startTime;
+                                    Log.d(TAG, "Each image upload Time: " + totalTime);
 
                                 }
                             }.start();

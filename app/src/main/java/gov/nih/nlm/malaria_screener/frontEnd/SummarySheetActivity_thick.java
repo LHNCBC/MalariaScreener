@@ -19,6 +19,7 @@ import gov.nih.nlm.malaria_screener.database.MyDBHandler;
 import gov.nih.nlm.malaria_screener.database.Patients;
 import gov.nih.nlm.malaria_screener.database.Slides;
 import gov.nih.nlm.malaria_screener.frontEnd.baseClass.SummarySheetBaseActivity;
+import gov.nih.nlm.malaria_screener.uploadFunction.UploadHashManager;
 
 public class SummarySheetActivity_thick extends SummarySheetBaseActivity {
 
@@ -92,10 +93,19 @@ public class SummarySheetActivity_thick extends SummarySheetBaseActivity {
                         SharedPreferences sharedPreferences = getSharedPreferences(DROPBOX_NAME, 0);
 
                         if (sharedPreferences.getBoolean(DROPBOX_REGISTER, false)) { // if registered
-                            Uploader uploader = new Uploader(getApplicationContext());
+
+                            for (int i=0;i<imageName.length;i++) {
+                                UploadHashManager.hashmap_for_upload.put(imageName[i], patientIDStr + "_" + slideIDStr);
+                            }
+
+                            UploadHashManager.saveMap(getApplicationContext(), UploadHashManager.hashmap_for_upload);
+
+                            prepare_and_upload(imageName, patientIDStr, slideIDStr);
+
+                            /*Uploader uploader = new Uploader(getApplicationContext());
                             uploader.checkConnectionAndUpload();
 
-                            startService(new Intent(SummarySheetActivity_thick.this, UploadService.class));
+                            startService(new Intent(SummarySheetActivity_thick.this, UploadService.class));*/
                         }
 
                         Intent intent = new Intent(view.getContext(), MainActivity.class);

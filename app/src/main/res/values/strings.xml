@@ -280,6 +280,8 @@
     <!-- Strings for Upload-->
     <string name="start_upload">Starting to upload...</string>
     <string name="image_empty">Image folder is empty, nothing to upload</string>
+    <string name="empty_upload">No image remains to upload</string>
+    <string name="folder_not_found">Upload Error: Folder not found. Folder ID: </string>
 
     <!-- Strings for CustomAdapter_ImageGalleryDB-->
     <string name="total"> - Auto counts - Total: </string>

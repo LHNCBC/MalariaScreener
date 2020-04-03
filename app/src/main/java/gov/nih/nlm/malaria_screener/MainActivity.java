@@ -42,6 +42,7 @@ import gov.nih.nlm.malaria_screener.frontEnd.UploadService;
 import gov.nih.nlm.malaria_screener.tutorial.About;
 import gov.nih.nlm.malaria_screener.tutorial.Diagram;
 import gov.nih.nlm.malaria_screener.tutorial.TutorialActivity;
+import gov.nih.nlm.malaria_screener.uploadFunction.UploadHashManager;
 import gov.nih.nlm.malaria_screener.userOnboard.UserOnBoardActivity;
 //import gov.nih.nlm.malaria_screener.tutorial.Diagram;
 //import gov.nih.nlm.malaria_screener.tutorial.TutorialActivity;
@@ -59,9 +60,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -113,7 +117,12 @@ public class MainActivity extends AppCompatActivity {
 
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
         boolean doNotShow_register = settings.getBoolean("do_not_show_again_register", false);
-        boolean registered = settings.getBoolean("registered", false);
+
+        SharedPreferences sharedPreferences = getSharedPreferences(DROPBOX_NAME, 0);
+        boolean registered = sharedPreferences.getBoolean("registered", false);
+
+        Log.d(TAG, "doNotShow_register: " + doNotShow_register);
+        Log.d(TAG, "registered: " + registered);
 
         if (!doNotShow_register & !registered) {
 
@@ -138,55 +147,13 @@ public class MainActivity extends AppCompatActivity {
             newSessionButton.setEnabled(false);
         }
 
-        //buttonPress = new AlphaAnimation(1F, 0.5F);
-        //imageview = (ImageView) findViewById(R.id.)
         newSessionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
 
                 Intent infoIntent = new Intent(v.getContext(), CameraActivity.class);
-//                Bundle bundle = new Bundle();
-//
-//                String auto = String.valueOf(autoSVMThres);
-//                bundle.putString("autoSVM_Th", auto);
-//                if (!autoSVMThres) {
-//                    bundle.putString("Confidence_Th", CThres);
-//                }
-//                infoIntent.putExtras(bundle);
                 startActivityForResult(infoIntent, REQUEST_CAM);
 
-                /*v.startAnimation(buttonPress);
-                final AlertDialog.Builder promptPID = new AlertDialog.Builder(c);
-                promptPID.setTitle("Start a new session");
-                promptPID.setMessage("Enter Patient ID:");
-                final EditText input = new EditText(c);
-                promptPID.setView(input);
-                // Set up the buttons
-                promptPID.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        pid = input.getText().toString();
-                        Intent captureIntent = new Intent(v.getContext(), CameraActivity.class);
-                        captureIntent.putExtra(PARAM_PID, pid);
-
-                        String auto = String.valueOf(autoSVMThres);
-                        captureIntent.putExtra(EXTRA_AUTO, auto);
-                        if (!autoSVMThres) {
-                            captureIntent.putExtra(EXTRA_CONFIDENCE_T, CThres);
-                        }
-
-                        startActivityForResult(captureIntent, REQUEST_IMAGE_CAPTURE);
-                    }
-                });
-
-                promptPID.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-                promptPID.show();*/
             }
         });
 
@@ -270,6 +237,15 @@ public class MainActivity extends AppCompatActivity {
             initializeView();
         }*/
 
+        // load upload list
+        UploadHashManager.hashmap_for_upload = new LinkedHashMap<>();
+        UploadHashManager.hashmap_for_upload = UploadHashManager.loadMap(getApplicationContext());
+        Log.d(TAG, "Hashmap: " + UploadHashManager.hashmap_for_upload.isEmpty());
+
+        for(Map.Entry<String, String> entry: UploadHashManager.hashmap_for_upload.entrySet()){
+
+            Log.d(TAG, "Key: " + entry.getKey() + ", Value: " + entry.getValue());
+        }
     }
 
     /*private void initializeView() {

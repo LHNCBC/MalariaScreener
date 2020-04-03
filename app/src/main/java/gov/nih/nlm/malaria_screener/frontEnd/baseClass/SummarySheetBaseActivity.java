@@ -18,7 +18,10 @@ import gov.nih.nlm.malaria_screener.custom.CustomAdapter;
 import gov.nih.nlm.malaria_screener.custom.CustomAdapterBold;
 import gov.nih.nlm.malaria_screener.custom.RowItem;
 import gov.nih.nlm.malaria_screener.custom.Utils.UtilsData;
+import gov.nih.nlm.malaria_screener.custom.Utils.UtilsMethods;
 import gov.nih.nlm.malaria_screener.database.MyDBHandler;
+import gov.nih.nlm.malaria_screener.uploadFunction.UploadListOfImagesTask;
+import gov.nih.nlm.malaria_screener.uploadFunction.UploadSessionManager;
 
 public abstract class SummarySheetBaseActivity extends AppCompatActivity {
 
@@ -211,6 +214,26 @@ public abstract class SummarySheetBaseActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void prepare_and_upload(String[] imageName, String patientIDStr, String slideIDStr){
+
+        //export database for upload
+        UtilsMethods.exportDB(getApplicationContext());
+
+        ArrayList<String > imageNameList = new ArrayList<>();
+        ArrayList<String> folderNameList = new ArrayList<>();
+
+        for (int i=0;i<imageName.length;i++) {
+            imageNameList.add(imageName[i]);
+            folderNameList.add(patientIDStr + "_" + slideIDStr);
+        }
+
+        UploadSessionManager uploadSessionManager = new UploadSessionManager();
+        uploadSessionManager.authticateSession(getApplicationContext());
+
+        new UploadListOfImagesTask(getApplicationContext()).execute(imageNameList, folderNameList);
+
     }
 
 
