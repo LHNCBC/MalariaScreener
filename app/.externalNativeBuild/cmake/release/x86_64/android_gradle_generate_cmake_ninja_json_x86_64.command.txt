@@ -1,15 +1,15 @@
-Executable : C:\Users\yuh5\AppData\Local\Android\sdk\cmake\3.6.4111459\bin\cmake.exe
+Executable : /Users/Hang/Library/Android/sdk/cmake/3.6.4111459/bin/cmake
 arguments : 
--HQ:\Malaria\AndroidProject\MalariaScreener\app
--BQ:\Malaria\AndroidProject\MalariaScreener\app\.externalNativeBuild\cmake\release\x86_64
+-H/Users/Hang/Downloads/MS_local_repo/MalariaScreener/app
+-B/Users/Hang/Downloads/MS_local_repo/MalariaScreener/app/.externalNativeBuild/cmake/release/x86_64
 -DANDROID_ABI=x86_64
 -DANDROID_PLATFORM=android-19
--DCMAKE_LIBRARY_OUTPUT_DIRECTORY=Q:\Malaria\AndroidProject\MalariaScreener\app\build\intermediates\cmake\release\obj\x86_64
+-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=/Users/Hang/Downloads/MS_local_repo/MalariaScreener/app/build/intermediates/cmake/release/obj/x86_64
 -DCMAKE_BUILD_TYPE=Release
--DANDROID_NDK=C:\Users\yuh5\AppData\Local\Android\sdk\ndk-bundle
+-DANDROID_NDK=/Users/Hang/Library/Android/sdk/ndk-bundle
 -DCMAKE_CXX_FLAGS=-std=c++11 -frtti -fexceptions
--DCMAKE_TOOLCHAIN_FILE=C:\Users\yuh5\AppData\Local\Android\sdk\ndk-bundle\build\cmake\android.toolchain.cmake
--DCMAKE_MAKE_PROGRAM=C:\Users\yuh5\AppData\Local\Android\sdk\cmake\3.6.4111459\bin\ninja.exe
+-DCMAKE_TOOLCHAIN_FILE=/Users/Hang/Library/Android/sdk/ndk-bundle/build/cmake/android.toolchain.cmake
+-DCMAKE_MAKE_PROGRAM=/Users/Hang/Library/Android/sdk/cmake/3.6.4111459/bin/ninja
 -GAndroid Gradle - Ninja
 jvmArgs : 
 

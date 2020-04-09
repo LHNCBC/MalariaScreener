@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Html;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -15,15 +16,20 @@ import gov.nih.nlm.malaria_screener.MainActivity;
 import gov.nih.nlm.malaria_screener.R;
 
 import gov.nih.nlm.malaria_screener.custom.Utils.UtilsData;
+import gov.nih.nlm.malaria_screener.custom.Utils.UtilsMethods;
 import gov.nih.nlm.malaria_screener.database.Images;
 import gov.nih.nlm.malaria_screener.database.MyDBHandler;
 import gov.nih.nlm.malaria_screener.database.Patients;
 
 import gov.nih.nlm.malaria_screener.database.Slides;
 import gov.nih.nlm.malaria_screener.frontEnd.baseClass.SummarySheetBaseActivity;
+import gov.nih.nlm.malaria_screener.uploadFunction.ListOfImagesUploader;
+import gov.nih.nlm.malaria_screener.uploadFunction.UploadActivity;
 import gov.nih.nlm.malaria_screener.uploadFunction.UploadHashManager;
+import gov.nih.nlm.malaria_screener.uploadFunction.UploadSessionManager;
 
 import java.io.File;
+import java.util.ArrayList;
 
 
 public class SummarySheetActivity extends SummarySheetBaseActivity {
@@ -38,6 +44,7 @@ public class SummarySheetActivity extends SummarySheetBaseActivity {
     MyDBHandler dbHandler;
 
     Bundle extras;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

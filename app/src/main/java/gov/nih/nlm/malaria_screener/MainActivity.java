@@ -201,6 +201,16 @@ public class MainActivity extends AppCompatActivity {
             sv_upload.show();
         }
 
+        // load upload list
+        UploadHashManager.hashmap_for_upload = new LinkedHashMap<>();
+        UploadHashManager.hashmap_for_upload = UploadHashManager.loadMap(getApplicationContext());
+        Log.d(TAG, "Hashmap empty: " + UploadHashManager.hashmap_for_upload.isEmpty());
+
+        for(Map.Entry<String, String> entry: UploadHashManager.hashmap_for_upload.entrySet()){
+
+            Log.d(TAG, "Key: " + entry.getKey() + ", Value: " + entry.getValue());
+        }
+
         // check for permissions, camera & read/write storage, internet
         final List<String> permissionsList = new ArrayList<String>();
 
@@ -237,15 +247,6 @@ public class MainActivity extends AppCompatActivity {
             initializeView();
         }*/
 
-        // load upload list
-        UploadHashManager.hashmap_for_upload = new LinkedHashMap<>();
-        UploadHashManager.hashmap_for_upload = UploadHashManager.loadMap(getApplicationContext());
-        Log.d(TAG, "Hashmap: " + UploadHashManager.hashmap_for_upload.isEmpty());
-
-        for(Map.Entry<String, String> entry: UploadHashManager.hashmap_for_upload.entrySet()){
-
-            Log.d(TAG, "Key: " + entry.getKey() + ", Value: " + entry.getValue());
-        }
     }
 
     /*private void initializeView() {

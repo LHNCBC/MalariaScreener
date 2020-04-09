@@ -1,9 +1,12 @@
 
 {
-	"buildFiles" : [ "Q:/Malaria/AndroidProject/MalariaScreener/app/CMakeLists.txt" ],
+	"buildFiles" : 
+	[
+		"/Users/Hang/Downloads/MS_local_repo/MalariaScreener/app/CMakeLists.txt"
+	],
 	"cleanCommands" : 
 	[
-		"C:\\Users\\yuh5\\AppData\\Local\\Android\\sdk\\cmake\\3.6.4111459\\bin\\cmake.exe --build Q:\\Malaria\\AndroidProject\\MalariaScreener\\app\\.externalNativeBuild\\cmake\\debug\\x86_64 --target clean"
+		"/Users/Hang/Library/Android/sdk/cmake/3.6.4111459/bin/cmake --build /Users/Hang/Downloads/MS_local_repo/MalariaScreener/app/.externalNativeBuild/cmake/debug/x86_64 --target clean"
 	],
 	"cppFileExtensions" : [ "cpp" ],
 	"libraries" : 
@@ -13,34 +16,34 @@
 			"abi" : "x86_64",
 			"artifactName" : "lib_opencv",
 			"buildType" : "debug",
-			"output" : "Q:/Malaria/AndroidProject/MalariaScreener/app/src/main/jniLibs/x86_64/libopencv_java3.so",
-			"toolchain" : "2994708607"
+			"output" : "/Users/Hang/Downloads/MS_local_repo/MalariaScreener/app/src/main/jniLibs/x86_64/libopencv_java3.so",
+			"toolchain" : "3357484162865447452"
 		},
 		"native-lib-Debug-x86_64" : 
 		{
 			"abi" : "x86_64",
 			"artifactName" : "native-lib",
-			"buildCommand" : "C:\\Users\\yuh5\\AppData\\Local\\Android\\sdk\\cmake\\3.6.4111459\\bin\\cmake.exe --build Q:\\Malaria\\AndroidProject\\MalariaScreener\\app\\.externalNativeBuild\\cmake\\debug\\x86_64 --target native-lib",
+			"buildCommand" : "/Users/Hang/Library/Android/sdk/cmake/3.6.4111459/bin/cmake --build /Users/Hang/Downloads/MS_local_repo/MalariaScreener/app/.externalNativeBuild/cmake/debug/x86_64 --target native-lib",
 			"buildType" : "debug",
 			"files" : 
 			[
 				
 				{
-					"flags" : "  --target=x86_64-none-linux-android --gcc-toolchain=C:/Users/yuh5/AppData/Local/Android/Sdk/ndk-bundle/toolchains/x86_64-4.9/prebuilt/windows-x86_64 --sysroot=C:/Users/yuh5/AppData/Local/Android/Sdk/ndk-bundle/sysroot  -Dnative_lib_EXPORTS -IC:\\Users\\yuh5\\Downloads\\opencv-3.4.2-android-sdk\\OpenCV-android-sdk\\sdk\\native\\jni\\include -isystem C:\\Users\\yuh5\\AppData\\Local\\Android\\Sdk\\ndk-bundle\\sources\\cxx-stl\\llvm-libc++\\include -isystem C:\\Users\\yuh5\\AppData\\Local\\Android\\Sdk\\ndk-bundle\\sources\\android\\support\\include -isystem C:\\Users\\yuh5\\AppData\\Local\\Android\\Sdk\\ndk-bundle\\sources\\cxx-stl\\llvm-libc++abi\\include  -isystem C:/Users/yuh5/AppData/Local/Android/Sdk/ndk-bundle/sysroot/usr/include/x86_64-linux-android -D__ANDROID_API__=21 -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -Wa,--noexecstack -Wformat -Werror=format-security -std=c++11 -std=c++11 -frtti -fexceptions -O0 -fno-limit-debug-info  -fPIC    -c ",
-					"src" : "Q:/Malaria/AndroidProject/MalariaScreener/app/src/main/cpp/native-lib.cpp",
-					"workingDirectory" : "Q:/Malaria/AndroidProject/MalariaScreener/app/.externalNativeBuild/cmake/debug/x86_64"
+					"flags" : "  --target=x86_64-none-linux-android --gcc-toolchain=/Users/Hang/Library/Android/sdk/ndk-bundle/toolchains/x86_64-4.9/prebuilt/darwin-x86_64 --sysroot=/Users/Hang/Library/Android/sdk/ndk-bundle/sysroot  -Dnative_lib_EXPORTS -I/Users/Hang/Downloads/OpenCV-android-sdk/sdk/native/jni/include -isystem /Users/Hang/Library/Android/sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/include -isystem /Users/Hang/Library/Android/sdk/ndk-bundle/sources/android/support/include -isystem /Users/Hang/Library/Android/sdk/ndk-bundle/sources/cxx-stl/llvm-libc++abi/include  -isystem /Users/Hang/Library/Android/sdk/ndk-bundle/sysroot/usr/include/x86_64-linux-android -D__ANDROID_API__=21 -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -Wa,--noexecstack -Wformat -Werror=format-security -std=c++11 -std=c++11 -frtti -fexceptions -O0 -fno-limit-debug-info  -fPIC    -c ",
+					"src" : "/Users/Hang/Downloads/MS_local_repo/MalariaScreener/app/src/main/cpp/native-lib.cpp",
+					"workingDirectory" : "/Users/Hang/Downloads/MS_local_repo/MalariaScreener/app/.externalNativeBuild/cmake/debug/x86_64"
 				}
 			],
-			"output" : "Q:/Malaria/AndroidProject/MalariaScreener/app/build/intermediates/cmake/debug/obj/x86_64/libnative-lib.so",
-			"toolchain" : "2994708607"
+			"output" : "/Users/Hang/Downloads/MS_local_repo/MalariaScreener/app/build/intermediates/cmake/debug/obj/x86_64/libnative-lib.so",
+			"toolchain" : "3357484162865447452"
 		}
 	},
 	"toolchains" : 
 	{
-		"2994708607" : 
+		"3357484162865447452" : 
 		{
-			"cCompilerExecutable" : "C:/Users/yuh5/AppData/Local/Android/Sdk/ndk-bundle/toolchains/llvm/prebuilt/windows-x86_64/bin/clang.exe",
-			"cppCompilerExecutable" : "C:/Users/yuh5/AppData/Local/Android/Sdk/ndk-bundle/toolchains/llvm/prebuilt/windows-x86_64/bin/clang++.exe"
+			"cCompilerExecutable" : "/Users/Hang/Library/Android/sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang",
+			"cppCompilerExecutable" : "/Users/Hang/Library/Android/sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++"
 		}
 	}
 }

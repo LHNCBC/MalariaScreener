@@ -23,6 +23,8 @@ import com.box.androidsdk.content.requests.BoxRequestsFolder;
 import java.io.File;
 import java.util.ArrayList;
 
+import gov.nih.nlm.malaria_screener.custom.Utils.UtilsCustom;
+
 /* This class is to provide function that:
     1. create root folder in user's remote Box repository
     2. scans all files within each subfolder under the local "NLM_Malaria_screener" folder
@@ -48,9 +50,7 @@ public class AllFile_Uploader_Box extends AsyncTask<Void, Integer, Boolean> {
         this.context = context;
         //this.path = path;
 
-        UploadSessionManager uploadSessionManager = new UploadSessionManager();
-        uploadSessionManager.authticateSession(context);
-        mSession = UploadSessionManager.mSession;
+        mSession = UploadActivity.mSession;
 
         //Init file, and folder apis; and use them to fetch the root folder
         mFolderApi = new BoxApiFolder(mSession);

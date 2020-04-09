@@ -70,6 +70,12 @@ public class Uploader {
         FullAccount fullAccount;
 
         @Override
+        protected void onPreExecute() {
+            String string = context.getResources().getString(R.string.start_upload);
+            Toast.makeText(context, string, Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
         protected Void doInBackground(Void... params) {
 
             try {

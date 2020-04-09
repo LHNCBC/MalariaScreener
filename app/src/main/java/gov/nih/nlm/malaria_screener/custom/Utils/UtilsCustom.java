@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 
+import com.box.androidsdk.content.models.BoxSession;
+
 import org.opencv.core.Mat;
 
 import java.io.ByteArrayOutputStream;

@@ -5,8 +5,6 @@ import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.ListView;
 
 import java.io.File;
@@ -17,13 +15,12 @@ import gov.nih.nlm.malaria_screener.R;
 import gov.nih.nlm.malaria_screener.custom.CustomAdapter;
 import gov.nih.nlm.malaria_screener.custom.CustomAdapterBold;
 import gov.nih.nlm.malaria_screener.custom.RowItem;
-import gov.nih.nlm.malaria_screener.custom.Utils.UtilsData;
 import gov.nih.nlm.malaria_screener.custom.Utils.UtilsMethods;
-import gov.nih.nlm.malaria_screener.database.MyDBHandler;
-import gov.nih.nlm.malaria_screener.uploadFunction.UploadListOfImagesTask;
 import gov.nih.nlm.malaria_screener.uploadFunction.UploadSessionManager;
 
-public abstract class SummarySheetBaseActivity extends AppCompatActivity {
+public abstract class SummarySheetBaseActivity extends AppCompatActivity{
+
+    private static final String TAG = "MyDebug";
 
     ListView listView_patient;
     ListView listView_slide;
@@ -66,6 +63,9 @@ public abstract class SummarySheetBaseActivity extends AppCompatActivity {
 
     public boolean newPatient = false;
     public boolean newSlide = false;
+
+    public ArrayList<String > imageNameList = new ArrayList<>();
+    public ArrayList<String> folderNameList = new ArrayList<>();
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -221,20 +221,18 @@ public abstract class SummarySheetBaseActivity extends AppCompatActivity {
         //export database for upload
         UtilsMethods.exportDB(getApplicationContext());
 
-        ArrayList<String > imageNameList = new ArrayList<>();
-        ArrayList<String> folderNameList = new ArrayList<>();
-
         for (int i=0;i<imageName.length;i++) {
             imageNameList.add(imageName[i]);
             folderNameList.add(patientIDStr + "_" + slideIDStr);
         }
 
         UploadSessionManager uploadSessionManager = new UploadSessionManager();
-        uploadSessionManager.authticateSession(getApplicationContext());
-
-        new UploadListOfImagesTask(getApplicationContext()).execute(imageNameList, folderNameList);
-
+        uploadSessionManager.authenticate(getApplicationContext(), imageNameList, folderNameList);
     }
+
+
+
+
 
 
 }

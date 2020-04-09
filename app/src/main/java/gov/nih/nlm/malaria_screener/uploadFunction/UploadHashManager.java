@@ -63,7 +63,6 @@ public class UploadHashManager {
         } catch (Exception e) {
             e.printStackTrace();
 
-            Log.d(TAG, "Here.");
         }
 
         return outputMap;

@@ -19,7 +19,10 @@ import gov.nih.nlm.malaria_screener.database.MyDBHandler;
 import gov.nih.nlm.malaria_screener.database.Patients;
 import gov.nih.nlm.malaria_screener.database.Slides;
 import gov.nih.nlm.malaria_screener.frontEnd.baseClass.SummarySheetBaseActivity;
+import gov.nih.nlm.malaria_screener.uploadFunction.ListOfImagesUploader;
+import gov.nih.nlm.malaria_screener.uploadFunction.UploadActivity;
 import gov.nih.nlm.malaria_screener.uploadFunction.UploadHashManager;
+import gov.nih.nlm.malaria_screener.uploadFunction.UploadSessionManager;
 
 public class SummarySheetActivity_thick extends SummarySheetBaseActivity {
 
