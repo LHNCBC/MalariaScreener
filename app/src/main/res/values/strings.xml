@@ -405,7 +405,7 @@
     </string>
 
     <!-- Strings in Upload Service -->
-    <string name="upload_float">Uploading&#8230;\n  </string>
+    <string name="upload_float">Uploaded\n  </string>
     <string name="text_float">Floating Widget controls here</string>
     <string name="upload_cancel">Cancel Upload</string>
     <string name="upload_cancel_text">Want to stop uploading now?\nYou can resume later in Database page.</string>

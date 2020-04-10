@@ -35,6 +35,11 @@
             android:enabled="true"
             android:exported="true" />
 
+        <service
+            android:name=".uploadFunction.BoxUploadService"
+            android:enabled="true"
+            android:exported="true" />
+
         <activity
             android:name=".userOnboard.DisclaimerActivity"
             android:label="@string/title_activity_disclaimer"

@@ -1,6 +1,7 @@
 package gov.nih.nlm.malaria_screener.uploadFunction;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -39,6 +40,7 @@ public class UploadSessionManager implements BoxAuthentication.AuthListener{
         BoxConfig.IS_LOG_ENABLED = true;
         configureClient();
         initSession();
+
 
     }
 

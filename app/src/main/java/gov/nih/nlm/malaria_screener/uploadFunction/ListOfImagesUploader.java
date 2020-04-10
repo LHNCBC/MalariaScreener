@@ -19,12 +19,16 @@ import com.box.androidsdk.content.models.BoxSession;
 import com.box.androidsdk.content.requests.BoxRequestsFile;
 import com.box.androidsdk.content.requests.BoxRequestsFolder;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Map;
 
 import gov.nih.nlm.malaria_screener.R;
 import gov.nih.nlm.malaria_screener.custom.Utils.UtilsCustom;
+import gov.nih.nlm.malaria_screener.database.ProgressBarEvent;
+import gov.nih.nlm.malaria_screener.database.ProgressDoneEvent;
 
 /*  <<Class Description>>
     This class is to provide function that:
@@ -120,7 +124,7 @@ public class ListOfImagesUploader {
 
                     // ------ 4. search for all images under current ID in the local folder --------
                     int endIndex = imgNameStr.lastIndexOf(".");
-                    String imageNameOnly = imgNameStr.substring(0, endIndex);
+                    final String imageNameOnly = imgNameStr.substring(0, endIndex);
 
                     for (final File imgFile: imageListing) {
 
@@ -144,6 +148,9 @@ public class ListOfImagesUploader {
 
                                     }
 
+                                    // **** update upload progress to floating Service widget *****
+                                    EventBus.getDefault().post(new ProgressBarEvent(1));
+
                                 }
 
                             }.start();
@@ -154,7 +161,6 @@ public class ListOfImagesUploader {
                     Map<String, String> map = UploadHashManager.hashmap_for_upload;
 
                     if (map.containsKey(imgNameStr)) {
-                        Log.d(TAG, "attempt to delete: " + imgNameStr);
                         map.remove(imgNameStr);
                     }
 
@@ -186,6 +192,8 @@ public class ListOfImagesUploader {
                                 @Override
                                 public void run() {
                                     upload_metadata_file(file);
+
+                                    EventBus.getDefault().post(new ProgressBarEvent(1));
                                 }
 
                             }.start();
@@ -196,6 +204,9 @@ public class ListOfImagesUploader {
 
                 }
             }
+
+            // **** update upload progress to floating Service widget *****
+            //EventBus.getDefault().post(new ProgressDoneEvent(true));
 
         }
 

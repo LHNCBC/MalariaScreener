@@ -1,5 +1,6 @@
 package gov.nih.nlm.malaria_screener.uploadFunction;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -22,6 +23,7 @@ import java.util.Map;
 
 import gov.nih.nlm.malaria_screener.R;
 import gov.nih.nlm.malaria_screener.custom.Utils.UtilsMethods;
+import gov.nih.nlm.malaria_screener.frontEnd.baseClass.SummarySheetBaseActivity;
 
 public class UploadActivity extends AppCompatActivity {
 
@@ -59,6 +61,10 @@ public class UploadActivity extends AppCompatActivity {
                             UploadSessionManager uploadSessionManager = new UploadSessionManager();
                             uploadSessionManager.authenticate(getApplicationContext(), imageNameList, folderNameList);
 
+                            Intent intent = new Intent(getApplicationContext(), BoxUploadService.class);
+                            intent.putStringArrayListExtra("img_name_array", imageNameList);
+                            intent.putStringArrayListExtra("folder_name_array", folderNameList);
+                            startService(intent);
 
                         } else {
                             String string = getApplicationContext().getResources().getString(R.string.empty_upload);

@@ -1,4 +1,4 @@
-package gov.nih.nlm.malaria_screener.frontEnd;
+package gov.nih.nlm.malaria_screener.uploadFunction;
 
 import android.app.AlertDialog;
 import android.app.Service;
@@ -8,6 +8,7 @@ import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.Environment;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -16,19 +17,17 @@ import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import gov.nih.nlm.malaria_screener.R;
-import gov.nih.nlm.malaria_screener.database.DatabasePage;
 import gov.nih.nlm.malaria_screener.database.ProgressBarEvent;
 import gov.nih.nlm.malaria_screener.database.ProgressDoneEvent;
-import gov.nih.nlm.malaria_screener.database.Register;
 
 /*
 *
@@ -36,7 +35,7 @@ import gov.nih.nlm.malaria_screener.database.Register;
 *
 *
 * */
-public class UploadService extends Service {
+public class BoxUploadService extends Service {
 
     private static final String TAG = "MyDebug";
 
@@ -51,7 +50,13 @@ public class UploadService extends Service {
 
     boolean pause = true;
 
-    public UploadService() {
+    private int currentProgress = 0;
+
+    private ArrayList<String > imageNameList = new ArrayList<>();
+    private ArrayList<String> folderNameList = new ArrayList<>();
+
+    public BoxUploadService() {
+
     }
 
     @Override
@@ -65,8 +70,15 @@ public class UploadService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        fileNum = getFileCount(file);
+        //fileNum = intent.getIntExtra("num_of_img_ID", 0);
+        imageNameList = intent.getStringArrayListExtra("img_name_array");
+        folderNameList = intent.getStringArrayListExtra("folder_name_array");
+        fileNum = cal_num_of_images();
+
         progressBar.setMax(fileNum);
+
+        progressBar.setProgress(currentProgress);
+        textView.setText(getResources().getString(R.string.upload_float) + currentProgress + "/" + fileNum);
 
         return super.onStartCommand(intent, flags, startId);
     }
@@ -115,7 +127,9 @@ public class UploadService extends Service {
                     @Override
                     public void onClick(View view) {
 
-                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getApplicationContext());
+                        stopSelf();
+
+                        /*AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getApplicationContext());
 
                         // Setting Dialog Title
                         alertDialogBuilder.setTitle(R.string.upload_cancel);
@@ -142,7 +156,7 @@ public class UploadService extends Service {
                         final AlertDialog alert = alertDialogBuilder.create();
 
                         alert.getWindow().setType(LAYOUT_FLAG);
-                        alert.show();
+                        alert.show();*/
 
 
                     }
@@ -210,63 +224,20 @@ public class UploadService extends Service {
 
         EventBus.getDefault().register(this);
 
-        file = new File(Environment.getExternalStorageDirectory(), "NLM_Malaria_Screener");
+        //file = new File(Environment.getExternalStorageDirectory(), "NLM_Malaria_Screener");
 
-        fileNum = getFileCount(file);
-        progressBar.setMax(fileNum);
+        //fileNum = ;
+        //progressBar.setMax(fileNum);
 
-    }
-
-    public int getFileCount(File file) {
-
-        int fileNum = 0;
-
-        if (file.listFiles() != null) {
-
-            final File[] folder_list = file.listFiles(); // list of folders from each session
-
-            // calculate number of files to get uploaded
-            for (int i = 0; i < folder_list.length; i++) {
-
-                String dirStr = folder_list[i].toString().substring(folder_list[i].toString().lastIndexOf("/") + 1);
-
-                if (dirStr.equals("Test")) { // for Test folder
-
-                    File[] Listing = folder_list[i].listFiles(); // list of slides in Test
-
-                    for (int k = 0; k < Listing.length; k++) {
-
-                        File[] imageList = Listing[k].listFiles();
-
-                        fileNum = fileNum + imageList.length;
-                    }
-
-                } else {
-
-                    if (folder_list[i].listFiles() == null) { // for log files
-
-                        fileNum = fileNum + 1;
-
-                    } else { // for normal slide folder
-
-                        File[] Listing = folder_list[i].listFiles(); // list of images from one session
-
-                        fileNum = fileNum + Listing.length;
-
-                    }
-
-                }
-            }
-        }
-
-        return fileNum;
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onProgressEvent(ProgressBarEvent event) {
 
-        progressBar.setProgress(event.getProgress());
-        textView.setText(getResources().getString(R.string.upload_float) + event.getProgress() + "/" + fileNum);
+        currentProgress = currentProgress + event.getProgress();
+
+        progressBar.setProgress(currentProgress);
+        textView.setText(getResources().getString(R.string.upload_float) + currentProgress + "/" + fileNum);
     }
 
     @Subscribe
@@ -284,5 +255,62 @@ public class UploadService extends Service {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
         if (mFloatingWidget != null) mWindowManager.removeView(mFloatingWidget);
+    }
+
+    private int cal_num_of_images(){
+
+        String RootFolderName_str = "NLM_Malaria_Screener";
+
+        int numOfFiles = 0;
+
+        for (int i = 0; i < imageNameList.size(); i++) {
+
+            final String imgNameStr = imageNameList.get(i);
+            final String folderNameStr = folderNameList.get(i);
+
+            int endIndex = imgNameStr.lastIndexOf(".");
+            final String imageNameOnly = imgNameStr.substring(0, endIndex);
+
+            final File folderFile = new File(Environment.getExternalStorageDirectory(
+            ), RootFolderName_str + "/" + folderNameStr);
+
+            File[] imageListing = folderFile.listFiles(); // list all images of one session
+
+            if (imageListing == null){
+
+            } else {
+
+                for (final File imgFile : imageListing) {
+
+                    if (imgFile.toString().contains(imageNameOnly)) {
+                        numOfFiles += 1;
+                    }
+                }
+            }
+        }
+
+        final File rootFile = new File(Environment.getExternalStorageDirectory(
+        ), RootFolderName_str);
+
+        if (rootFile.listFiles() != null) {
+
+            final File[] listing = rootFile.listFiles();    // list all files & folders
+            final int length = listing.length;
+
+            if (length > 0) {
+
+                // iterate through folders & files
+                for (final File file : listing) {
+
+                    String filePathStr = file.toString();
+
+                    if (filePathStr.contains(".txt") || filePathStr.contains(".csv")) {
+                        numOfFiles += 1;
+                    }
+                }
+            }
+        }
+
+        return numOfFiles;
     }
 }
