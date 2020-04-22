@@ -10,6 +10,7 @@ import com.box.androidsdk.content.BoxApiFile;
 import com.box.androidsdk.content.BoxApiFolder;
 import com.box.androidsdk.content.BoxConstants;
 import com.box.androidsdk.content.BoxException;
+import com.box.androidsdk.content.listeners.ProgressListener;
 import com.box.androidsdk.content.models.BoxEntity;
 import com.box.androidsdk.content.models.BoxError;
 import com.box.androidsdk.content.models.BoxFile;
@@ -29,6 +30,7 @@ import gov.nih.nlm.malaria_screener.R;
 import gov.nih.nlm.malaria_screener.custom.Utils.UtilsCustom;
 import gov.nih.nlm.malaria_screener.database.ProgressBarEvent;
 import gov.nih.nlm.malaria_screener.database.ProgressDoneEvent;
+import gov.nih.nlm.malaria_screener.database.UpdateListViewEvent;
 
 /*  <<Class Description>>
     This class is to provide function that:
@@ -139,7 +141,29 @@ public class ListOfImagesUploader {
                                     //String imagePathStr = RootFolderName_str + "/" + folderNameStr + "/" + imgNameStr;
                                     //File imgFile = new File(Environment.getExternalStorageDirectory(), imagePathStr);
 
-                                    BoxRequestsFile.UploadFile request = mFileApi.getUploadRequest(imgFile, cur_folder_id);
+                                    BoxRequestsFile.UploadFile request = mFileApi.getUploadRequest(imgFile, cur_folder_id).setProgressListener(new ProgressListener() {
+                                        @Override
+                                        public void onProgressChanged(long numBytes, long totalBytes) {
+
+                                            if (numBytes == totalBytes) {
+
+                                                // -------------------- 6. delete image ID from HashMap ------------------------
+                                                Map<String, String> map = UploadHashManager.hashmap_for_upload;
+
+                                                if (map.containsKey(imgNameStr)) {
+                                                    map.remove(imgNameStr);
+                                                }
+                                                UploadHashManager.saveMap(context, UploadHashManager.hashmap_for_upload);
+
+                                                // update ListView for Upload Activity's UI
+                                                EventBus.getDefault().post(new UpdateListViewEvent(folderNameStr));
+
+                                                // **** update upload progress to floating Service widget *****
+                                                EventBus.getDefault().post(new ProgressBarEvent(1));
+                                            }
+
+                                        }
+                                    });
 
                                     try {
                                         request.send();
@@ -148,27 +172,18 @@ public class ListOfImagesUploader {
 
                                     }
 
-                                    // **** update upload progress to floating Service widget *****
-                                    EventBus.getDefault().post(new ProgressBarEvent(1));
-
                                 }
 
                             }.start();
                         }
                     }
 
-                    // -------------------- 6. delete image ID from HashMap ------------------------
-                    Map<String, String> map = UploadHashManager.hashmap_for_upload;
-
-                    if (map.containsKey(imgNameStr)) {
-                        map.remove(imgNameStr);
-                    }
 
                 }
 
             }
 
-            UploadHashManager.saveMap(context, UploadHashManager.hashmap_for_upload);
+
 
             // ------------ 7. Upload .txt and database (.csv) files in root folder ----------------
             final File rootFile = new File(Environment.getExternalStorageDirectory(

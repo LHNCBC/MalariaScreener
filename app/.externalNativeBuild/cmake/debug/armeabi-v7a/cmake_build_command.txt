@@ -3,7 +3,7 @@ arguments :
 -H/Users/Hang/Downloads/MS_local_repo/MalariaScreener/app
 -B/Users/Hang/Downloads/MS_local_repo/MalariaScreener/app/.externalNativeBuild/cmake/debug/armeabi-v7a
 -DANDROID_ABI=armeabi-v7a
--DANDROID_PLATFORM=android-19
+-DANDROID_PLATFORM=android-21
 -DCMAKE_LIBRARY_OUTPUT_DIRECTORY=/Users/Hang/Downloads/MS_local_repo/MalariaScreener/app/build/intermediates/cmake/debug/obj/armeabi-v7a
 -DCMAKE_BUILD_TYPE=Debug
 -DANDROID_NDK=/Users/Hang/Library/Android/sdk/ndk-bundle

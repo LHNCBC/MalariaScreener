@@ -21,7 +21,7 @@ ANDROID_ABI:UNINITIALIZED=arm64-v8a
 ANDROID_NDK:UNINITIALIZED=/Users/Hang/Library/Android/sdk/ndk-bundle
 
 //No help, variable specified on the command line.
-ANDROID_PLATFORM:UNINITIALIZED=android-19
+ANDROID_PLATFORM:UNINITIALIZED=android-21
 
 //Archiver
 CMAKE_AR:FILEPATH=/Users/Hang/Library/Android/sdk/ndk-bundle/toolchains/aarch64-linux-android-4.9/prebuilt/darwin-x86_64/bin/aarch64-linux-android-ar

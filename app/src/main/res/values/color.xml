@@ -6,5 +6,7 @@
     <color name="red">#FF0000</color>
     <color name="edittext_line">#1E4D79</color>
 
+    <color name="toolbar_longpressed">#F85891EC</color>
+    <color name="toolbar_normal">#1F568a</color>
 
 </resources>

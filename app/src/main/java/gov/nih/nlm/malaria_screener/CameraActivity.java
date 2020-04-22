@@ -55,6 +55,7 @@ import gov.nih.nlm.malaria_screener.custom.Utils.UtilsCustom;
 import gov.nih.nlm.malaria_screener.custom.Utils.UtilsData;
 import gov.nih.nlm.malaria_screener.frontEnd.ResultDisplayer;
 import gov.nih.nlm.malaria_screener.frontEnd.ResultDisplayer_thickSmear;
+import gov.nih.nlm.malaria_screener.imageProcessing.Cells;
 import gov.nih.nlm.malaria_screener.imageProcessing.MarkerBasedWatershed;
 import gov.nih.nlm.malaria_screener.imageProcessing.SVM_Classifier;
 import gov.nih.nlm.malaria_screener.imageProcessing.TensorFlowClassifier;

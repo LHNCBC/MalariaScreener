@@ -6,17 +6,27 @@
     android:layout_height="match_parent"
     tools:context=".uploadFunction.UploadActivity">
 
-    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.v7.widget.Toolbar
         android:id="@+id/navigate_bar_upload"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentTop="true"
         android:background="#1F568a"
-        android:textAlignment="center"></android.support.v7.widget.Toolbar>
+        android:textAlignment="center"/>
+
+    <ListView
+        android:id="@+id/listview_upload"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/button_upload_box"
+        android:layout_below="@+id/navigate_bar_upload"
+        android:background="#FFFFFF"
+        android:layout_marginTop="3dp"
+        android:layout_marginBottom="15dp"/>
 
     <Button
         android:id="@+id/button_upload_box"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"

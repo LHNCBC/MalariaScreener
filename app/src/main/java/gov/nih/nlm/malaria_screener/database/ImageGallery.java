@@ -80,7 +80,6 @@ public class ImageGallery extends AppCompatActivity implements CustomAdapter_Ima
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_gallery);
 
-
         Bundle extras = getIntent().getExtras();
         patientStr = extras.getString("itemPID");
         slideStr = extras.getString("itemSID");

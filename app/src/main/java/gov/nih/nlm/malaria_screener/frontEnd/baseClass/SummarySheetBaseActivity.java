@@ -230,11 +230,6 @@ public abstract class SummarySheetBaseActivity extends AppCompatActivity{
 
         UploadSessionManager uploadSessionManager = new UploadSessionManager();
         uploadSessionManager.authenticate(getApplicationContext(), imageNameList, folderNameList);
-
-        Intent intent = new Intent(this, BoxUploadService.class);
-        intent.putStringArrayListExtra("img_name_array", imageNameList);
-        intent.putStringArrayListExtra("folder_name_array", folderNameList);
-        startService(intent);
     }
 
 

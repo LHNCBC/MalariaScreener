@@ -358,8 +358,9 @@
     <string name="end_session">End Session</string>
 
     <!-- Strings for upload-->
-    <string name="upload_dropbox">Upload</string>
-    <string name="upload_server">Upload to Server</string>
+    <string name="upload_dropbox">Quick Upload</string>
+
+    <string name="upload_selected_items">Upload Selected Items</string>
 
     <!-- Strings for manual counts -->
     <string name="manual_counts">Enter Manual Counts</string>
@@ -410,5 +411,9 @@
     <string name="upload_cancel">Cancel Upload</string>
     <string name="upload_cancel_text">Want to stop uploading now?\nYou can resume later in Database page.</string>
 
+    <!-- Strings in New Upload Function -->
+    <string name="upload_select">Select...</string>
+    <string name="upload_select_all">Select all</string>
+    <string name="no_wifi">Cannot detect Wifi connection.</string>
 
 </resources>

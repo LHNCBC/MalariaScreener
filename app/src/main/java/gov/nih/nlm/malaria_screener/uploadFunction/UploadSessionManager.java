@@ -1,7 +1,14 @@
 package gov.nih.nlm.malaria_screener.uploadFunction;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkInfo;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -75,14 +82,34 @@ public class UploadSessionManager implements BoxAuthentication.AuthListener{
 ////        mFileApi = new BoxApiFile(mSession);
         Log.d(TAG, "onAuthCreated 1");
 
-        new Thread() {
-            @Override
-            public void run() {
-                ListOfImagesUploader listOfImagesUploader = new ListOfImagesUploader(context, mSession);
-                listOfImagesUploader.upload_images(imageNameList, folderNameList);
-            }
+        boolean isWifiConnected = check_Wifi_connection();
 
-        }.start();
+        if (isWifiConnected) {
+            new Thread() {
+                @Override
+                public void run() {
+
+                    Intent intent = new Intent(context, BoxUploadService.class);
+                    intent.putStringArrayListExtra("img_name_array", imageNameList);
+                    intent.putStringArrayListExtra("folder_name_array", folderNameList);
+                    context.startService(intent);
+
+                    ListOfImagesUploader listOfImagesUploader = new ListOfImagesUploader(context, mSession);
+                    listOfImagesUploader.upload_images(imageNameList, folderNameList);
+                }
+
+            }.start();
+        } else {
+
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    String msg = context.getResources().getString(R.string.no_wifi);;
+                    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+                }
+            });
+
+        }
 
     }
 
@@ -94,6 +121,27 @@ public class UploadSessionManager implements BoxAuthentication.AuthListener{
     @Override
     public void onLoggedOut(BoxAuthentication.BoxAuthenticationInfo info, Exception ex) {
 
+    }
+
+
+    private boolean check_Wifi_connection(){
+
+        ConnectivityManager connMgr =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        boolean isWifiConn = false;
+        //boolean isMobileConn = false;
+
+        for (Network network : connMgr.getAllNetworks()) {
+            NetworkInfo networkInfo = connMgr.getNetworkInfo(network);
+            if (networkInfo.getType() == ConnectivityManager.TYPE_WIFI) {
+                isWifiConn |= networkInfo.isConnected();
+            }
+            /*if (networkInfo.getType() == ConnectivityManager.TYPE_MOBILE) {
+                isMobileConn |= networkInfo.isConnected();
+            }*/
+        }
+
+        return isWifiConn;
     }
 
 }
