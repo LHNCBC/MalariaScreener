@@ -67,9 +67,9 @@ public class CustomAdapter_Upload extends ArrayAdapter<RowItem_Folders> {
             LayoutInflater inflater = LayoutInflater.from(context);
             convertView = inflater.inflate(mResource, parent, false);
             holder = new ViewHolder();
+            holder.imageView = (ImageView) convertView.findViewById(R.id.imageView_foldericon);
             holder.folderName = (TextView) convertView.findViewById(R.id.textView_folderName);
             holder.folderDate = (TextView) convertView.findViewById(R.id.textView_folderDate);
-            holder.imageView = (ImageView) convertView.findViewById(R.id.imageView_isUploaded);
             holder.checkBox = (CheckBox) convertView.findViewById(R.id.checkBox_upload);
 
             convertView.setTag(holder);
@@ -82,9 +82,9 @@ public class CustomAdapter_Upload extends ArrayAdapter<RowItem_Folders> {
         holder.checkBox.setChecked(isfolderSelected);
 
         if (isfolderUploaded){
-            holder.imageView.setImageResource(R.drawable.baseline_check_box_black_18dp);
+            holder.imageView.setImageResource(R.drawable.folder_check);
         } else {
-            holder.imageView.setImageResource(R.drawable.baseline_check_box_outline_blank_black_18dp);
+            holder.imageView.setImageResource(R.drawable.folder_icon);
         }
 
         if(isSelectionMode) {

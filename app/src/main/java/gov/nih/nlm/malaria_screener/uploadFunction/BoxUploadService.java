@@ -43,12 +43,11 @@ public class BoxUploadService extends Service {
     private View mFloatingWidget;
 
     private ProgressBar progressBar;
+    private ProgressBar progressBar_circle;
     private TextView textView;
 
     private int fileNum; // total number of files in /NLM_Malaria_Screener/
     private File file;
-
-    boolean pause = true;
 
     private int currentProgress = 0;
 
@@ -77,6 +76,9 @@ public class BoxUploadService extends Service {
 
         progressBar.setMax(fileNum);
 
+        progressBar_circle.setVisibility(View.VISIBLE);
+        currentProgress = 0;
+
         progressBar.setProgress(currentProgress);
         textView.setText(getResources().getString(R.string.upload_float) + currentProgress + "/" + fileNum);
 
@@ -87,9 +89,10 @@ public class BoxUploadService extends Service {
     public void onCreate() {
         super.onCreate();
 
-        mFloatingWidget = LayoutInflater.from(this).inflate(R.layout.floating_widget_service, null);
+        mFloatingWidget = LayoutInflater.from(this).inflate(R.layout.floating_widget_service_box, null);
 
         progressBar = mFloatingWidget.findViewById(R.id.progressBar_float);
+        progressBar_circle = mFloatingWidget.findViewById(R.id.progressBar_upload_circle);
         textView = mFloatingWidget.findViewById(R.id.textView_upload_float);
 
         final int LAYOUT_FLAG;
@@ -162,31 +165,6 @@ public class BoxUploadService extends Service {
                     }
                 });
 
-
-        final ImageButton pausePlayButton = mFloatingWidget.findViewById(R.id.imageButton_pause_upload);
-        pausePlayButton.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if (pause) {
-                            pausePlayButton.setBackgroundResource(R.drawable.play_arrow_white_18dp);
-                            pause = false;
-                        } else {
-                            pausePlayButton.setBackgroundResource(R.drawable.pause_white_18dp);
-                            pause = true;
-                        }
-                    }
-                });
-
-        /*ImageButton cancelButton_1 = mFloatingWidget.findViewById(R.id.imageButton_cancel_upload_1);
-        cancelButton_1.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        stopSelf();
-                    }
-                });*/
-
         mFloatingWidget.findViewById(R.id.root_container).setOnTouchListener(new View.OnTouchListener() {
 
             private int initialX;
@@ -238,12 +216,17 @@ public class BoxUploadService extends Service {
 
         progressBar.setProgress(currentProgress);
         textView.setText(getResources().getString(R.string.upload_float) + currentProgress + "/" + fileNum);
+
+        if (currentProgress==fileNum) {
+            EventBus.getDefault().post(new ProgressDoneEvent(true));
+        }
     }
 
     @Subscribe
     public void onProgressDone(ProgressDoneEvent event) {
+        progressBar_circle.setVisibility(View.GONE);
         textView.setText(R.string.upload_finished);
-        stopSelf();
+        //stopSelf();
     }
 
     private boolean isViewCollapsed() {

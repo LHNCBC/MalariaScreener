@@ -116,13 +116,13 @@
     <orderEntry type="library" scope="TEST" name="Gradle: com.android.support.test:runner:0.5@aar" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: com.android.support.test.espresso:espresso-idling-resource:2.2.2@aar" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: com.android.support.test:exposed-instrumentation-api-publish:0.5@aar" level="project" />
-    <orderEntry type="library" name="Gradle: __local_aars__:./app/libs/GraphView-4.0.1.jar:unspecified@jar" level="project" />
-    <orderEntry type="library" name="Gradle: __local_aars__:./app/libs/AndroidSwipeLayout-v1.1.8.jar:unspecified@jar" level="project" />
     <orderEntry type="library" name="Gradle: __local_aars__:./app/libs/dropbox-android-sdk-1.6.3.jar:unspecified@jar" level="project" />
+    <orderEntry type="library" name="Gradle: __local_aars__:./app/libs/GraphView-4.0.1.jar:unspecified@jar" level="project" />
     <orderEntry type="library" name="Gradle: __local_aars__:./app/libs/json_simple-1.1.jar:unspecified@jar" level="project" />
     <orderEntry type="library" name="Gradle: __local_aars__:./app/libs/eventbus-3.0.0.jar:unspecified@jar" level="project" />
     <orderEntry type="library" name="Gradle: __local_aars__:./app/libs/glide-3.7.0.jar:unspecified@jar" level="project" />
     <orderEntry type="library" name="Gradle: __local_aars__:./app/libs/flickrj-android-2.0.0.jar:unspecified@jar" level="project" />
+    <orderEntry type="library" name="Gradle: __local_aars__:./app/libs/AndroidSwipeLayout-v1.1.8.jar:unspecified@jar" level="project" />
     <orderEntry type="library" name="Gradle: __local_aars__:./app/libs/slf4j-nop-1.7.25.jar:unspecified@jar" level="project" />
     <orderEntry type="library" name="Gradle: com.dropbox.core:dropbox-core-sdk:2.0.1@jar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.code.gson:gson:2.8.2@jar" level="project" />
