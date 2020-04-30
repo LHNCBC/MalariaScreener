@@ -31,15 +31,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="50dp"
+        android:layout_above="@+id/textView_quickUpload"
+        android:layout_marginBottom="20dp"
         android:background="#d95891ec"
         android:paddingLeft="5dp"
         android:paddingRight="5dp"
         android:text="@string/upload_dropbox"
         android:textColor="#FFFFFF"
-        android:textSize="17dp" />
+        android:textSize="17sp" />
 
+    <TextView
+        android:id="@+id/textView_quickUpload"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
+        android:text="@string/quick_upload_explained"
+        android:textSize="12sp" />
 
 
 </RelativeLayout>

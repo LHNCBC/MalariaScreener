@@ -409,11 +409,13 @@
     <string name="upload_float">Uploading...\n  </string>
     <string name="text_float">Floating Widget controls here</string>
     <string name="upload_cancel">Cancel Upload</string>
-    <string name="upload_cancel_text">Want to stop uploading now?\nYou can resume later in Database page.</string>
+    <string name="upload_cancel_text">Are you sure you want to stop uploading?</string>
 
     <!-- Strings in New Upload Function -->
     <string name="upload_select">Select...</string>
     <string name="upload_select_all">Select all</string>
     <string name="no_wifi">Wifi connection needed for upload task.</string>
+    <string name="no_selected_item">No selections has been made.</string>
+    <string name="quick_upload_explained">Quick Upload is an one-click function that automatically uploads all remaining folders.</string>
 
 </resources>

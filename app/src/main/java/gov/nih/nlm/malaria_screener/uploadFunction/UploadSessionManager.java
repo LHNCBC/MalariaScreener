@@ -99,6 +99,7 @@ public class UploadSessionManager implements BoxAuthentication.AuthListener{
                 }
 
             }.start();
+
         } else {
 
             new Handler(Looper.getMainLooper()).post(new Runnable() {

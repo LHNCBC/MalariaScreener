@@ -1,12 +1,10 @@
 package gov.nih.nlm.malaria_screener.uploadFunction;
 
-import android.content.Intent;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.util.SparseBooleanArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,7 +29,6 @@ import java.util.Map;
 
 import gov.nih.nlm.malaria_screener.R;
 import gov.nih.nlm.malaria_screener.custom.Utils.UtilsMethods;
-import gov.nih.nlm.malaria_screener.database.ProgressBarEvent;
 import gov.nih.nlm.malaria_screener.database.UpdateListViewEvent;
 import gov.nih.nlm.malaria_screener.uploadFunction.custom.CustomAdapter_Upload;
 import gov.nih.nlm.malaria_screener.uploadFunction.custom.RowItem_Folders;
@@ -108,16 +105,22 @@ public class UploadActivity extends AppCompatActivity implements CustomAdapter_U
 
                         } else {
 
-                            ArrayList[] entries = get_user_selected_images();
+                            if (customAdapter_upload.getSelect_num()==0){
+                                String string = getApplicationContext().getResources().getString(R.string.no_selected_item);
+                                Toast.makeText(getApplicationContext(), string, Toast.LENGTH_SHORT).show();
 
-                            ArrayList<String> imageNameList = entries[0];
-                            ArrayList<String> folderNameList = entries[1];
+                            } else {
+                                ArrayList[] entries = get_user_selected_images();
 
-                            //export database for upload
-                            UtilsMethods.exportDB(getApplicationContext());
+                                ArrayList<String> imageNameList = entries[0];
+                                ArrayList<String> folderNameList = entries[1];
 
-                            UploadSessionManager uploadSessionManager = new UploadSessionManager();
-                            uploadSessionManager.authenticate(getApplicationContext(), imageNameList, folderNameList);
+                                //export database for upload
+                                UtilsMethods.exportDB(getApplicationContext());
+
+                                UploadSessionManager uploadSessionManager = new UploadSessionManager();
+                                uploadSessionManager.authenticate(getApplicationContext(), imageNameList, folderNameList);
+                            }
                         }
 
 
@@ -272,7 +275,7 @@ public class UploadActivity extends AppCompatActivity implements CustomAdapter_U
 
         isSelectionMode = true;
         uploadButton.setText(R.string.upload_selected_items);
-        customAdapter_upload.showCheckbox(position);
+        customAdapter_upload.onLongClickAdapter(position);
 
         //change action bar setup
         change_action_bar_select();
@@ -320,7 +323,6 @@ public class UploadActivity extends AppCompatActivity implements CustomAdapter_U
         switch (item.getItemId()) {
             case android.R.id.home:
 
-                // back to last page or cancel selections when listView is long pressed
                 if (!isSelectionMode) {
                     onBackPressed();
                 } else {
@@ -346,6 +348,7 @@ public class UploadActivity extends AppCompatActivity implements CustomAdapter_U
 
     private void change_action_bar_deselect(){
 
+        toolbar.setTitle(R.string.title_upload);
         toolbar.setBackgroundColor(getResources().getColor(R.color.toolbar_normal));
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.baseline_keyboard_backspace_black_18dp);
     }
@@ -376,5 +379,6 @@ public class UploadActivity extends AppCompatActivity implements CustomAdapter_U
         customAdapter_upload.updateFolderList(getAllFolderNames());
 
     }
+    // *********************************************************************************************
 
 }

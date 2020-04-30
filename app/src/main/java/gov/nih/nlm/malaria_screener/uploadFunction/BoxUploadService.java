@@ -54,6 +54,8 @@ public class BoxUploadService extends Service {
     private ArrayList<String > imageNameList = new ArrayList<>();
     private ArrayList<String> folderNameList = new ArrayList<>();
 
+    public static boolean stopUpload = false;
+
     public BoxUploadService() {
 
     }
@@ -130,9 +132,7 @@ public class BoxUploadService extends Service {
                     @Override
                     public void onClick(View view) {
 
-                        stopSelf();
-
-                        /*AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getApplicationContext());
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getApplicationContext());
 
                         // Setting Dialog Title
                         alertDialogBuilder.setTitle(R.string.upload_cancel);
@@ -144,6 +144,8 @@ public class BoxUploadService extends Service {
                         String string = getResources().getString(R.string.yes);
                         alertDialogBuilder.setPositiveButton(string, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
+
+                                stopUpload = true;
                                 stopSelf();
                             }
                         });
@@ -159,7 +161,7 @@ public class BoxUploadService extends Service {
                         final AlertDialog alert = alertDialogBuilder.create();
 
                         alert.getWindow().setType(LAYOUT_FLAG);
-                        alert.show();*/
+                        alert.show();
 
 
                     }

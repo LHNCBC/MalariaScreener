@@ -71,6 +71,8 @@ public class ListOfImagesUploader {
 
         Log.d(TAG, "start to upload");
 
+        BoxUploadService.stopUpload = false;
+
         // create NLM_Malaria_Screener folder under user's root
         create_root_folder();
 
@@ -86,6 +88,10 @@ public class ListOfImagesUploader {
         if(imgName_arrayList.size()  == folderName_arrayList.size()) {
 
             for (int i = 0; i < imgName_arrayList.size(); i++) {
+
+                if (BoxUploadService.stopUpload){
+                    break;
+                }
 
                 final String folderNameStr = folderName_arrayList.get(i);
                 final String imgNameStr = imgName_arrayList.get(i);
@@ -129,6 +135,10 @@ public class ListOfImagesUploader {
                     final String imageNameOnly = imgNameStr.substring(0, endIndex);
 
                     for (final File imgFile: imageListing) {
+
+                        if (BoxUploadService.stopUpload){
+                            break;
+                        }
 
                         if (imgFile.toString().contains(imageNameOnly)){
 
@@ -198,6 +208,10 @@ public class ListOfImagesUploader {
 
                     // iterate through folders & files
                     for (final File file : listing) {
+
+                        if (BoxUploadService.stopUpload){
+                            break;
+                        }
 
                         String filePathStr = file.toString();
 

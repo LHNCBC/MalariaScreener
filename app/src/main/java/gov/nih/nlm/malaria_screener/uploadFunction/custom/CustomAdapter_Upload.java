@@ -95,25 +95,27 @@ public class CustomAdapter_Upload extends ArrayAdapter<RowItem_Folders> {
 
         holder.checkBox.setTag(position);
 
-        holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                // update your model (or other business logic) based on isChecked
+        holder.checkBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
-                if (isChecked) {
-                    int pos = (int) holder.checkBox.getTag();
+                int pos = (int) holder.checkBox.getTag();
+
+                if (!rowItem_foldersArrayList.get(pos).getSelected()) {
+
+                    Log.d(TAG, "pos: " + pos + " is checked");
                     rowItem_foldersArrayList.get(pos).setSelected(true);
 
                     select_num++;
                     onSelectedListener.onSelectionNumChanged(select_num);
 
                 } else {
-                    int pos = (int) holder.checkBox.getTag();
+                    Log.d(TAG, "pos: " + pos + " is unchecked");
                     rowItem_foldersArrayList.get(pos).setSelected(false);
 
                     select_num--;
                     onSelectedListener.onSelectionNumChanged(select_num);
                 }
-
 
             }
         });
@@ -121,8 +123,15 @@ public class CustomAdapter_Upload extends ArrayAdapter<RowItem_Folders> {
         return convertView;
     }
 
-    public void showCheckbox(int checkedPos_longclicked) {
+    public void onLongClickAdapter(int pos_longclicked) {
         isSelectionMode = true;
+
+        if (pos_longclicked != -1) {
+            rowItem_foldersArrayList.get(pos_longclicked).setSelected(true);
+
+            select_num++;
+        }
+        onSelectedListener.onSelectionNumChanged(select_num);
 
         notifyDataSetChanged();  // Required for update
     }
@@ -135,6 +144,9 @@ public class CustomAdapter_Upload extends ArrayAdapter<RowItem_Folders> {
             rowItem_folders.setSelected(true);
         }
 
+        select_num = getCount();
+        onSelectedListener.onSelectionNumChanged(select_num);
+
         notifyDataSetChanged();
 
     }
@@ -146,6 +158,8 @@ public class CustomAdapter_Upload extends ArrayAdapter<RowItem_Folders> {
             rowItem_folders.setSelected(false);
         }
 
+        select_num = 0;
+        onSelectedListener.onSelectionNumChanged(select_num);
         notifyDataSetChanged();
 
     }
@@ -170,4 +184,12 @@ public class CustomAdapter_Upload extends ArrayAdapter<RowItem_Folders> {
         notifyDataSetChanged();
     }
 
+    @Override
+    public int getCount() {
+        return rowItem_foldersArrayList.size();
+    }
+
+    public int getSelect_num() {
+        return select_num;
+    }
 }
