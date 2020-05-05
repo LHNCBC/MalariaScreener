@@ -93,29 +93,23 @@ public class SummarySheetActivity_thick extends SummarySheetBaseActivity {
                         }
 
                         // start upload event
+                        for (int i=0;i<imageName.length;i++) {
+                            UploadHashManager.hashmap_for_upload.put(imageName[i], patientIDStr + "_" + slideIDStr);
+                        }
+
+                        UploadHashManager.saveMap(getApplicationContext(), UploadHashManager.hashmap_for_upload);
+
                         SharedPreferences sharedPreferences = getSharedPreferences(DROPBOX_NAME, 0);
 
                         if (sharedPreferences.getBoolean(DROPBOX_REGISTER, false)) { // if registered
 
-                            for (int i=0;i<imageName.length;i++) {
-                                UploadHashManager.hashmap_for_upload.put(imageName[i], patientIDStr + "_" + slideIDStr);
-                            }
-
-                            UploadHashManager.saveMap(getApplicationContext(), UploadHashManager.hashmap_for_upload);
-
                             prepare_and_upload(imageName, patientIDStr, slideIDStr);
-
-                            /*Uploader uploader = new Uploader(getApplicationContext());
-                            uploader.checkConnectionAndUpload();
-
-                            startService(new Intent(SummarySheetActivity_thick.this, UploadService.class));*/
                         }
 
                         Intent intent = new Intent(view.getContext(), MainActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // kill all the other activities on top of the old MainActivity.class activity
                         startActivity(intent);
                         finish();
-
 
                     }
                 }

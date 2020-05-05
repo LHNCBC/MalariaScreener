@@ -17,6 +17,7 @@ import com.daimajia.swipe.adapters.BaseSwipeAdapter;
 
 import gov.nih.nlm.malaria_screener.R;
 import gov.nih.nlm.malaria_screener.database.MyDBHandler;
+import gov.nih.nlm.malaria_screener.uploadFunction.UploadHashManager;
 
 import java.io.File;
 import java.util.List;
@@ -91,17 +92,24 @@ public class CustomAdapter_SlideDB extends BaseSwipeAdapter {
 
                                 RowItem_Slide rowItem_slide = rowItemSlides.get(position);
 
-                                Cursor cursor = dbHandler.returnSlideCursor(rowItem_slide.getPatientID(), rowItem_slide.getSlideID());
+                                String PID = rowItem_slide.getPatientID();
+                                String SID = rowItem_slide.getSlideID();
+
+                                Cursor cursor = dbHandler.returnSlideCursor(PID, SID);
 
                                 String p_thin = cursor.getString(cursor.getColumnIndex("parasitemia_thin"));
 
                                 if (!p_thin.equals("")) { // if slide is thin smear
-                                    dbHandler.deleteSlide(rowItem_slide.getSlideID(), rowItem_slide.getPatientID());
+                                    Log.d(TAG, "here");
+                                    deleteAllSlideImagesfromHashMap(PID, SID);
+                                    dbHandler.deleteSlide(SID, PID);
                                 } else { // if slide is thick smear
-                                    dbHandler.deleteSlide_thick(rowItem_slide.getSlideID(), rowItem_slide.getPatientID());
+                                    Log.d(TAG, "here");
+                                    deleteAllSlideImagesfromHashMap_thick(PID, SID);
+                                    dbHandler.deleteSlide_thick(SID, PID);
                                 }
 
-                                deleteImagesInSlide(rowItem_slide.getPatientID(), rowItem_slide.getSlideID());
+                                deleteImagesInSlide(PID, SID);
 
                                 rowItemSlides.remove(position);
                                 notifyDataSetChanged();
@@ -209,6 +217,53 @@ public class CustomAdapter_SlideDB extends BaseSwipeAdapter {
 
         }
 
+    }
+
+    private void deleteAllSlideImagesfromHashMap(String PID, String SID){
+
+        Cursor cursor = dbHandler.returnAllSlideImages(PID, SID);
+        Log.d(TAG,"Thin: ");
+
+        if (cursor.moveToFirst()) {
+            do {
+
+                String imgIDStr = cursor.getString(cursor.getColumnIndex("image_id"));
+
+                Log.d(TAG, "imgIDStr: " + imgIDStr);
+
+                if (UploadHashManager.hashmap_for_upload.containsKey(imgIDStr)) {
+                    UploadHashManager.hashmap_for_upload.remove(imgIDStr);
+                }
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+
+        UploadHashManager.saveMap(context, UploadHashManager.hashmap_for_upload);
+
+    }
+
+    private void deleteAllSlideImagesfromHashMap_thick(String PID, String SID){
+
+        Cursor cursor = dbHandler.returnAllSlideImages_thick(PID, SID);
+        Log.d(TAG,"Thick: ");
+
+        if (cursor.moveToFirst()) {
+            do {
+                String imgIDStr = cursor.getString(cursor.getColumnIndex("image_id_thick"));
+
+                Log.d(TAG, "imgIDStr: " + imgIDStr);
+
+                if (UploadHashManager.hashmap_for_upload.containsKey(imgIDStr)) {
+                    UploadHashManager.hashmap_for_upload.remove(imgIDStr);
+                }
+
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+
+        UploadHashManager.saveMap(context, UploadHashManager.hashmap_for_upload);
     }
 
     @Override

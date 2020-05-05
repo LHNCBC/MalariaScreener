@@ -204,6 +204,7 @@ public class MainActivity extends AppCompatActivity {
         // load upload list
         UploadHashManager.hashmap_for_upload = new LinkedHashMap<>();
         UploadHashManager.hashmap_for_upload = UploadHashManager.loadMap(getApplicationContext());
+
         Log.d(TAG, "Hashmap empty: " + UploadHashManager.hashmap_for_upload.isEmpty());
 
         for(Map.Entry<String, String> entry: UploadHashManager.hashmap_for_upload.entrySet()){

@@ -132,38 +132,42 @@ public class BoxUploadService extends Service {
                     @Override
                     public void onClick(View view) {
 
-                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getApplicationContext());
+                        if (currentProgress==fileNum) {
+                            stopSelf();
+                        } else {
 
-                        // Setting Dialog Title
-                        alertDialogBuilder.setTitle(R.string.upload_cancel);
+                            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getApplicationContext());
 
-                        // Setting Dialog Message
-                        alertDialogBuilder.setMessage(R.string.upload_cancel_text);
+                            // Setting Dialog Title
+                            alertDialogBuilder.setTitle(R.string.upload_cancel);
 
-                        // Setting Positive "Yes" Button
-                        String string = getResources().getString(R.string.yes);
-                        alertDialogBuilder.setPositiveButton(string, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
+                            // Setting Dialog Message
+                            alertDialogBuilder.setMessage(R.string.upload_cancel_text);
 
-                                stopUpload = true;
-                                stopSelf();
-                            }
-                        });
+                            // Setting Positive "Yes" Button
+                            String string = getResources().getString(R.string.yes);
+                            alertDialogBuilder.setPositiveButton(string, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
 
-                        // Setting Negative "NO" Button
-                        String string1 = getResources().getString(R.string.no);
-                        alertDialogBuilder.setNegativeButton(string1, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
+                                    stopUpload = true;
+                                    stopSelf();
+                                }
+                            });
 
-                            }
-                        });
+                            // Setting Negative "NO" Button
+                            String string1 = getResources().getString(R.string.no);
+                            alertDialogBuilder.setNegativeButton(string1, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
 
-                        final AlertDialog alert = alertDialogBuilder.create();
+                                }
+                            });
 
-                        alert.getWindow().setType(LAYOUT_FLAG);
-                        alert.show();
+                            final AlertDialog alert = alertDialogBuilder.create();
 
+                            alert.getWindow().setType(LAYOUT_FLAG);
+                            alert.show();
 
+                        }
                     }
                 });
 

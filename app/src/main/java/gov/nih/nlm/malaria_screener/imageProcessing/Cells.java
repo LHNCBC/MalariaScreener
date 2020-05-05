@@ -34,32 +34,30 @@ public class Cells {
     //
     public static final String TAG = "MyDebug";
 
-    List<Mat> featureVecs = new ArrayList<>();
+    private List<Mat> featureVecs = new ArrayList<>();
 
-    public String locationStr;
-    public Mat featureTable = new Mat();
+    private Mat featureTable = new Mat();
 
     private ArrayList<Mat> cellChip = new ArrayList<>();
 
-    int CCAreaTh = 2500;
-    //int chipIndex = 1;
+    private int CCAreaTh = 2500;
 
-    double ori_height = 2988;
-    double ori_width = 5312;
+    private double ori_height = 2988;
+    private double ori_width = 5312;
 
-    TensorFlowClassifier tensorFlowClassifier;
-    SVM_Classifier svm_classifier;
+    private TensorFlowClassifier tensorFlowClassifier;
+    private SVM_Classifier svm_classifier;
 
     //TFClassifier_Lite tfClassifier_lite;
 
-    int height = UtilsCustom.TF_input_size;
-    int width = UtilsCustom.TF_input_size;
-    int channels = 3;
-    int batchSize = UtilsCustom.batch_size;
+//    int height = UtilsCustom.TF_input_size;
+//    int width = UtilsCustom.TF_input_size;
+    private int height;
+    private int width;
 
-    int[] intPixels = new int[width * height];
+    private int batchSize = UtilsCustom.batch_size;
 
-    int ccNum;
+    private int[] intPixels;
 
     public void runCells(Mat mask, Mat WBC_Mask) {
 
@@ -67,6 +65,11 @@ public class Cells {
 
         this.tensorFlowClassifier = UtilsCustom.tensorFlowClassifier_thin;
         this.svm_classifier = UtilsCustom.svm_classifier;
+
+        height = tensorFlowClassifier.getHeight();
+        width = tensorFlowClassifier.getWidth();
+
+        intPixels = new int[width * height];
 
         //this.tfClassifier_lite = UtilsCustom.tfClassifier_lite;
 
@@ -105,7 +108,7 @@ public class Cells {
         Mat labels = new Mat();
         Mat stats = new Mat();
         Mat centroids = new Mat();
-        ccNum = Imgproc.connectedComponentsWithStats(newMask, labels, stats, centroids, 4, CvType.CV_32S);
+        int ccNum = Imgproc.connectedComponentsWithStats(newMask, labels, stats, centroids, 4, CvType.CV_32S);
         newMask.release();
         centroids.release();
 
@@ -236,7 +239,7 @@ public class Cells {
 
         UtilsCustom.cellCount = cellCount;
 
-        locationStr = cellLoca.toString();
+        String locationStr = cellLoca.toString();
 
         String[] locaStr = locationStr.split("\n");
         UtilsCustom.cellLocation = new int[locaStr.length][2];

@@ -47,7 +47,6 @@ public final class UtilsCustom {
     public static int[][] cellLocation;
     public static int cellCount = 0;
 
-    public static int TF_input_size = 44;
     public static int batch_size = 8;
 
     //for blur detection

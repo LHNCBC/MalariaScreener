@@ -17,6 +17,7 @@ public class TensorFlowClassifier {
 
     private String inputName;
     private String outputName;
+
     private int width;
     private int height;
 
@@ -172,6 +173,14 @@ public class TensorFlowClassifier {
         }
 
         //Log.d(TAG, "One batch over");
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
     }
 
 }

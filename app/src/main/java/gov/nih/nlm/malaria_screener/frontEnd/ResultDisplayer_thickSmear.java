@@ -118,6 +118,14 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
 
         displayOriginalImage(bundle, imageView);
 
+        // when enough WBCs collected
+        if (!(UtilsData.WBCTotal < totalWBCNeeded)){
+            continueButton.setVisibility(View.GONE);
+
+            String string = getResources().getString(R.string.enough_wbcs);
+            Toast.makeText(getApplicationContext(), string, Toast.LENGTH_LONG).show();
+        }
+
         continueButton.setOnClickListener(
                 new Button.OnClickListener() {
                     public void onClick(View view) {
@@ -128,25 +136,12 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
 
                         setManualCounts();
 
-                        if (UtilsData.WBCTotal < totalWBCNeeded) {
-
-                            Intent returnIntent = new Intent();
-
-                            setResult(Activity.RESULT_OK, returnIntent);
-                            finish();
-                        } else {
-                            finishActivity(REQUEST_CAM);
-
-                            Intent PatientInfoIntent = new Intent(view.getContext(), PatientInfoActivity.class);
-
-                            PatientInfoIntent.putExtras(bundle);
-                            startActivity(PatientInfoIntent);
-                            finish();
-                        }
+                        Intent returnIntent = new Intent();
+                        setResult(Activity.RESULT_OK, returnIntent);
+                        finish();
                     }
                 }
         );
-
 
         endButton.setOnClickListener(
                 new Button.OnClickListener() {
@@ -193,16 +188,6 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
         progressText.setText(UtilsData.WBCTotal + "/" + totalWBCNeeded);
 
         numOfImageText.setText("Image: " + bundle.getInt("imgCount"));
-
-        // when get enough cells
-        if (UtilsData.WBCTotal > totalWBCNeeded) {
-            continueButton.setText(R.string.finish_button);
-            continueButton.setTextColor(Color.parseColor("red"));
-            continueButton.setTextSize(20);
-            continueButton.setTypeface(continueButton.getTypeface(), Typeface.BOLD);
-            String string = getResources().getString(R.string.enough_wbcs);
-            Toast.makeText(getApplicationContext(), string, Toast.LENGTH_LONG).show();
-        }
 
         UtilsCustom.oriSizeMat.release();
 

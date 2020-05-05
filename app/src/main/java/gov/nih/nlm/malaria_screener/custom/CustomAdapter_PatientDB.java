@@ -3,6 +3,7 @@ package gov.nih.nlm.malaria_screener.custom;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.database.Cursor;
 import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,9 +18,11 @@ import com.daimajia.swipe.adapters.BaseSwipeAdapter;
 
 import gov.nih.nlm.malaria_screener.R;
 import gov.nih.nlm.malaria_screener.database.MyDBHandler;
+import gov.nih.nlm.malaria_screener.uploadFunction.UploadHashManager;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by yuh5 on 6/1/2016.
@@ -69,8 +72,6 @@ public class CustomAdapter_PatientDB extends BaseSwipeAdapter {
                     @Override
                     public void onClick(View view) {
 
-                        //RowItem_Patient rowItem_patient = rowItemPatients.get(position);
-
                         AlertDialog.Builder alertDialog = new AlertDialog.Builder(view.getContext());
 
                         // Setting Dialog Title
@@ -86,9 +87,13 @@ public class CustomAdapter_PatientDB extends BaseSwipeAdapter {
 
                                 RowItem_Patient rowItem_patient = rowItemPatients.get(position);
 
+                                String PID = rowItem_patient.getID();
+
+                                deleteAllPatientImagesFromHashMap(PID);
+
                                 if (!testPatient) {
-                                    dbHandler.deletePatient(rowItem_patient.getID());
-                                    deleteImagesInPatient(rowItem_patient.getID());
+                                    dbHandler.deletePatient(PID);
+                                    deleteImagesInPatient(PID);
                                 } else {
                                     dbHandler.deletePatient("test");
                                     deleteImagesInTest();
@@ -192,6 +197,51 @@ public class CustomAdapter_PatientDB extends BaseSwipeAdapter {
 
             fileTest.delete();
         }
+
+    }
+
+    // search PID in image table thin&thick and delete corresponding imageIDs from HashMap
+    private void deleteAllPatientImagesFromHashMap(String PID){
+
+        // image table thin
+        Cursor cursor1 = dbHandler.returnAllPatientImages(PID);
+        Log.d(TAG,"Thin: ");
+
+        if (cursor1.moveToFirst()) {
+            do {
+
+                String imgIDStr = cursor1.getString(cursor1.getColumnIndex("image_id"));
+
+                Log.d(TAG, "imgIDStr: " + imgIDStr);
+
+                if (UploadHashManager.hashmap_for_upload.containsKey(imgIDStr)) {
+                    UploadHashManager.hashmap_for_upload.remove(imgIDStr);
+                }
+            } while (cursor1.moveToNext());
+        }
+
+        cursor1.close();
+
+        // image table thick
+        Cursor cursor2 = dbHandler.returnAllPatientImages_thick(PID);
+        Log.d(TAG,"Thick: ");
+
+        if (cursor2.moveToFirst()) {
+            do {
+                String imgIDStr = cursor2.getString(cursor2.getColumnIndex("image_id_thick"));
+
+                Log.d(TAG, "imgIDStr: " + imgIDStr);
+
+                if (UploadHashManager.hashmap_for_upload.containsKey(imgIDStr)) {
+                    UploadHashManager.hashmap_for_upload.remove(imgIDStr);
+                }
+
+            } while (cursor2.moveToNext());
+        }
+
+        cursor2.close();
+
+        UploadHashManager.saveMap(context, UploadHashManager.hashmap_for_upload);
 
     }
 

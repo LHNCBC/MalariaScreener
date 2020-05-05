@@ -306,6 +306,30 @@ public class MyDBHandler extends SQLiteOpenHelper {
         return cursorSlide;
     }
 
+    // return all images of a patient from image table thin
+    public Cursor returnAllPatientImages(String PIDStr){
+
+        SQLiteDatabase db = getWritableDatabase();
+
+        String queryImage = "SELECT * FROM " + TABLE_IMAGES + " WHERE " + COLUMN_IMAGE_PATIENT_ID + " = \"" + PIDStr + "\"";
+        Cursor cursorImages = db.rawQuery(queryImage, null);
+        cursorImages.moveToFirst();
+
+        return cursorImages;
+    }
+
+    // return all images of a slide from image table thick
+    public Cursor returnAllPatientImages_thick(String PIDStr){
+
+        SQLiteDatabase db = getWritableDatabase();
+
+        String queryImage = "SELECT * FROM " + TABLE_IMAGES_THICK + " WHERE " + COLUMN_IMAGE_PATIENT_ID_THICK + " = \"" + PIDStr + "\"";
+        Cursor cursorImages = db.rawQuery(queryImage, null);
+        cursorImages.moveToFirst();
+
+        return cursorImages;
+    }
+
     // return slide info when selected from listView in database slide log page
     public Cursor returnSlideCursor(String patientIDStr, String slideIDStr){
 
@@ -343,7 +367,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         return cursorImage;
     }
 
-    // return all images of a slide from image talble
+    // return all images of a slide from image table thin
     public Cursor returnAllSlideImages(String PIDStr, String SIDStr){
 
         SQLiteDatabase db = getWritableDatabase();
@@ -355,7 +379,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         return cursorImages;
     }
 
-    // return all images of a slide from image talble
+    // return all images of a slide from image table thick
     public Cursor returnAllSlideImages_thick(String PIDStr, String SIDStr){
 
         SQLiteDatabase db = getWritableDatabase();
