@@ -44,13 +44,10 @@ public class ThickSmearProcessor {
         this.oriSizeMat = oriSizeMat;
     }
 
-    public void processImage() {
+    public int[] processImage() {
 
         // reset current parasites and WBC counts
         UtilsData.resetCurrentCounts_thick();
-
-        //read deep learning model from assets folder
-        //String dnnModel = getPath("ThickSmearModel.h5.pb", getApplicationContext());
 
         int[] x = new int[num_th];
         int[] y = new int[num_th];
@@ -143,12 +140,17 @@ public class ThickSmearProcessor {
         }
 
         // save results
-        UtilsData.parasiteCurrent = parasiteNum;
-        UtilsData.WBCCurrent = wbc_num;
-        UtilsData.parasiteTotal = UtilsData.parasiteTotal + parasiteNum;
-        UtilsData.WBCTotal = UtilsData.WBCTotal + wbc_num;
-        UtilsData.addParasiteCount(String.valueOf(parasiteNum));
-        UtilsData.addWBCCount(String.valueOf(wbc_num));
+//        UtilsData.parasiteCurrent = parasiteNum;
+//        UtilsData.WBCCurrent = wbc_num;
+//        UtilsData.parasiteTotal = UtilsData.parasiteTotal + parasiteNum;
+//        UtilsData.WBCTotal = UtilsData.WBCTotal + wbc_num;
+//        UtilsData.addParasiteCount(String.valueOf(parasiteNum));
+//        UtilsData.addWBCCount(String.valueOf(wbc_num));
+
+        int[] res = new int[2];
+
+        res[0] = parasiteNum;
+        res[1] = wbc_num;
 
         //save result bitmap to memory
         //UtilsCustom.resultBitmap = canvasBitmap;
@@ -159,6 +161,7 @@ public class ThickSmearProcessor {
 
         candi_patches.release();
 
+        return res;
     }
 
     private float[] putInPixels(int i, int n, float[] floatPixels) {

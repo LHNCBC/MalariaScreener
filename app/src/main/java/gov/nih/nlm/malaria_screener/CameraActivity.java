@@ -89,47 +89,29 @@ public class CameraActivity extends AppCompatActivity {
     private static final String TAG = "MyDebug";
     public static final int MEDIA_TYPE_IMAGE = 1;
     private boolean safeToTakePicture = false;
-    public static final String PARAM_PHOTO = "jpg";
-    public static final String PARAM_PATH = "abspath";
-    public static final String PARAM_SEGMENT = "segment";
 
     public static final int REQUEST_GALLERY = 10;
-    public static final int REQUEST_ENABLE_BT = 2;
     static final int REQUEST_RESULTS = 3;
     static final int REQUEST_SETTING = 4;
-    static final int REQUEST_REJECT = 5;
 
     private Activity context;
 
     private int captureCount = 0;
     private String patientId = "";
     private String slideId = "";
-    private Toolbar toolbar;
-    private String info = "";
     public static final AlphaAnimation BUTTON_PRESS = new AlphaAnimation(1F, 0.0F);
-    //private TextView sidInfo;
-    //private TextView pidInfo;
+
     private TextView typeInfo;
     private TextView fieldInfo;
     private TextView countInfo;
     private TextView infectedCountInfo;
     private TextView parasiteInfo;
     private TextView wbcInfo;
-    //private String smearType = "Thick";
     private String smearType = "Thin"; // for now
     private ImageButton captureButton;
     private ImageButton galleryButton;
-    //private ImageButton backButton;
     private View.OnClickListener onClickListener;
     private boolean segment = false;
-    //ImageView imageview;
-
-    public final static String EXTRA_ORIIMAGE = "originalImage";
-
-    public static final String EXTRA_AUTO = "AUTO";
-    public static final String EXTRA_CONFIDENCE_T = "confidenceThreshold";
-    //private boolean autoSVMThres;
-    //private String CThres = "";
 
     private ProgressDialog inProgress;
     private ProgressBar progressBar;
@@ -142,11 +124,9 @@ public class CameraActivity extends AppCompatActivity {
     private ImageButton imageButton_YES;
 
     private ImageButton settingButton;
-    private ImageButton bluetoothButton;
 
     private Canvas canvas;
     private Paint paint;
-    //Bitmap smallOriBitmap;
 
     float RV = 6; //resize value
 
@@ -164,8 +144,6 @@ public class CameraActivity extends AppCompatActivity {
     boolean inPreview = false; // flag for when image is taken and in preview mode, so the app won't listen to bluetooth remote
 
     String WB = "0";
-    //int ImgQ = 3;
-    //int EC = 0;
 
     Bundle bundle;
 
@@ -182,10 +160,6 @@ public class CameraActivity extends AppCompatActivity {
 
     private boolean imageAcquisition = false;
 
-    //boolean blurFlag;
-
-    private int img_width;
-    private int img_height;
 
     // for bluetooth ------------------------------
     private String MY_UUID = "ddec19b4-a607-43bc-b8fe-a2e61161046b";
@@ -199,11 +173,6 @@ public class CameraActivity extends AppCompatActivity {
         public static final int MESSAGE_WRITE = 1;
         public static final int MESSAGE_TOAST = 2;
     }
-    //----------------------------------------------
-
-    //private OrientationEventListener orientationEventListener;
-//    private Animation toReversePort, toReversePort_gallery, toReversePort_progreText;
-//    private Animation toPort, toPort_gallery, toPort_progreText;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -268,10 +237,6 @@ public class CameraActivity extends AppCompatActivity {
             sv_camera.show();
 
         }
-
-        // Register for broadcasts when a device is discovered.
-        //IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-        //registerReceiver(mReceiver, filter);
 
     }
 
@@ -377,22 +342,6 @@ public class CameraActivity extends AppCompatActivity {
         }
     }
 
-    // Create a BroadcastReceiver for ACTION_FOUND.
-    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                // Discovery has found a device. Get the BluetoothDevice
-                // object and its info from the Intent.
-                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                String deviceName = device.getName();
-                String deviceHardwareAddress = device.getAddress(); // MAC address
-
-                Log.d(TAG, "Bluetooth: " + deviceName);
-            }
-        }
-    };
-
     public void initCam() {
 
         setContentView(R.layout.camera_preview); // set layout to camera preview
@@ -408,42 +357,11 @@ public class CameraActivity extends AppCompatActivity {
         } else if (smearType.equals("Thick")) {
             stub.setLayoutResource(R.layout.app_bar_cam_thick);
         }
-        stub.inflate();
 
-        // set up toolbar
-        //toolbar = (Toolbar) findViewById(R.id.app_bar_cam);
-        //setSupportActionBar(toolbar);
-        //toolbar.setLogo(R.mipmap.logo_toolbar);
+        stub.inflate();
 
         // set up patient, slide,& field info
         int textSize = 20;
-//        pidInfo = (TextView) findViewById(R.id.pid);
-//        pidInfo.setTextSize(textSize);
-//        pidInfo.setSingleLine(true);
-//        pidInfo.setTextColor(getResources().getColor(R.color.toolbar_text));
-//        pidInfo.setOnClickListener(
-//                new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        v.startAnimation(BUTTON_PRESS);
-//                        prompt('p'); // change patient id
-//                    }
-//                }
-//        );
-//
-//        sidInfo = (TextView) findViewById(R.id.sid);
-//        sidInfo.setTextSize(textSize);
-//        sidInfo.setSingleLine(true);
-//        sidInfo.setTextColor(getResources().getColor(R.color.toolbar_text));
-//        sidInfo.setOnClickListener(
-//                new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        v.startAnimation(BUTTON_PRESS);
-//                        prompt('s'); // change slide id
-//                    }
-//                }
-//        );
 
         typeInfo = (TextView) findViewById(R.id.type);
         typeInfo.setTextSize(textSize);
@@ -465,21 +383,11 @@ public class CameraActivity extends AppCompatActivity {
         fieldInfo.setSingleLine(true);
         fieldInfo.setTextSize(textSize);
         fieldInfo.setTextColor(getResources().getColor(R.color.toolbar_text));
-        /*fieldInfo.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        v.startAnimation(BUTTON_PRESS);
-                        prompt('f'); // toggle blood smear type
-                    }
-                }
-        );*/
 
         // set up progress bar
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         progressBar.setProgress(progressStatus);
         progressText = (TextView) findViewById(R.id.textView_progress);
-
 
         if (smearType.equals("Thin")) {
             // set up count and infected count text views
@@ -487,23 +395,6 @@ public class CameraActivity extends AppCompatActivity {
             countInfo.setSingleLine(true);
             countInfo.setTextSize(textSize);
             countInfo.setTextColor(getResources().getColor(R.color.toolbar_text));
-            //countInfo.setTextColor(getResources().getColor(R.color.red));
-        /*countInfo.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        v.startAnimation(BUTTON_PRESS);
-                        Intent segmentIntent = new Intent();
-                        segmentIntent.putExtra(PARAM_SEGMENT, !segment);
-                        if (segment)
-                            countInfo.setTextColor(getResources().getColor(R.color.red));
-                        else
-                            countInfo.setTextColor(getResources().getColor(R.color.green));
-                        updateToolbar();
-                        //segment = !segment;
-                    }
-                }
-        );*/
 
             infectedCountInfo = (TextView) findViewById(R.id.infected_count);
             infectedCountInfo.setSingleLine(true);
@@ -511,6 +402,7 @@ public class CameraActivity extends AppCompatActivity {
             infectedCountInfo.setTextColor(getResources().getColor(R.color.toolbar_text));
 
             progressBar.setMax(totalCellNeeded);
+
         } else if (smearType.equals("Thick")) {
             parasiteInfo = (TextView) findViewById(R.id.parasite);
             parasiteInfo.setSingleLine(true);
@@ -525,12 +417,8 @@ public class CameraActivity extends AppCompatActivity {
             progressBar.setMax(totalWBCNeeded);
         }
 
-//        if (slideId.equals(""))
-//            prompt('s'); // prompt slide id
-
         context = this;
         cam = getCamera();
-        //Log.d(TAG, "Got camera.");
 
         // set camera parameters
         Camera.Parameters parameters = cam.getParameters();
@@ -563,16 +451,6 @@ public class CameraActivity extends AppCompatActivity {
         writeToCamResFile(pictureSizes, maxWidth, maxHeight);
         //---------------------------temp cam res--------------------------------------------
 
-        //parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE); //make camera focus quickly
-        //parameters.setAutoExposureLock(true);
-
-        /*Log.d(TAG, "FocusMode: " + parameters.getFocusMode());
-        Log.d(TAG, "Supported Mode: " + parameters.getSupportedFocusModes());
-
-        // set exposure
-        Log.d(TAG, "default Exposure: " + parameters.getExposureCompensation());
-        Log.d(TAG, "AutoExposureLock: " + parameters.getAutoExposureLock());*/
-
         parameters.setJpegQuality(100);
         Log.d(TAG, "JpegQuality: " + parameters.getJpegQuality());
 
@@ -583,18 +461,6 @@ public class CameraActivity extends AppCompatActivity {
 
         UtilsCustom.maxExposure = maxExposure;
         UtilsCustom.minExposure = minExposure;
-
-        //Log.d(TAG, "aperture: " +cam.getParameters().get("aperture"));
-
-        //Log.d(TAG, "all: " + cam.getParameters().flatten());
-
-        /*parameters.set("iso", 800);
-        parameters.set("exposure-time", 32);*/
-
-        /*Log.d(TAG, "iso: " + parameters.get("iso"));
-//
-        Log.d(TAG, "iso-values: " + parameters.get("iso-values"));
-        Log.d(TAG, "exposure-time: " + parameters.get("exposure-time"));*/
 
         parameters.setExposureCompensation(exposure);
 
@@ -634,22 +500,7 @@ public class CameraActivity extends AppCompatActivity {
         safeToTakePicture = true;
         frameLayout = (FrameLayout) findViewById(R.id.camera_preview);
 
-        //imageview = new ImageView(this);
         frameLayout.addView(camPreview);
-        //frameLayout.addView(imageview);
-
-//        frameLayout.setOnClickListener(
-//                new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        cam.cancelAutoFocus();
-//
-//                        cam.setParameters(parameters);
-//                        cam.autoFocus(this);
-//                    }
-//                }
-//        );
-
 
         updateToolbar();
 
@@ -707,190 +558,6 @@ public class CameraActivity extends AppCompatActivity {
                 }
         );
 
-        /*bluetoothButton = (ImageButton) findViewById(R.id.button_bluetooth);
-        bluetoothButton.setOnClickListener(
-                new Button.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-                        mHandler = new Handler(Looper.getMainLooper()){
-                            @Override
-                            public void handleMessage(Message inputMessage) {
-
-                                byte[] readBuf = (byte[]) inputMessage.obj;
-
-                                String string = String.valueOf(readBuf[0]);
-
-                                if (string == "1"){
-
-                                    // take picture!
-                                    if (safeToTakePicture) {
-
-                                        // save phone orientation when image taken
-                                        WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
-                                        Display display = wm.getDefaultDisplay();
-                                        orientation = display.getRotation();
-
-                                        Thread takePicThread = new Thread(new Runnable() {
-                                            public void run() {
-                                                cam.takePicture(shutterCallback, null, pictureCallback);
-                                                //Log.d(TAG, "Taking picture...");
-                                                safeToTakePicture = false;
-                                            }
-                                        });
-                                        takePicThread.start();
-
-                                    }
-
-                                }
-
-                            }
-                        };
-
-                        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-
-                        String deviceName = null;
-                        String deviceHardwareAddress = null;
-
-                        Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
-                        for (BluetoothDevice device : pairedDevices) {
-                            deviceName = device.getName();
-                            deviceHardwareAddress = device.getAddress(); // MAC address
-                        }
-
-                        Log.d(TAG, "deviceName: " + deviceName);
-
-                        BluetoothDevice actualDevice = mBluetoothAdapter.getRemoteDevice(deviceHardwareAddress);
-
-                        ParcelUuid list[] = actualDevice.getUuids();
-                        for (int i=0; i<list.length;i++) {
-                            Log.d(TAG, "list: " + list[i].toString());
-                        }
-
-                        BluetoothSocket socket = null;
-                        try {
-                            socket = actualDevice.createRfcommSocketToServiceRecord(UUID.fromString(MY_UUID));
-                        } catch (IOException e) {
-                            Log.e(TAG, "Socket's create() method failed", e);
-                        }
-                        try {
-                            socket.connect();
-                        } catch (IOException connectException) {
-                            // Unable to connect; close the socket and return.
-                            try {
-                                socket.close();
-                            } catch (IOException closeException) {
-                                Log.e(TAG, "Could not close the client socket", closeException);
-                            }
-                            return;
-                        }
-
-
-                        ConnectedThread connectedThread = new ConnectedThread(socket);
-                        connectedThread.start();
-
-
-
-//                        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-//                        if (mBluetoothAdapter == null) {
-//                            // Device does not support Bluetooth
-//                            Log.d(TAG, "NO Bluetooth");
-//                        } else {
-//
-//                            if (!mBluetoothAdapter.isEnabled()) {
-//                                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-//                                startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-//                            } else {
-//                                mBluetoothAdapter.startDiscovery();
-//                            }
-//                        }
-
-                    }
-                }
-        );*/
-
-    }
-
-    private class ConnectedThread extends Thread {
-        private final BluetoothSocket mmSocket;
-        private final InputStream mmInStream;
-        private final OutputStream mmOutStream;
-        private byte[] mmBuffer; // mmBuffer store for the stream
-
-        public ConnectedThread(BluetoothSocket socket) {
-            mmSocket = socket;
-            InputStream tmpIn = null;
-            OutputStream tmpOut = null;
-
-            // Get the input and output streams; using temp objects because
-            // member streams are final.
-            try {
-                tmpIn = socket.getInputStream();
-            } catch (IOException e) {
-                Log.e(TAG, "Error occurred when creating input stream", e);
-            }
-            try {
-                tmpOut = socket.getOutputStream();
-            } catch (IOException e) {
-                Log.e(TAG, "Error occurred when creating output stream", e);
-            }
-
-            mmInStream = tmpIn;
-            mmOutStream = tmpOut;
-        }
-
-        public void run() {
-            mmBuffer = new byte[1024];
-            int numBytes; // bytes returned from read()
-
-            // Keep listening to the InputStream until an exception occurs.
-            while (true) {
-                try {
-                    // Read from the InputStream.
-                    numBytes = mmInStream.read(mmBuffer);
-                    // Send the obtained bytes to the UI activity.
-                    Message readMsg = mHandler.obtainMessage(
-                            MessageConstants.MESSAGE_READ, numBytes, -1,
-                            mmBuffer);
-                    readMsg.sendToTarget();
-                } catch (IOException e) {
-                    Log.d(TAG, "Input stream was disconnected", e);
-                    break;
-                }
-            }
-        }
-
-        // Call this from the main activity to send data to the remote device.
-        public void write(byte[] bytes) {
-            try {
-                mmOutStream.write(bytes);
-
-                // Share the sent message with the UI activity.
-                Message writtenMsg = mHandler.obtainMessage(
-                        MessageConstants.MESSAGE_WRITE, -1, -1, mmBuffer);
-                writtenMsg.sendToTarget();
-            } catch (IOException e) {
-                Log.e(TAG, "Error occurred when sending data", e);
-
-                // Send a failure message back to the activity.
-                Message writeErrorMsg =
-                        mHandler.obtainMessage(MessageConstants.MESSAGE_TOAST);
-                Bundle bundle = new Bundle();
-                bundle.putString("toast",
-                        "Couldn't send data to the other device");
-                writeErrorMsg.setData(bundle);
-                mHandler.sendMessage(writeErrorMsg);
-            }
-        }
-
-        // Call this method from the main activity to shut down the connection.
-        public void cancel() {
-            try {
-                mmSocket.close();
-            } catch (IOException e) {
-                Log.e(TAG, "Could not close the connect socket", e);
-            }
-        }
     }
 
     // shutter
@@ -907,7 +574,6 @@ public class CameraActivity extends AppCompatActivity {
 
         }
     };
-
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -1010,69 +676,11 @@ public class CameraActivity extends AppCompatActivity {
 
                     Imgproc.cvtColor(UtilsCustom.oriSizeMat, UtilsCustom.oriSizeMat, Imgproc.COLOR_BGR2RGB);
 
-                    img_width = UtilsCustom.oriSizeMat.width();
-                    img_height = UtilsCustom.oriSizeMat.height();
-
-                   /* long startTimeNN = System.currentTimeMillis();
-
-                    //blurry detection
-                    blurFlag = BlurDetection.computeBlur();
-
-                    long endTime_NN = System.currentTimeMillis();
-                    long totalTime_NN = endTime_NN - startTimeNN;
-                    Log.d(TAG, "Blur detection Time (DL): " + totalTime_NN);*/
-
                     resizeImage();
 
                     inProgress.dismiss();
 
                     messageHandler.sendEmptyMessage(0);
-
-                    // test exif
-                    /*final File pictureFile_jpg = getOutputMediaFile_jpeg(MEDIA_TYPE_IMAGE, patientId, slideId, captureCount, smearType);
-
-                    try {
-                        FileOutputStream fos = new FileOutputStream(pictureFile_jpg);
-                        fos.write(data);
-//                        Matrix m = new Matrix();
-//                        m.postRotate(90);
-//                        Bitmap rot = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true);
-//                        rot.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-                        fos.close();
-                        Log.d(TAG, "Bitmap saved."); // Success
-                    } catch (FileNotFoundException e) {
-                        Log.d(TAG, "File not found: " + e.getMessage());
-                    } catch (IOException e) {
-                        Log.d(TAG, "Error accessing file: " + e.getMessage());
-                    }
-
-                    try {
-                        ExifInterface exifInterface = new ExifInterface(pictureFile_jpg.getAbsolutePath());
-
-//                        String isoString = exifInterface.getAttribute(ExifInterface.TAG_ISO);
-//                        String apertureString = exifInterface.getAttribute(ExifInterface.TAG_APERTURE);
-//                        String exposureTimeString = exifInterface.getAttribute(ExifInterface.TAG_EXPOSURE_TIME);
-//                        String shutterSpeedString = exifInterface.getAttribute(ExifInterface.TAG_SHUTTER_SPEED_VALUE);
-
-                        Double iso = exifInterface.getAttributeDouble(ExifInterface.TAG_ISO_SPEED_RATINGS, 0);
-                        Double aperture = exifInterface.getAttributeDouble(ExifInterface.TAG_APERTURE_VALUE, 0);
-
-                        Double exposureTime = exifInterface.getAttributeDouble(ExifInterface.TAG_EXPOSURE_TIME, 0);
-                        Double shutterSpeed = exifInterface.getAttributeDouble(ExifInterface.TAG_SHUTTER_SPEED_VALUE, 0);
-
-                        Log.d(TAG, "EXPOSURE_MODE: " + exifInterface.getAttribute(ExifInterface.TAG_EXPOSURE_MODE));
-                        Log.d(TAG, "EXPOSURE_TIME: " + exposureTime);
-                        Log.d(TAG, "ISO:" + iso);
-                        Log.d(TAG, "APERTURE: " + aperture);
-
-                        Log.d(TAG, "SHUTTER_SPEED: " + shutterSpeed);
-
-                        Log.d(TAG, "APERTURE 2: " + exifInterface.getAttribute(ExifInterface.TAG_APERTURE));
-
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }*/
 
                 }
             };
@@ -1147,7 +755,6 @@ public class CameraActivity extends AppCompatActivity {
 
         Bitmap rotatedBitmap = Bitmap.createBitmap(resizedMat.width(), resizedMat.height(), Bitmap.Config.RGB_565);
         Utils.matToBitmap(resizedMat, rotatedBitmap);
-
 
         // rotate preview image according to phone orientation when image was taken
         Matrix m = new Matrix();
@@ -1241,7 +848,9 @@ public class CameraActivity extends AppCompatActivity {
         long startTime_w = System.currentTimeMillis();
 
         ThickSmearProcessor thickSmearProcessor = new ThickSmearProcessor(UtilsCustom.oriSizeMat);
-        thickSmearProcessor.processImage();
+        int[] res = thickSmearProcessor.processImage();
+
+        saveResults_thick(res[0], res[1]);
 
         long endTime_w = System.currentTimeMillis();
         long totalTime_w = endTime_w - startTime_w;
@@ -1328,6 +937,16 @@ public class CameraActivity extends AppCompatActivity {
         UtilsData.addCellCount(String.valueOf(cellCurrent));
         UtilsData.addInfectedCount(String.valueOf(infectedCurrent));
 
+    }
+
+    private void saveResults_thick(int parasiteNum, int wbc_num){
+
+        UtilsData.parasiteCurrent = parasiteNum;
+        UtilsData.WBCCurrent = wbc_num;
+        UtilsData.parasiteTotal = UtilsData.parasiteTotal + parasiteNum;
+        UtilsData.WBCTotal = UtilsData.WBCTotal + wbc_num;
+        UtilsData.addParasiteCount(String.valueOf(parasiteNum));
+        UtilsData.addWBCCount(String.valueOf(wbc_num));
     }
 
     public void doAFewThings() {
