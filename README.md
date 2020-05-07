@@ -7,7 +7,7 @@ Official repository for Malaria Screener
 1. [Device Compatibility](#device-compatibility)
 1. [Features](#features)
 1. [Getting Started with Development](#getting-started-with-development)
-1. [Substitute Components in Parasite Detection Module](#substitue-components-in-parasite-detection-module)
+1. [Substitute Components in Parasite Detection Module](#substitute-components-in-parasite-detection-module)
 
 
 # Introduction
