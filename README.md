@@ -80,6 +80,59 @@ Follow the instructions in the Android Developer Docs to [Run apps on Android Em
 # Substitute Components in Parasite Detection Module
 One of our objectives is to allow other research groups to utilize this app to advance their own study. The source code is modularized so that the components in the parasite detection module can be easily substituted.
 
+## Substitute the parasite detection module entirely
+
+### Thin Smear 
+Replace class `ThinSmearProcessor`, which has the following input and output parameters:
+
+Input:
+* `UtilsCustom.oriSizeMat` - input image
+
+Output:
+* `cellCount` - number of cells detected in the image
+* `infectedCount` - number of infected cells detected in the image.
+
+### Thick Smear 
+Replace class `ThickSmearProcessor`, which has the following input and output parameters:
+
+Input:
+* `UtilsCustom.oriSizeMat` - input image
+
+Output:
+* `wbcCount` - number of white blood cells(WBC) detected in the image
+* `parasiteCount` - number of infected cells detected in the image.
+
+## Substitute the Segmentation Component
+
+### Thin Smear
+In class `ThinSmearProcessor`, replace the following code snippet with your own implementation:
+```Java
+MarkerBasedWatershed watershed = new MarkerBasedWatershed();
+watershed.runMarkerBasedWatershed(resizedMat, RV);
+```
+Your class should have the following input and output parameters:
+
+Input:
+* `UtilsCustom.oriSizeMat`. Or, the resized image `resizedMat` and the resize scale `RV` if you wish to operate the segmentation on a smaller image to reduce the computational work.
+
+Output:
+* A segmentation mask that marks the boundaries of the identified cells.
+
+### Thick Smear
+In class `ThickSmearProcessor`, replace the following code snippet with your own implementation:
+```Java
+int wbc_num = processThickImage(oriSizeMat.getNativeObjAddr(), candi_patches.getNativeObjAddr(), x, y, extra_Mat.getNativeObjAddr());
+```
+Your class should have the following input and output parameters:
+
+Input:
+* `UtilsCustom.oriSizeMat`. Or, the resized image `resizedMat` and the resize scale `RV` if you wish to operate the segmentation on a smaller image to reduce the computational work.
+
+Output:
+* Candidate patches `candi_patches`.
+* White blood cell number `wbc_num`.
+
+
 ## Substitute the Patch Classifier
 In Malaria Screener, we use pre-trained Convolutional Neural Network(CNN) models to make binary classifications for the candidate patch images, which are segmented from the original smear images, of both thin and thick smear images. The models can be substituted as follow:
 
@@ -109,5 +162,4 @@ try {
   UtilsCustom.tensorFlowClassifier_thick = TensorFlowClassifier.create(context.getAssets(), modelNameStr_thick, TF_input_width_thick, TF_input_height_thick, inputLayerNameStr_thick, outputLayerNameStr_thick);
 
 ```
-
 
