@@ -78,7 +78,10 @@ Once you have downloaded OpenCV Android and CMake, go to the project directory, 
 Follow the instructions in the Android Developer Docs to [Run apps on Android Emulator.](https://developer.android.com/studio/run/emulator/?gclid=CjwKCAjwwMn1BRAUEiwAZ_jnEouUFSTsFQaCMKyKCBUu4nbTYeagGnU8L1tVJrWe1k9ojV3rVDYbHxoCmy8QAvD_BwE&gclsrc=aw.ds)
 
 # Substitute Components in Parasite Detection Module
-One of our objectives is to allow other research groups to utilize this app to advance their own study. The source code is modularized so that the components in the parasite detection module can be easily substituted.
+One of our objectives is to allow other research groups to utilize this app to advance their own study. The components in the parasite detection module can be easily substituted so that people can test their own algorithms.
+
+The parasite detection module consists of two components: the segmentation component and the patch classifier component.
+In the following section, you will learn, for both thin smear processing and thick smear processing, how to substite the parasite detection module as a whole, and also how to substitute the segmentation and patch classifier components individually. 
 
 ## Substitute the parasite detection module entirely
 
@@ -86,21 +89,21 @@ One of our objectives is to allow other research groups to utilize this app to a
 Replace class `ThinSmearProcessor`, which has the following input and output parameters:
 
 Input:
-* `UtilsCustom.oriSizeMat` - input image
+* `Mat UtilsCustom.oriSizeMat` - input image (Mat is the image container in OpenCV library. See this [OpenCV documentation](https://docs.opencv.org/2.4/doc/tutorials/core/mat_the_basic_image_container/mat_the_basic_image_container.html) for more details.)
 
 Output:
-* `cellCount` - number of cells detected in the image
-* `infectedCount` - number of infected cells detected in the image.
+* `int cellCount` - number of cells detected in the image
+* `int infectedCount` - number of infected cells detected in the image.
 
 ### Thick Smear 
 Replace class `ThickSmearProcessor`, which has the following input and output parameters:
 
 Input:
-* `UtilsCustom.oriSizeMat` - input image
+* `Mat UtilsCustom.oriSizeMat` - input image
 
 Output:
-* `wbcCount` - number of white blood cells(WBC) detected in the image
-* `parasiteCount` - number of infected cells detected in the image.
+* `int wbcCount` - number of white blood cells(WBC) detected in the image
+* `int parasiteCount` - number of infected cells detected in the image.
 
 ## Substitute the Segmentation Component
 
@@ -113,24 +116,24 @@ watershed.runMarkerBasedWatershed(resizedMat, RV);
 Your class should have the following input and output parameters:
 
 Input:
-* `UtilsCustom.oriSizeMat`. Or, the resized image `resizedMat` and the resize scale `RV` if you wish to operate the segmentation on a smaller image to reduce the computational work.
+* `Mat UtilsCustom.oriSizeMat` - input image. Or, the resized image `resizedMat` and the resize scale `RV` if you wish to operate the segmentation on a smaller image to reduce the computational work.
 
 Output:
-* A segmentation mask that marks the boundaries of the identified cells.
+* `Mat watershedMask` - segmentation mask. A segmentation mask that marks the boundaries of the identified cells.
 
 ### Thick Smear
 In class `ThickSmearProcessor`, replace the following code snippet with your own implementation:
 ```Java
-int wbc_num = processThickImage(oriSizeMat.getNativeObjAddr(), candi_patches.getNativeObjAddr(), x, y, extra_Mat.getNativeObjAddr());
+int wbcCount = processThickImage(oriSizeMat.getNativeObjAddr(), candi_patches.getNativeObjAddr(), x, y, extra_Mat.getNativeObjAddr());
 ```
 Your class should have the following input and output parameters:
 
 Input:
-* `UtilsCustom.oriSizeMat`. Or, the resized image `resizedMat` and the resize scale `RV` if you wish to operate the segmentation on a smaller image to reduce the computational work.
+* `Mat UtilsCustom.oriSizeMat` - input image. Or, the resized image `resizedMat` and the resize scale `RV` if you wish to operate the segmentation on a smaller image to reduce the computational work.
 
 Output:
-* Candidate patches `candi_patches`.
-* White blood cell number `wbc_num`.
+* `candi_patches` - Segmented candidate patches.
+* `wbcCount` - White blood cell number .
 
 
 ## Substitute the Patch Classifier
