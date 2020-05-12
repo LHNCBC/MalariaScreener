@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,11 +22,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.Spinner;
 import android.widget.Toast;
-
-import android.app.FragmentTransaction;
 
 //import com.github.amlcurran.showcaseview.ShowcaseView;
 //import com.github.amlcurran.showcaseview.targets.ViewTarget;
@@ -35,10 +31,8 @@ import android.app.FragmentTransaction;
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
+import gov.nih.nlm.malaria_screener.camera.CameraActivity;
 import gov.nih.nlm.malaria_screener.database.DatabasePage;
-import gov.nih.nlm.malaria_screener.database.MyDBHandler;
-import gov.nih.nlm.malaria_screener.database.ProgressBarEvent;
-import gov.nih.nlm.malaria_screener.frontEnd.UploadService;
 import gov.nih.nlm.malaria_screener.tutorial.About;
 import gov.nih.nlm.malaria_screener.tutorial.Diagram;
 import gov.nih.nlm.malaria_screener.tutorial.TutorialActivity;
@@ -47,11 +41,6 @@ import gov.nih.nlm.malaria_screener.userOnboard.UserOnBoardActivity;
 //import gov.nih.nlm.malaria_screener.tutorial.Diagram;
 //import gov.nih.nlm.malaria_screener.tutorial.TutorialActivity;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-import org.opencv.android.BaseLoaderCallback;
-import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 
 import java.io.File;
@@ -60,41 +49,24 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
+
+/* This MainActivity class is the entry of this mobile app program.
+* */
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MyDebug";
-//    static final int REQUEST_IMAGE_CAPTURE = 1;
-//    public static final int MEDIA_TYPE_IMAGE = 1;
-//    public static final String PARAM_PID = "PID";
-//    public static final String PARAM_PROCESSED = "processed";
-
     private final static String DROPBOX_NAME = "dropbox_prefs";
     private final static String DROPBOX_PROGRESS = "progress";
     private final static String DROPBOX_UPDATE_STATE = "app_state"; //0 initial, 1 success, 2 fail, 3 uploading
 
     static final int REQUEST_CAM = 2;
-
     final private int REQUEST_CODE_ASK_PERMISSIONS = 123;
-
     private static final int APP_PERMISSION_REQUEST = 102;
-
-    private Button newSessionButton;
-    private Button databaseButton;
-    //    private AlphaAnimation buttonPress;
-//    private String pid = "";
-//    ImageView imageview;
-//    Bitmap photo;
-//    Bitmap processed;
-    private boolean autoSVMThres = true;
-    private String CThres = "";
-    CheckBox checkBox;
 
     // Static code clocks are used for assigning initial values to static variables. These are also called “static initializers”.
     static {
@@ -138,8 +110,8 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         toolbar.setLogo(R.mipmap.logo_toolbar);
 
-        newSessionButton = (Button) findViewById(R.id.newSession_button);
-        databaseButton = (Button) findViewById(R.id.database_button);
+        Button newSessionButton = (Button) findViewById(R.id.newSession_button);
+        Button databaseButton = (Button) findViewById(R.id.database_button);
 
         //Disable if no camera
         if (!hasCamera()) {
@@ -250,9 +222,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    /*private void initializeView() {
-        startService(new Intent(MainActivity.this, UploadService.class));
-    }*/
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -290,10 +259,6 @@ public class MainActivity extends AppCompatActivity {
                 if (perms.get(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
                         && perms.get(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
                         && perms.get(Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED){
-                    // Permission Granted
-//                    Intent infoIntent = new Intent(getApplicationContext(), CameraActivity.class);
-//
-//                    startActivityForResult(infoIntent, REQUEST_CAM);
 
                 } else {
                     // Permission Denied
@@ -310,55 +275,18 @@ public class MainActivity extends AppCompatActivity {
         return getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY);
     }
 
-    /*
-
-    // Return the taken picture
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
-            //Get the photo
-            Bundle extras = data.getExtras();
-            Log.d(TAG, "Retrieving photo and decoding byte array to bitmap...");
-            String absPath = (String) extras.get(CameraActivity.PARAM_PATH);
-
-            //photo = BitmapFactory.decodeFile(absPath);
-
-        }
-    }
-
-    Handler newImgHandler = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message msg) {
-            imageview.setImageBitmap(processed);
-            return true;
-        }
-    });*/
-
-    // load openCV package
-    /*private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
-        @Override
-        public void onManagerConnected(int status) {
-            switch (status) {
-                case LoaderCallbackInterface.SUCCESS:
-                    break;
-                default:
-                    super.onManagerConnected(status);
-                    break;
-            }
-        }
-    };*/
-
     @Override
     protected void onResume() {
         super.onResume();
-        // you may be tempted, to do something here, but it's *async*, and may take some time,
-        // so any opencv call here will lead to unresolved native errors.
-        //Log.i(TAG, "Main activity resumed.");
-        //OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_4_0, this, mLoaderCallback);
 
-        // Move files to Extra & clear New folder
+        CleanImagesFromUnfinishedSession();
+    }
+
+    // This function moves the images generated from the previous unfinished session
+    private void CleanImagesFromUnfinishedSession(){
+
         final File file = new File(Environment.getExternalStorageDirectory(
         ), "NLM_Malaria_Screener/New");
-
 
         if (file.listFiles()!=null) {
 
@@ -441,7 +369,21 @@ public class MainActivity extends AppCompatActivity {
             }
 
         }
+    }
 
+    public static void copyFile(File src, File dst) throws IOException {
+
+        FileInputStream var2 = new FileInputStream(src);
+        FileOutputStream var3 = new FileOutputStream(dst);
+        byte[] var4 = new byte[1024];
+
+        int var5;
+        while ((var5 = var2.read(var4)) > 0) {
+            var3.write(var4, 0, var5);
+        }
+
+        var2.close();
+        var3.close();
     }
 
     @Override
@@ -469,21 +411,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
 
-    }
-
-    public static void copyFile(File src, File dst) throws IOException {
-
-        FileInputStream var2 = new FileInputStream(src);
-        FileOutputStream var3 = new FileOutputStream(dst);
-        byte[] var4 = new byte[1024];
-
-        int var5;
-        while ((var5 = var2.read(var4)) > 0) {
-            var3.write(var4, 0, var5);
-        }
-
-        var2.close();
-        var3.close();
     }
 
     @Override
@@ -523,71 +450,6 @@ public class MainActivity extends AppCompatActivity {
             startActivity(diagramIntent);
 
         }
-
-        /*if (id == R.id.action_settings) {
-            final Context c = MainActivity.this;
-            final AlertDialog.Builder ConfidenceSetting = new AlertDialog.Builder(c);
-
-            // Get the layout inflater
-            LayoutInflater inflater = getLayoutInflater();
-
-            ConfidenceSetting.setTitle("Set sensitivity level for SVM: ");
-            //ConfidenceSetting.setMessage("Enter Patient ID:");
-
-            View view = inflater.inflate(R.layout.confidence_setting, null);
-            ConfidenceSetting.setView(view);
-
-            SeekBar seekBar = (SeekBar) view.findViewById(R.id.confidenceBar);
-            final TextView textView = (TextView) view.findViewById(R.id.confidenceText);
-            checkBox = (CheckBox) view.findViewById(R.id.checkbox);
-            seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                @Override
-                public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                    double value = (double)i/100;
-                    textView.setText("Sensitivity level: " + value);
-                    CThres = Double.toString(value);
-                }
-
-                @Override
-                public void onStartTrackingTouch(SeekBar seekBar) {
-                    checkBox.setChecked(false);
-                }
-
-                @Override
-                public void onStopTrackingTouch(SeekBar seekBar) {
-                }
-            });
-
-            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    // update your model (or other business logic) based on isChecked
-                    if (isChecked) {
-                        autoSVMThres = true;
-                    } else {
-                        autoSVMThres = false;
-                    }
-                }
-            });
-
-
-            // Set up the buttons
-            ConfidenceSetting.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-
-                }
-            });
-            ConfidenceSetting.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                }
-            });
-
-            ConfidenceSetting.show();
-
-            return true;
-        }*/
 
         return super.onOptionsItemSelected(item);
     }

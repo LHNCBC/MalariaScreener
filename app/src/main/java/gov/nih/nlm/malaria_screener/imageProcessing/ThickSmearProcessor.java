@@ -54,7 +54,7 @@ public class ThickSmearProcessor {
 
         long startTime = System.currentTimeMillis();
 
-        int wbc_num = processThickImage(oriSizeMat.getNativeObjAddr(), candi_patches.getNativeObjAddr(), x, y, extra_Mat.getNativeObjAddr());
+        int wbcCount = processThickImage(oriSizeMat.getNativeObjAddr(), candi_patches.getNativeObjAddr(), x, y, extra_Mat.getNativeObjAddr());
 
         // added for debug------------
 
@@ -94,7 +94,7 @@ public class ThickSmearProcessor {
         paint.setColor(Color.RED);
 
         //classify image patches
-        int parasiteNum = 0;
+        int parasiteCount = 0;
 
         UtilsCustom.results.clear();
 
@@ -130,7 +130,7 @@ public class ThickSmearProcessor {
         for (int i=0; i <patch_num; i++){
 
             if (UtilsCustom.results.get(i)==1) {
-                parasiteNum++;
+                parasiteCount++;
                 paint.setColor(Color.RED);
                 canvas.drawCircle(x[i], y[i], 20, paint);
             } else {
@@ -149,8 +149,8 @@ public class ThickSmearProcessor {
 
         int[] res = new int[2];
 
-        res[0] = parasiteNum;
-        res[1] = wbc_num;
+        res[0] = parasiteCount;
+        res[1] = wbcCount;
 
         //save result bitmap to memory
         //UtilsCustom.resultBitmap = canvasBitmap;

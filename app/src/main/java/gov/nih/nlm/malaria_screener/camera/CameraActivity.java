@@ -1,12 +1,9 @@
-package gov.nih.nlm.malaria_screener;
+package gov.nih.nlm.malaria_screener.camera;
 
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,10 +11,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Matrix;
-import android.graphics.Paint;
 import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Bundle;
@@ -27,7 +21,6 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
@@ -50,17 +43,17 @@ import android.widget.Toast;
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
+import gov.nih.nlm.malaria_screener.R;
 import gov.nih.nlm.malaria_screener.custom.TouchImageView;
 import gov.nih.nlm.malaria_screener.custom.Utils.UtilsCustom;
 import gov.nih.nlm.malaria_screener.custom.Utils.UtilsData;
 import gov.nih.nlm.malaria_screener.frontEnd.ResultDisplayer;
 import gov.nih.nlm.malaria_screener.frontEnd.ResultDisplayer_thickSmear;
-import gov.nih.nlm.malaria_screener.imageProcessing.Cells;
-import gov.nih.nlm.malaria_screener.imageProcessing.MarkerBasedWatershed;
 import gov.nih.nlm.malaria_screener.imageProcessing.SVM_Classifier;
 import gov.nih.nlm.malaria_screener.imageProcessing.TensorFlowClassifier;
 import gov.nih.nlm.malaria_screener.frontEnd.SettingsActivity;
 import gov.nih.nlm.malaria_screener.imageProcessing.ThickSmearProcessor;
+import gov.nih.nlm.malaria_screener.imageProcessing.ThinSmearProcessor;
 
 import org.opencv.android.Utils;
 import org.opencv.core.CvType;
@@ -74,13 +67,18 @@ import org.opencv.imgproc.Imgproc;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/* *
+* This activity class:
+*   1. controls the UI for camera
+*   2. sends image data for processing
+*   3. start and send processed data to ResultDisplayer
+*
+*/
 public class CameraActivity extends AppCompatActivity {
 
     private Camera cam;
@@ -125,17 +123,10 @@ public class CameraActivity extends AppCompatActivity {
 
     private ImageButton settingButton;
 
-    private Canvas canvas;
-    private Paint paint;
-
     float RV = 6; //resize value
-
-    private int cellCurrent = 0;
-    private int infectedCurrent = 0;
 
     //Mat oriSizeMat;
     Mat resizedMat = new Mat();
-    Mat watershed_mask;
 
     File pictureFileCopy;
 
@@ -154,25 +145,10 @@ public class CameraActivity extends AppCompatActivity {
 
     int orientation; // save phone orientation when image taken
 
-    int[][] cellLocation;
-
     public CharSequence[] cs;
 
     private boolean imageAcquisition = false;
 
-
-    // for bluetooth ------------------------------
-    private String MY_UUID = "ddec19b4-a607-43bc-b8fe-a2e61161046b";
-
-    private Handler mHandler; // handler that gets info from Bluetooth service
-
-    // Defines several constants used when transmitting messages between the
-    // service and the UI.
-    private interface MessageConstants {
-        public static final int MESSAGE_READ = 0;
-        public static final int MESSAGE_WRITE = 1;
-        public static final int MESSAGE_TOAST = 2;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -218,11 +194,11 @@ public class CameraActivity extends AppCompatActivity {
             sv_smear_type.hide();
 
             final ShowcaseView sv_camera = new ShowcaseView.Builder(this)
-                  .withMaterialShowcase()
-                   .setTarget(new ViewTarget(R.id.button_capture, this))
-                   .setContentTitle(R.string.capture_btn_title)
-                   .setContentText(R.string.capture_btn)
-                   .setStyle(R.style.AppTheme)
+                    .withMaterialShowcase()
+                    .setTarget(new ViewTarget(R.id.button_capture, this))
+                    .setContentTitle(R.string.capture_btn_title)
+                    .setContentText(R.string.capture_btn)
+                    .setStyle(R.style.AppTheme)
                     .build();
 
             sv_camera.overrideButtonClick(
@@ -240,6 +216,7 @@ public class CameraActivity extends AppCompatActivity {
 
     }
 
+    // load pre-trained classifier models
     private Handler readSVMHandler = new Handler() {
 
         public void handleMessage(Message msg) {
@@ -577,6 +554,7 @@ public class CameraActivity extends AppCompatActivity {
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
+        // when return from Gallery event
         if (requestCode == REQUEST_GALLERY && resultCode == Activity.RESULT_OK) {
 
             String str1 = getResources().getString(R.string.image_process1);
@@ -627,18 +605,18 @@ public class CameraActivity extends AppCompatActivity {
             imgprocessThread.start();
 
         } else if (requestCode == REQUEST_RESULTS && resultCode == Activity.RESULT_OK) {
-
+         // when return from ResultDisplayer with RESULT_OK
             captureCount++;
 
             updateToolbar();
 
         } else if (requestCode == REQUEST_RESULTS && resultCode == Activity.RESULT_CANCELED) {
-
+            // when return from ResultDisplayer with RESULT_CANCELED
         }
 
     }
 
-    // Hang Yu 04/04/2016
+    // camera picture callback.
     private Camera.PictureCallback pictureCallback = new Camera.PictureCallback() {
 
         @Override
@@ -710,14 +688,6 @@ public class CameraActivity extends AppCompatActivity {
 
         Imgproc.resize(UtilsCustom.oriSizeMat, resizedMat, new Size(width, height), 0, 0, Imgproc.INTER_CUBIC);
 
-        // put resized image on canvas for drawing results after image processing
-        UtilsCustom.canvasBitmap = Bitmap.createBitmap(resizedMat.width(), resizedMat.height(), Bitmap.Config.RGB_565);
-        Utils.matToBitmap(resizedMat, UtilsCustom.canvasBitmap);
-
-        canvas = new Canvas(UtilsCustom.canvasBitmap);
-        paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setStrokeWidth(5);
-        paint.setColor(Color.BLACK);
     }
 
     private Handler messageHandler = new Handler() {
@@ -828,6 +798,28 @@ public class CameraActivity extends AppCompatActivity {
 
     }
 
+    // ************* This section executes when the user is in image acquisition mode **************
+
+    // save image, then go to ResultDisplayer
+    private void ImageAcquisition() {
+
+        UtilsData.addCellCount("N/A");
+        UtilsData.addInfectedCount("N/A");
+
+        processingTime = 0;
+
+        resizedMat.release();
+
+        // set Bitmap to paint
+        UtilsCustom.canvasBitmap = Bitmap.createBitmap(UtilsCustom.oriSizeMat.width(), UtilsCustom.oriSizeMat.height(), Bitmap.Config.RGB_565);
+        Utils.matToBitmap(UtilsCustom.oriSizeMat, UtilsCustom.canvasBitmap);
+
+        saveImageHandler.sendEmptyMessage(0);
+
+        goToNextActivity();
+
+    }
+
     private void ImageAcquisition_thick() {
 
         UtilsData.addParasiteCount("N/A");
@@ -841,6 +833,46 @@ public class CameraActivity extends AppCompatActivity {
 
         saveImageHandler.sendEmptyMessage(0);
         goToNextActivity_thickSmear();
+    }
+    //  ********************************** image acquisition mode **********************************
+
+
+    private void ProcessThinSmearImage() {
+
+        long startTime = System.currentTimeMillis();
+
+        ThinSmearProcessor thinSmearProcessor = new ThinSmearProcessor();
+        int[] res = thinSmearProcessor.processImage(resizedMat, orientation, RV, takenFromCam, pictureFileCopy);
+
+        if (res == null){
+
+            Log.d(TAG, "Here");
+
+            inProgress.dismiss();
+            retakeHandler.sendEmptyMessage(0);
+
+        } else {
+
+            saveResults(res[0], res[1]);
+
+            long endTime = System.currentTimeMillis();
+            long totalTime = endTime - startTime;
+            Log.d(TAG, "Single Image Processing Time: " + totalTime);
+            processingTime = totalTime;
+
+            //save image to file
+            //saveOriImage(); // taken out of handler, otherwise original image not saved before needed in next activity. 09/26/2017
+            saveImageHandler.sendEmptyMessage(0);                // put in handler again, original image is copied for saving, display in result page using image in memory. 03/12/2019
+            //if (takenFromCam) {
+
+            //}
+
+            goToNextActivity();
+
+            System.gc();
+            Runtime.getRuntime().gc();
+        }
+
     }
 
     private void ProcessThickSmearImage() {
@@ -862,73 +894,7 @@ public class CameraActivity extends AppCompatActivity {
         goToNextActivity_thickSmear();
     }
 
-    private void ImageAcquisition() {
-
-        UtilsData.addCellCount("N/A");
-        UtilsData.addInfectedCount("N/A");
-
-        processingTime = 0;
-
-        resizedMat.release();
-
-        saveImageHandler.sendEmptyMessage(0);
-
-        goToNextActivity();
-
-    }
-
-    private void ProcessThinSmearImage() {
-
-        long startTime_w = System.currentTimeMillis();
-
-        MarkerBasedWatershed watershed = new MarkerBasedWatershed();
-        watershed.runMarkerBasedWatershed(resizedMat, RV);
-        resizedMat.release();
-
-        long endTime_w = System.currentTimeMillis();
-        long totalTime_w = endTime_w - startTime_w;
-        Log.d(TAG, "Watershed Time: " + totalTime_w);
-
-        if (watershed.getRetakeFlag()) { // take care of the case (avoid crash) when segmentation failed due to a plain black image was taken
-            inProgress.dismiss();
-            retakeHandler.sendEmptyMessage(0);
-        } else {
-
-            watershed_mask = watershed.watershed_result.clone(); //when segmentation is successful, copy seg mask to later save it in worker thread
-
-            long startTime_C = System.currentTimeMillis();
-
-            Cells c = new Cells();
-            c.runCells(watershed.watershed_result, watershed.output_WBCMask);
-
-            watershed = null;
-            c = null;
-
-            long endTime_C = System.currentTimeMillis();
-            long totalTime_C = endTime_C - startTime_C;
-            Log.d(TAG, "Cell Time: " + totalTime_C);
-
-            doAFewThings();
-
-            drawAll();
-
-            saveResults();
-
-            long endTime = System.currentTimeMillis();
-            long totalTime = endTime - startTime_w;
-            Log.d(TAG, "Single Image Processing Time: " + totalTime);
-            processingTime = totalTime;
-
-            goToNextActivity();
-
-        }
-
-        System.gc();
-        Runtime.getRuntime().gc();
-
-    }
-
-    private void saveResults() {
+    private void saveResults(int infectedCurrent, int cellCurrent) {
 
         UtilsData.cellCurrent = cellCurrent;
         UtilsData.infectedCurrent = infectedCurrent;
@@ -947,66 +913,6 @@ public class CameraActivity extends AppCompatActivity {
         UtilsData.WBCTotal = UtilsData.WBCTotal + wbc_num;
         UtilsData.addParasiteCount(String.valueOf(parasiteNum));
         UtilsData.addWBCCount(String.valueOf(wbc_num));
-    }
-
-    public void doAFewThings() {
-
-        if (UtilsCustom.cellLocation.length == 0) {  //take care of the case(avoid crash) when segmentation passed but no cell chips extracted
-            inProgress.dismiss();
-            retakeHandler.sendEmptyMessage(0);
-        } else {
-
-            //save image to file
-            //saveOriImage(); // taken out of handler, otherwise original image not saved before needed in next activity. 09/26/2017
-            saveImageHandler.sendEmptyMessage(0);                // put in handler again, original image is copied for saving, display in result page using image in memory. 03/12/2019
-            //if (takenFromCam) {
-            saveMaskImageHandler.sendEmptyMessage(0);
-            //}
-
-            cellLocation = UtilsCustom.cellLocation;
-
-            //reset
-            cellCurrent = 0;
-            infectedCurrent = 0;
-
-            cellCurrent = UtilsCustom.cellCount;
-        }
-    }
-
-    public void drawAll() {
-
-        for (int i = 0; i < UtilsCustom.results.size(); i++) {
-
-            if (UtilsCustom.results.get(i) == 0) {
-                //infectedNum++;
-                /*paint.setColor(Color.BLUE); // not infected
-                canvas.drawCircle(UtilsCustom.cellLocation[i][1] / RV, UtilsCustom.cellLocation[i][0] / RV, 2, paint);*/
-                //canvas.drawText(String.valueOf(infectedNum), cellLocation[i][1] - 7, cellLocation[i][0] - 7, paint);
-            } else if (UtilsCustom.results.get(i) == 1) {
-                infectedCurrent++;
-                paint.setColor(Color.RED);
-                canvas.drawCircle(UtilsCustom.cellLocation[i][1] / RV, UtilsCustom.cellLocation[i][0] / RV, 2, paint);
-
-                if (takenFromCam) { // test this canvas rotate
-                    canvas.save();
-                    // draw texts according to phone rotation while image was taken
-                    if (orientation == Surface.ROTATION_0) { //portrait
-                        canvas.rotate(270, UtilsCustom.cellLocation[i][1] / RV, UtilsCustom.cellLocation[i][0] / RV);
-                    } else if (orientation == Surface.ROTATION_270) { //landscape
-                        canvas.rotate(180, UtilsCustom.cellLocation[i][1] / RV, UtilsCustom.cellLocation[i][0] / RV);
-                    } else if (orientation == Surface.ROTATION_180) { //reverse portrait
-                        canvas.rotate(90, UtilsCustom.cellLocation[i][1] / RV, UtilsCustom.cellLocation[i][0] / RV);
-                    } else if (orientation == Surface.ROTATION_90) { // reverse landscape
-                        canvas.rotate(0, UtilsCustom.cellLocation[i][1] / RV, UtilsCustom.cellLocation[i][0] / RV);
-                    }
-                    canvas.drawText(String.valueOf(infectedCurrent), UtilsCustom.cellLocation[i][1] / RV - 7, UtilsCustom.cellLocation[i][0] / RV - 7, paint);
-                    canvas.restore();
-                } else {
-                    canvas.drawText(String.valueOf(infectedCurrent), UtilsCustom.cellLocation[i][1] / RV - 7, UtilsCustom.cellLocation[i][0] / RV - 7, paint);
-                }
-            }
-
-        }
     }
 
     private void goToNextActivity() {
@@ -1032,64 +938,15 @@ public class CameraActivity extends AppCompatActivity {
             UtilsCustom.canvasBitmap = Bitmap.createBitmap(UtilsCustom.canvasBitmap, 0, 0, UtilsCustom.canvasBitmap.getWidth(), UtilsCustom.canvasBitmap.getHeight(), m, false);
         }
 
-        //pass original file dir
-        intent.putExtra("picFile", pictureFileCopy.toString());
 
-        // pass resize value of original image
-        intent.putExtra("RV", RV);
-
-        // pass resized result image to new activity
-        /*ByteArrayOutputStream stream2 = new ByteArrayOutputStream();
-        canvasBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream2);
-        canvasBitmap.recycle();
-        byte[] resImageByteArray = stream2.toByteArray();
-        intent.putExtra("resImage", resImageByteArray);*/
-
-        intent.putExtra("WB", cs[Integer.valueOf(WB)]);
-
+        intent.putExtra("picFile", pictureFileCopy.toString()); //pass original file dir
+        intent.putExtra("RV", RV); // pass resize value of original image
+        intent.putExtra("WB", cs[Integer.valueOf(WB)]); // white balance setting
         intent.putExtra("time", String.valueOf(processingTime));
-
         intent.putExtra("imgCount", captureCount + 1);
-
-        /*// pass total cell count info
-        intent.putExtra("cellTotal", String.valueOf(cellTotal));
-        intent.putExtra("infectedTotal", String.valueOf(infectedTotal));
-
-        // pass cell count info of current image
-        intent.putExtra("cellCountC", String.valueOf(cellCurrent));
-        intent.putExtra("infectedCountC", String.valueOf(infectedCurrent));*/
 
         String imgNameStr = pictureFileCopy.toString().substring(pictureFileCopy.toString().lastIndexOf("/") + 1);
         UtilsData.addImageName(imgNameStr);
-
-        /*// append cell info and image name per image together as string to store in database
-        if (cellEachImage != null && infectedEachImage != null) { // when it's the second image
-            cellEachImage = cellEachImage + (cellCurrent + ",");
-            infectedEachImage = infectedEachImage + (infectedCurrent + ",");
-            nameEachImage = nameEachImage + (imgNameStr + ",");
-        } else {
-            cellEachImage = cellCurrent + ",";
-            infectedEachImage = infectedCurrent + ",";
-            nameEachImage = imgNameStr + ",";
-        }
-
-
-        intent.putExtra("cellCountEachImage", cellEachImage);
-        intent.putExtra("infectedCountEachImage", infectedEachImage);
-        intent.putExtra("nameStringEachImage", nameEachImage);
-
-        // append cell info GT per image together as string to store in database
-        if (cellCountManual != null && infectedCountManual != null) { // only do this part after first image is taken
-            if (cellEachImageGT != null && infectedEachImageGT != null) {
-                cellEachImageGT = cellEachImageGT + (cellCountManual + ",");
-                infectedEachImageGT = infectedEachImageGT + (infectedCountManual + ",");
-            } else {
-                cellEachImageGT = cellCountManual + ",";
-                infectedEachImageGT = infectedCountManual + ",";
-            }
-        }
-        intent.putExtra("cellCountEachImageGT", cellEachImageGT);
-        intent.putExtra("infectedCountEachImageGT", infectedEachImageGT);*/
 
         System.gc();
         Runtime.getRuntime().gc();
@@ -1127,26 +984,14 @@ public class CameraActivity extends AppCompatActivity {
             UtilsCustom.canvasBitmap = Bitmap.createBitmap(UtilsCustom.canvasBitmap, 0, 0, UtilsCustom.canvasBitmap.getWidth(), UtilsCustom.canvasBitmap.getHeight(), m, false);
         }
 
-        /*ByteArrayOutputStream stream2 = new ByteArrayOutputStream();
-        rescaledBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream2);
-        rescaledBitmap.recycle();
-        byte[] resImageByteArray = stream2.toByteArray();
-        intent.putExtra("resImage", resImageByteArray);*/
-
         // pass image names
         String imgNameStr = pictureFileCopy.toString().substring(pictureFileCopy.toString().lastIndexOf("/") + 1);
         UtilsData.addImageName(imgNameStr);
 
         intent.putExtra("picFile", pictureFileCopy.toString());
-
-        // pass resize value of original image
-        intent.putExtra("RV", RV);
-
-        // pass white balance
-        intent.putExtra("WB", cs[Integer.valueOf(WB)]);
-
+        intent.putExtra("RV", RV); // pass resize value of original image
+        intent.putExtra("WB", cs[Integer.valueOf(WB)]); // white balance setting
         intent.putExtra("time", String.valueOf(processingTime));
-
         intent.putExtra("imgCount", captureCount + 1);
 
         System.gc();
@@ -1154,27 +999,6 @@ public class CameraActivity extends AppCompatActivity {
 
         startActivityForResult(intent, REQUEST_RESULTS);
     }
-
-    private Handler saveMaskImageHandler = new Handler() {
-
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-
-            Runnable r = new Runnable() {
-                @Override
-                public void run() {
-                    //SaveImage saveImage = new SaveImage(pictureFileCopy, dataCopy);
-
-                    saveMaskImage();
-
-                }
-            };
-
-            Thread saveMaskImgThread = new Thread(r);
-            saveMaskImgThread.start();
-
-        }
-    };
 
     private Handler saveImageHandler = new Handler() {
 
@@ -1219,23 +1043,9 @@ public class CameraActivity extends AppCompatActivity {
 
         oriSizeMat_clone.release();
 
-        //UtilsCustom.oriSizeMat.release();
     }
 
-    public void saveMaskImage() {
-
-        String file_name = null;
-        try {
-            file_name = createImageFile().toString();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        Imgcodecs.imwrite(file_name, watershed_mask);
-        watershed_mask.release();
-    }
-
-
+    // handle the event to retake image when the program rejects the captured image
     private Handler retakeHandler = new Handler() {
 
         public void handleMessage(Message msg) {
@@ -1256,7 +1066,7 @@ public class CameraActivity extends AppCompatActivity {
 
     }
 
-
+    // control response to user interaction with toolbar
     private void prompt(char target) {
         switch (target) {
             case 'f':
@@ -1359,6 +1169,7 @@ public class CameraActivity extends AppCompatActivity {
 
     }
 
+    // Create image file to be saved. Image name is current time stamp + smearType
     private static File getOutputMediaFile(int type, String pid, String sid, int num, String smearType) {
 
         File mediaStorageDir = new File(Environment.getExternalStorageDirectory(
@@ -1385,55 +1196,10 @@ public class CameraActivity extends AppCompatActivity {
         return mediaFile;
     }
 
-    private static File getOutputMediaFile_jpeg(int type, String pid, String sid, int num, String smearType) {
-
-        File mediaStorageDir = new File(Environment.getExternalStorageDirectory(
-        ), "NLM_Malaria_Screener/New");
-
-        if (!mediaStorageDir.exists()) {
-            if (!mediaStorageDir.mkdirs()) {
-                Log.d("MalariaPics", "failed to create directory");
-                return null;
-            }
-        }
-        String fieldNum = digitFormat(num);
-
-        // Create a media file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        File mediaFile;
-        if (type == MEDIA_TYPE_IMAGE) {
-            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-                    timeStamp + "_" + smearType + ".jpg");
-        } else {
-            return null;
-        }
-
-        return mediaFile;
-    }
-
-    private File createImageFile() throws IOException {
-
-        File direct = new File(Environment.getExternalStorageDirectory(), "NLM_Malaria_Screener/New");
-
-        if (!direct.exists()) {
-            direct.mkdirs();
-        }
-
-        // get image name
-        String imgStr = pictureFileCopy.toString().substring(pictureFileCopy.toString().lastIndexOf("/") + 1);
-        int endIndex = imgStr.lastIndexOf(".");
-        String imageName = imgStr.substring(0, endIndex);
-
-        File imgFile = new File(new File(Environment.getExternalStorageDirectory(), "NLM_Malaria_Screener/New"), imageName + "_mask.png");
-
-        return imgFile;
-    }
-
     @Override
     public void onStart() {
         super.onStart();
 
-        //orientationEventListener.enable();
     }
 
     @Override
@@ -1441,37 +1207,16 @@ public class CameraActivity extends AppCompatActivity {
         super.onResume();
         //Log.d(TAG, "onResume");
 
-
-//        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-//        WB = sharedPreferences.getString("whitebalance", "0");
-//        //ImgQ = sharedPreferences.getInt("imagequality", 3);
-//        //EC = sharedPreferences.getInt("exposure", 0);
-
-//        double value = sharedPreferences.getInt("Th", 65);
-//        Th = value/100;
-
         if (cam == null) {
             initCam();
-            //orientationEventListener.enable();
-            //Log.d(TAG, "Camera resumed");
         }
 
         // tutorial page
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
         int secondTime = settings.getInt("firstSecondTime_cam", 0);
         if (secondTime == 1) {
-
             PreferenceManager.getDefaultSharedPreferences(this).edit().putInt("firstSecondTime_cam", 2).commit();
 
-//            ShowcaseView sv = new ShowcaseView.Builder(this)
-//                    .withMaterialShowcase()
-//                    .setTarget(new ViewTarget(R.id.settingButton, this))
-//                    .setContentTitle(R.string.setting_btn_title)
-//                    .setContentText(R.string.setting_btn)
-//                    .setStyle(R.style.CustomShowcaseTheme2)
-//                    .build();
-//
-//            sv.show();
         } else if (secondTime == 0) {
             PreferenceManager.getDefaultSharedPreferences(this).edit().putInt("firstSecondTime_cam", 1).commit();
         }
@@ -1489,8 +1234,6 @@ public class CameraActivity extends AppCompatActivity {
 
     public void onStop() {
         super.onStop();
-
-        //orientationEventListener.enable();
     }
 
     public static Camera getCamera() {
@@ -1508,7 +1251,7 @@ public class CameraActivity extends AppCompatActivity {
      * Check if this device has a camera
      */
     private boolean checkCameraHardware(Context context) {
-        if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
+        if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
             // this device has a camera
             //Log.e(TAG, "Device has camera");
             return true;
@@ -1522,6 +1265,7 @@ public class CameraActivity extends AppCompatActivity {
         }
     }
 
+    // when user presses back button on the phone
     public void onBackPressed() {
 
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
@@ -1566,6 +1310,7 @@ public class CameraActivity extends AppCompatActivity {
         return;
     }
 
+    // reset all relevant variables of when user exits a screening session
     private void reset_utils_data() {
 
         UtilsData.resetImageNames();
@@ -1584,6 +1329,7 @@ public class CameraActivity extends AppCompatActivity {
 
     }
 
+    // give volume up button the function to trigger a capture event
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
 
@@ -1602,17 +1348,12 @@ public class CameraActivity extends AppCompatActivity {
                 }
                 return true;
 
-//            case KeyEvent.KEYCODE_ENTER:
-//                if(action==KeyEvent.ACTION_DOWN){
-//
-//                    Toast.makeText(getApplication(), "ANDROID button clicked", Toast.LENGTH_SHORT).show();
-//                }
-
             default:
                 return super.dispatchKeyEvent(event);
         }
     }
 
+    // this function execute a picture event when volume up button is pressed
     private void takePic() {
         // take picture!
         if (safeToTakePicture) {

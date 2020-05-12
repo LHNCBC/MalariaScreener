@@ -1,5 +1,7 @@
 package gov.nih.nlm.malaria_screener.imageProcessing;
 
+import android.util.Log;
+
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -9,6 +11,8 @@ import org.opencv.core.Scalar;
  * Created by yuh5 on 3/24/2016.
  */
 public class Histogram {
+
+    private static final String TAG = "MyDebug";
 
     private Mat histMat;
 
@@ -31,6 +35,9 @@ public class Histogram {
         //Core.multiply(im_new, setVauleMat, im_new);
 
         double range = (res.maxVal - res.minVal)/256;
+
+        Log.d(TAG, "res.maxVal: " + res.maxVal);
+        Log.d(TAG, "res.minVal: " + res.minVal);
 
         double im_JP[] = new double[(int)im.total()];
         im.get(0,0, im_JP);

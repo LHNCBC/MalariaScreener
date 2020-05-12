@@ -70,6 +70,8 @@ public class MarkerBasedWatershed {
             List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
             Imgproc.findContours(mask_border_clone, contours, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_NONE);
 
+            Log.d(TAG, "contours.size(): " + contours.size());
+
             for (int i = 0; i < contours.size(); i++) {
                 Imgproc.drawContours(mask_border, contours, i, new Scalar(1), -1);
             }
@@ -522,7 +524,10 @@ public class MarkerBasedWatershed {
         boolean retakeFlag = histogram.getRetakeFlag();
         histogram = null;
 
+        Log.d(TAG,"retakeFlag: " + retakeFlag);
+
         if (retakeFlag) {
+
             retakeIm = true;
             return null;
         } else {

@@ -1,4 +1,4 @@
-package gov.nih.nlm.malaria_screener;
+package gov.nih.nlm.malaria_screener.camera;
 
 import android.content.Context;
 import android.hardware.Camera;
@@ -14,7 +14,7 @@ import java.io.IOException;
 
 
 /**
- * Created by Wilson on 7/15/2015.
+ * Class to create view for camera preview
  */
 public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
 
