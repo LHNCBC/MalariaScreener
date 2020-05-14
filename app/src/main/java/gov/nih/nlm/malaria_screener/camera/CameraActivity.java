@@ -30,7 +30,6 @@ import android.view.ViewStub;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
@@ -149,7 +148,6 @@ public class CameraActivity extends AppCompatActivity {
 
     private boolean imageAcquisition = false;
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -165,9 +163,6 @@ public class CameraActivity extends AppCompatActivity {
         // read pre-trained SVM data structure & TF deep learning model // put read SVM data structure & TF model here to reduce processing time
         readSVMHandler.sendEmptyMessage(0);
 
-        // Create an instance of Camera
-        initCam();
-
         Runtime rt = Runtime.getRuntime();
         long maxMemory = rt.maxMemory();
         Log.d(TAG, "maxMemory: " + Long.toString(maxMemory / 1024 / 1024));
@@ -176,22 +171,42 @@ public class CameraActivity extends AppCompatActivity {
         int memoryClass = am.getMemoryClass();
         Log.d(TAG, "memoryClass: " + Integer.toString(memoryClass));
 
+        chooseSmearType();
+
+    }
+
+    // prompts a popup window for the user to choose the smear type
+    private void chooseSmearType(){
+
+        final String[] types = {"Thin", "Thick"};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Pick a smear type");
+        builder.setItems(types, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                smearType = types[which];
+
+                PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putString("smeartype", smearType).commit();
+
+                initAll();
+
+                showCaseView();
+            }
+        });
+        builder.show();
+
+    }
+
+    private void showCaseView(){
+
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
         boolean firstTime = settings.getBoolean("firstTime_camera", true);
 
         if (firstTime) {
 
             PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("firstTime_camera", false).apply();
-
-            final ShowcaseView sv_smear_type = new ShowcaseView.Builder(this)
-                    .withMaterialShowcase()
-                    .setTarget(new ViewTarget(R.id.type, this))
-                    .setContentTitle(R.string.smeartype_btn_title)
-                    .setContentText(R.string.smeartype_btn_text)
-                    .setStyle(R.style.AppTheme)
-                    .build();
-
-            sv_smear_type.hide();
 
             final ShowcaseView sv_camera = new ShowcaseView.Builder(this)
                     .withMaterialShowcase()
@@ -205,7 +220,7 @@ public class CameraActivity extends AppCompatActivity {
                     new Button.OnClickListener() {
                         public void onClick(View v) {
                             sv_camera.hide();
-                            sv_smear_type.show();
+
                         }
                     }
             );
@@ -213,7 +228,6 @@ public class CameraActivity extends AppCompatActivity {
             sv_camera.show();
 
         }
-
     }
 
     // load pre-trained classifier models
@@ -319,7 +333,7 @@ public class CameraActivity extends AppCompatActivity {
         }
     }
 
-    public void initCam() {
+    public void initAll() {
 
         setContentView(R.layout.camera_preview); // set layout to camera preview
         ViewStub stub = findViewById(R.id.stub);
@@ -344,16 +358,6 @@ public class CameraActivity extends AppCompatActivity {
         typeInfo.setTextSize(textSize);
         typeInfo.setSingleLine(true);
         typeInfo.setTextColor(getResources().getColor(R.color.toolbar_text));
-        typeInfo.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        BUTTON_PRESS.setDuration(1000);
-                        v.startAnimation(BUTTON_PRESS);
-                        prompt('t'); // toggle blood smear type
-                    }
-                }
-        );
 
         // capture number
         fieldInfo = (TextView) findViewById(R.id.field);
@@ -791,7 +795,7 @@ public class CameraActivity extends AppCompatActivity {
 
                         inPreview = false;
                         takenFromCam = false;
-                        initCam();
+                        initAll();
                     }
                 }
         );
@@ -1062,110 +1066,7 @@ public class CameraActivity extends AppCompatActivity {
         String string = getResources().getString(R.string.seg_failed);
         Toast.makeText(getApplicationContext(), string, Toast.LENGTH_LONG).show();
 
-        initCam();
-
-    }
-
-    // control response to user interaction with toolbar
-    private void prompt(char target) {
-        switch (target) {
-            case 'f':
-                Context c3 = CameraActivity.this;
-                final AlertDialog.Builder alertDialog3 = new AlertDialog.Builder(c3);
-                alertDialog3.setTitle("Start new capture");
-                alertDialog3.setMessage("Enter Field #:");
-                final EditText input3 = new EditText(c3);
-                alertDialog3.setView(input3);
-                alertDialog3.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String countStr = input3.getText().toString();
-                        try {
-                            int tmp = Integer.parseInt(countStr);
-                            if (tmp < 0)
-                                tmp = 0;
-                            captureCount = tmp;
-                        } catch (NumberFormatException ex) {
-                            captureCount = 0;
-                            //Log.d(TAG, "Input is not integer. Set to 0.");
-                        }
-                        updateToolbar();
-                    }
-                });
-                alertDialog3.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                        //context.finish();
-                    }
-                });
-                alertDialog3.show();
-                break;
-            case 't':
-                if (smearType.equals("Thin")) // for now
-                    smearType = "Thick";
-                else
-                    smearType = "Thin";
-
-                PreferenceManager.getDefaultSharedPreferences(this).edit().putString("smeartype", smearType).commit();
-
-                captureCount = 0;
-                initCam();
-                break;
-            case 's':
-                Context c = CameraActivity.this;
-                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(c);
-                alertDialog.setTitle("Start a new slide");
-                alertDialog.setMessage("Enter Slide ID:");
-                final EditText input = new EditText(c);
-                alertDialog.setView(input);
-                alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        //smearType = "Thick";
-                        smearType = "Thin";
-                        captureCount = 0;
-                        slideId = input.getText().toString();
-                        updateToolbar();
-                    }
-                });
-                alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                        //context.finish();
-                    }
-                });
-                alertDialog.show();
-                break;
-            case 'p':
-                Context c2 = CameraActivity.this;
-                final AlertDialog.Builder alertDialog2 = new AlertDialog.Builder(c2);
-                alertDialog2.setTitle("Start a new patient");
-                alertDialog2.setMessage("Enter Patient ID:");
-                final EditText input2 = new EditText(c2);
-                alertDialog2.setView(input2);
-                // Set up the buttons
-                alertDialog2.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        smearType = "Thick";
-                        captureCount = 0;
-
-                        patientId = input2.getText().toString();
-                        updateToolbar();
-                    }
-                });
-                alertDialog2.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-                alertDialog2.show();
-                break;
-
-        }
+        initAll();
 
     }
 
@@ -1208,7 +1109,8 @@ public class CameraActivity extends AppCompatActivity {
         //Log.d(TAG, "onResume");
 
         if (cam == null) {
-            initCam();
+            Log.d(TAG, "here.");
+            initAll();
         }
 
         // tutorial page
