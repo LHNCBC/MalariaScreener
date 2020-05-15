@@ -61,7 +61,11 @@ Upon importing the project, Android Studio should automatically prompt you to in
       * Android SDK Build-Tools 27.0.3+
 
 ### Setup OpenCV for native development
-This project uses OpenCV native development. It has been setup in the project files for the most part. However, you need to download [OpenCV Android 3.4.2](https://opencv.org/releases/) and [CMake 3.4.1+](https://cmake.org/). Again, older/Newer versions of the components may work as well, but have not necessarily been tested.
+This project uses OpenCV native development for some part of the code. OpenCV native development needs OpenCV Android library and CMake. OpenCV Android libary is included in the source code, and CMake should be automatically installed upon importing the project to Android Studio. So, you should not need to do anything for this part.
+
+However, if things do not go as planned, you can always manually install OpenCV and CMake yourself:
+
+Download [OpenCV Android 3.4.2](https://opencv.org/releases/) and [CMake 3.4.1+](https://cmake.org/). Again, older/Newer versions of the components may work as well, but have not necessarily been tested.
 
 Once you have downloaded OpenCV Android and CMake, go to the project directory, and find the file "CMakeLists.txt" under the "app" folder. Then, open that file and edit the following path to point to the OpenCV Android library that you downloaded yourself:
    ```
