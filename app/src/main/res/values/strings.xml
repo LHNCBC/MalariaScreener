@@ -136,11 +136,11 @@
     <!-- Strings for CameraActivity-->
     <string name="smear_type">Smear Type: Thin</string>
     <string name="smear_type1">Smear Type: Thick</string>
-    <string name="image_count">Images: </string>
-    <string name="cell_count">Cells: </string>
-    <string name="infected_count">Infected Cells: </string>
-    <string name="parasite_count">Parasites: </string>
-    <string name="wbc_count">WBCs: </string>
+    <string name="image_count">Images:\u0020</string>
+    <string name="cell_count">Cells:\u0020</string>
+    <string name="infected_count">Infected Cells:\u0020</string>
+    <string name="parasite_count">Parasites:\u0020</string>
+    <string name="wbc_count">WBCs:\u0020</string>
 
     <string name="image_process1">Running...</string>
     <string name="image_process2">Please wait</string>

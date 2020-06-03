@@ -20,13 +20,14 @@ import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.support.constraint.ConstraintLayout;
+import android.support.constraint.ConstraintSet;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.Surface;
 import android.view.View;
-import android.view.ViewStub;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.widget.Button;
@@ -336,20 +337,11 @@ public class CameraActivity extends AppCompatActivity {
     public void initAll() {
 
         setContentView(R.layout.camera_preview); // set layout to camera preview
-        ViewStub stub = findViewById(R.id.stub);
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         // smear type
         smearType = sharedPreferences.getString("smeartype", "Thin");
-
-        if (smearType.equals("Thin")) {
-            stub.setLayoutResource(R.layout.app_bar_cam);
-        } else if (smearType.equals("Thick")) {
-            stub.setLayoutResource(R.layout.app_bar_cam_thick);
-        }
-
-        stub.inflate();
 
         // set up patient, slide,& field info
         int textSize = 20;
@@ -372,12 +364,12 @@ public class CameraActivity extends AppCompatActivity {
 
         if (smearType.equals("Thin")) {
             // set up count and infected count text views
-            countInfo = (TextView) findViewById(R.id.count);
+            countInfo = (TextView) findViewById(R.id.count1);
             countInfo.setSingleLine(true);
             countInfo.setTextSize(textSize);
             countInfo.setTextColor(getResources().getColor(R.color.toolbar_text));
 
-            infectedCountInfo = (TextView) findViewById(R.id.infected_count);
+            infectedCountInfo = (TextView) findViewById(R.id.count2);
             infectedCountInfo.setSingleLine(true);
             infectedCountInfo.setTextSize(textSize);
             infectedCountInfo.setTextColor(getResources().getColor(R.color.toolbar_text));
@@ -385,12 +377,12 @@ public class CameraActivity extends AppCompatActivity {
             progressBar.setMax(totalCellNeeded);
 
         } else if (smearType.equals("Thick")) {
-            parasiteInfo = (TextView) findViewById(R.id.parasite);
+            parasiteInfo = (TextView) findViewById(R.id.count1);
             parasiteInfo.setSingleLine(true);
             parasiteInfo.setTextSize(textSize);
             parasiteInfo.setTextColor(getResources().getColor(R.color.toolbar_text));
 
-            wbcInfo = (TextView) findViewById(R.id.wbc);
+            wbcInfo = (TextView) findViewById(R.id.count2);
             wbcInfo.setSingleLine(true);
             wbcInfo.setTextSize(textSize);
             wbcInfo.setTextColor(getResources().getColor(R.color.toolbar_text));
@@ -428,6 +420,9 @@ public class CameraActivity extends AppCompatActivity {
 
         Log.d(TAG, "maxSizes: " + maxSize);
         parameters.setPictureSize(maxWidth, maxHeight);
+
+        double picRatio = (double) maxWidth / (double) maxHeight;
+        Log.d(TAG, "picRatio: " + picRatio);
 
         writeToCamResFile(pictureSizes, maxWidth, maxHeight);
         //---------------------------temp cam res--------------------------------------------
@@ -477,11 +472,18 @@ public class CameraActivity extends AppCompatActivity {
         cam.setParameters(parameters);
 
         // Create preview and set to content of activity
-        camPreview = new CameraPreview(this, cam);
+        camPreview = new CameraPreview(this, cam, picRatio);
         safeToTakePicture = true;
         frameLayout = (FrameLayout) findViewById(R.id.camera_preview);
-
         frameLayout.addView(camPreview);
+
+        // set ratio of the framelayout the same as pic ratio
+        ConstraintSet set = new ConstraintSet();
+        ConstraintLayout layout = (ConstraintLayout) findViewById(R.id.cam_activity_layout);
+        set.clone(layout);
+        String ratio = String.valueOf(1/picRatio);
+        set.setDimensionRatio(frameLayout.getId(), ratio);
+        set.applyTo(layout);
 
         updateToolbar();
 

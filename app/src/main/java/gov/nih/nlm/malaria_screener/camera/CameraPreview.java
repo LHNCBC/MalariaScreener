@@ -11,6 +11,8 @@ import android.view.SurfaceView;
 import android.view.WindowManager;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -22,8 +24,9 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     private SurfaceHolder sHolder;
     private Camera cam;
     private Display display;
+    private double picRatio;
 
-    public CameraPreview(Context context, Camera camera) {
+    public CameraPreview(Context context, Camera camera, double picRatio) {
         super(context);
         //Log.d(TAG, "Creating camera preview object...");
         cam = camera;
@@ -32,6 +35,8 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         sHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         display = wm.getDefaultDisplay();
+        this.picRatio = picRatio;
+
     }
 
     public void surfaceCreated(SurfaceHolder holder) {
@@ -60,36 +65,35 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
 
+        // ---------------------- set preview ratio according to picture ratio ---------------------
         Camera.Parameters parameters = cam.getParameters();
 
-        /*List<Camera.Size> preview_sizes = parameters.getSupportedPreviewSizes();
-
-        double surfaceRatio = (double)h/(double)w ;
-
-        Log.d(TAG, "Ratio: " + surfaceRatio);
+        List<Camera.Size> preview_sizes = parameters.getSupportedPreviewSizes();
 
         double[] ratio_diff = new double[preview_sizes.size()];
 
+        // compute all available preview ratios and their differences with the pic ratio
         for (int i=0;i<preview_sizes.size();i++) {
 
             double height = preview_sizes.get(i).width;
             double width = preview_sizes.get(i).height;
 
+            Log.d(TAG, " Available preview size: " + width + " " + height);
+
             double providedRatio = height/width;
 
-            ratio_diff[i] = Math.abs(surfaceRatio - providedRatio);
-
-            //Log.d(TAG, "ratio_diff: " + ratio_diff[i]);
-
+            ratio_diff[i] = Math.abs(picRatio - providedRatio);
         }
 
+        // get the biggest preview with closest ratio to pic ratio
         double min = ratio_diff[0];
         int minIndex = 0;
         for (int i=0;i<preview_sizes.size();i++){
-            if (ratio_diff[i] <min && preview_sizes.get(i).height >1000 && preview_sizes.get(i).width>1000){
+            if (ratio_diff[i] < min && preview_sizes.get(i).height >1000 && preview_sizes.get(i).width>1000){
+                min = ratio_diff[i];
                 minIndex = i;
             }
-        }*/
+        }
 
         if (sHolder.getSurface() == null) {
             //Log.d(TAG, "No surface.");
@@ -105,11 +109,9 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
         //set preview size and make any resize, rotate or
         //reformatting changes here
-
-
-////        Camera.Size best_size = preview_sizes.get(minIndex);
-////        Log.d(TAG, "Best size: " + best_size.height + " " + best_size.width);
-////        parameters.setPreviewSize(best_size.width, best_size.height);
+        Camera.Size best_size = preview_sizes.get(minIndex);
+        Log.d(TAG, "Best size: " + best_size.height + " " + best_size.width);
+        parameters.setPreviewSize(best_size.width, best_size.height);
         cam.setParameters(parameters);
 
         // start preview with new settings
@@ -126,6 +128,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
             }
             cam.setPreviewDisplay(holder);
             cam.startPreview();
+
 
             //Log.d(TAG, "Restarting camera preview...");
         } catch (Exception e) {
