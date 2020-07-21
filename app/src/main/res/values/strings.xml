@@ -88,7 +88,7 @@
 
     <!-- Strings for about-->
 
-    <string name="version">Version 1.6-beta</string>
+    <string name="version">Version 1.6</string>
 
     <string name="description">NLM Malaria Screener is an R&amp;D project of the Lister Hill National Center of Biomedical Communications, a division of the National
     Library of Medicine (NLM), part of the National Institutes of Health (NIH), in collaboration with Mahidol University, University of Oxford, and University of Missouri.</string>
@@ -379,14 +379,17 @@
 
     <!-- Strings in UserOnBoard Activity -->
     <string name="on_board_title">Register with Malaria Screener</string>
-    <string name="on_board_text">Connect with LHNCBC, NIH. Let us know your organization. Enable data upload to NIH server. </string>
+    <string name="on_board_text">Connect with LHNCBC, NIH. Let us know your organization. Enable data upload. </string>
     <string name="title_activity_disclaimer">DisclaimerActivity</string>
 
     <string name="disclaimer_text">
         "<b>Medical Disclaimer.</b>\n\n"
 
-        "Malaria Screener is a research oriented software application developed at the U.S. National Library of Medicine (NLM). Use of the app is not intended to be a substitute for professional medical judgment.
-        THE APP DOES NOT OFFER MEDICAL ADVICE, AND NOTHING CONTAINED IN THE CONTENT IS INTENDED TO CONSTITUTE PROFESSIONAL ADVICE FOR MEDICAL DIAGNOSIS OR TREATMENT.
+        "Malaria Screener is a research oriented software application developed at the U.S. National Library of Medicine (NLM). The software is intended for research and development only.
+        It is not intended for clinical use and has not been cleared or approved by FDA or any regulatory agency.
+        Its purpose is to help clinicians and researchers explore the value of AI in medical imaging.\n"
+
+        "THE APP DOES NOT OFFER MEDICAL ADVICE, AND NOTHING CONTAINED IN THE CONTENT IS INTENDED TO CONSTITUTE PROFESSIONAL ADVICE FOR MEDICAL DIAGNOSIS OR TREATMENT.
         NLM accepts no responsibility for the correctness of any diagnosis based in whole or in part upon the use of this app.\n"
 
         "Although great effort has been taken in developing and testing the algorithm to ensure accuracy, the organization, the researchers,
@@ -397,7 +400,7 @@
 
         "<b>Who can access my registration information if I choose to register?</b>"
 
-        "Members of the Malaria Screener research team at at NLM can access the information.
+        "Members of the Malaria Screener research team at NLM can access the information.
         The purpose of collecting user information is solely to monitor the reach of the app and providing important information to users such as updates and other app-related news.\n"
 
         "<b>What if I have questions?</b>"

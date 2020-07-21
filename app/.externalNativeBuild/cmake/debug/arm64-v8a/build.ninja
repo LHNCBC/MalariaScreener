@@ -55,7 +55,7 @@ build CMakeFiles/native-lib.dir/src/main/cpp/native-lib.cpp.o: CXX_COMPILER__nat
   DEFINES = -Dnative_lib_EXPORTS
   DEP_FILE = CMakeFiles/native-lib.dir/src/main/cpp/native-lib.cpp.o.d
   FLAGS = -isystem /Users/Hang/Library/Android/sdk/ndk-bundle/sysroot/usr/include/aarch64-linux-android -D__ANDROID_API__=21 -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -Wa,--noexecstack -Wformat -Werror=format-security -std=c++11 -std=c++11 -frtti -fexceptions -O0 -fno-limit-debug-info  -fPIC
-  INCLUDES = -I../../../../../openCVLibrary342/include -isystem /Users/Hang/Library/Android/sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/include -isystem /Users/Hang/Library/Android/sdk/ndk-bundle/sources/android/support/include -isystem /Users/Hang/Library/Android/sdk/ndk-bundle/sources/cxx-stl/llvm-libc++abi/include
+  INCLUDES = -I/Users/Hang/Downloads/MS_local_repo/MalariaScreener/openCVLibrary342/include -isystem /Users/Hang/Library/Android/sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/include -isystem /Users/Hang/Library/Android/sdk/ndk-bundle/sources/android/support/include -isystem /Users/Hang/Library/Android/sdk/ndk-bundle/sources/cxx-stl/llvm-libc++abi/include
   IN_ABS = /Users/Hang/Downloads/MS_local_repo/MalariaScreener/app/src/main/cpp/native-lib.cpp
   OBJECT_DIR = CMakeFiles/native-lib.dir
   OBJECT_FILE_DIR = CMakeFiles/native-lib.dir/src/main/cpp
