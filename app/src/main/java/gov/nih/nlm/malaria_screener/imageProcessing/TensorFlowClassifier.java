@@ -88,30 +88,16 @@ public class TensorFlowClassifier {
 
             for (int i = 0; i < output.length / 2; i++) {
 
-                Log.d(TAG, "DL chip output: " + i + " , " + output[i*2]);
-
-                /*if (output[i*2] > output[i*2+1]) {  // in the loaded TF model(Shiva's) 0 is infected, 1 is normal
-                    //infected
-
-                    //UtilsCustom.results.add(1);
-                    //Log.d(TAG, "result: " + output[i*2] + ", " + output[i*2+1]);
-                } else {
-                    // normal
-
-                    //UtilsCustom.results.add(0);
-                    //Log.d(TAG, "result: " + output[i*2] + ", " + output[i*2+1]);
-                }*/
-
+                //Log.d(TAG, "DL chip output: " + i + " , " + output[i*2]);
 
                 if (output[i*2] < UtilsCustom.Th) {  // in the loaded TF model(Shiva's) 0 is infected, 1 is normal. Therefore, output[i*2] contains confidence for infected class
-                    // infected confidence higher
+                    // normal confidence higher
                     UtilsCustom.results.add(0);
 
                 } else {
-                    // normal confidence higher
+                    // infected confidence higher
                     UtilsCustom.results.add(1);
                 }
-
 
             }
 

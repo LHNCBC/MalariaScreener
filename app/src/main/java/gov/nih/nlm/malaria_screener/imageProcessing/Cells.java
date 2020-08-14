@@ -45,33 +45,17 @@ public class Cells {
     private double ori_height = 2988;
     private double ori_width = 5312;
 
-    private TensorFlowClassifier tensorFlowClassifier;
     private SVM_Classifier svm_classifier;
 
-    //TFClassifier_Lite tfClassifier_lite;
+    //private int batchSize = UtilsCustom.batch_size;
 
-//    int height = UtilsCustom.TF_input_size;
-//    int width = UtilsCustom.TF_input_size;
-    private int height;
-    private int width;
-
-    private int batchSize = UtilsCustom.batch_size;
-
-    private int[] intPixels;
+    //private int[] intPixels;
 
     public void runCells(Mat mask, Mat WBC_Mask) {
 
         long startTime = System.currentTimeMillis();
 
-        this.tensorFlowClassifier = UtilsCustom.tensorFlowClassifier_thin;
         this.svm_classifier = UtilsCustom.svm_classifier;
-
-        height = tensorFlowClassifier.getHeight();
-        width = tensorFlowClassifier.getWidth();
-
-        intPixels = new int[width * height];
-
-        //this.tfClassifier_lite = UtilsCustom.tfClassifier_lite;
 
         //------------------------------------
 
@@ -261,17 +245,7 @@ public class Cells {
         scaleMat.setTo(new Scalar(scale));
         Core.multiply(featureTable, scaleMat, featureTable);
 
-
         runClassification();
-        /*long startTimeNN = System.currentTimeMillis();
-
-
-        tfClassifier_lite.process_by_batch(cellChip);
-
-        long endTime_NN = System.currentTimeMillis();
-        long totalTime_NN = endTime_NN - startTimeNN;
-        Log.d(TAG, "Deep learning Time, TF Lite: " + totalTime_NN);*/
-
 
 //        if (picFile!=null) {
 //            forSave.convertTo(forSave, CvType.CV_8U);
@@ -289,45 +263,78 @@ public class Cells {
 
         if (UtilsCustom.whichClassifier == 0) { // Deep Learning
 
-        long startTimeNN = System.currentTimeMillis();
+            long startTimeNN = System.currentTimeMillis();
 
-        UtilsCustom.results.clear();
+            UtilsCustom.results.clear();
 
-        float[] floatPixels = new float[width * height * 3 * batchSize];
+            /*float[] floatPixels = new float[width * height * 3 * batchSize];
 
-        float[] floatPixels_last;
+            float[] floatPixels_last;
 
-        int NumOfImage = cellChip.size();
+            int NumOfImage = cellChip.size();
 
-        int iteration = NumOfImage / batchSize;
-        int lastBatchSize = NumOfImage % batchSize;
+            int iteration = NumOfImage / batchSize;
+            int lastBatchSize = NumOfImage % batchSize;
 
-        floatPixels_last = new float[width * height * 3 * lastBatchSize];
+            floatPixels_last = new float[width * height * 3 * lastBatchSize];
 
-        // normal batches
-        for (int i = 0; i < iteration; i++) {
+            // normal batches
+            for (int i = 0; i < iteration; i++) {
 
-            for (int n = 0; n < batchSize; n++) {
+                for (int n = 0; n < batchSize; n++) {
 
-                floatPixels = putInPixels(i, n, floatPixels);
+                    floatPixels = putInPixels(i, n, floatPixels);
+                }
+
+                tensorFlowClassifier.recongnize_batch(floatPixels, batchSize);
+
             }
 
-            tensorFlowClassifier.recongnize_batch(floatPixels, batchSize);
+            // last batch
+            for (int n = 0; n < lastBatchSize; n++) {
 
-        }
+                floatPixels_last = putInPixels(iteration, n, floatPixels_last);
+            }
 
-        // last batch
-        for (int n = 0; n < lastBatchSize; n++) {
+            tensorFlowClassifier.recongnize_batch(floatPixels_last, lastBatchSize);
 
-            floatPixels_last = putInPixels(iteration, n, floatPixels_last);
-        }
+            long endTime_NN = System.currentTimeMillis();
+            long totalTime_NN = endTime_NN - startTimeNN;
+            Log.d(TAG, "Deep learning Time, TF mobile: " + totalTime_NN);*/
+            //--------------------------------------------------------
+            // TF Lite
+            List<Bitmap> bitmapList = new ArrayList<>();
 
-        tensorFlowClassifier.recongnize_batch(floatPixels_last, lastBatchSize);
+            int NumOfImage = cellChip.size();
+            Log.d(TAG, "NumOfImage: " + NumOfImage);
 
-        long endTime_NN = System.currentTimeMillis();
-        long totalTime_NN = endTime_NN - startTimeNN;
-        Log.d(TAG, "Deep learning Time, TF mobile: " + totalTime_NN);
-        //--------------------------------------------------------
+            for (int i=0;i<NumOfImage;i++){
+                bitmapList.add(convertToBitmap(i));
+            }
+
+            long startTimeNN_1 = System.currentTimeMillis();
+
+            List<Float> probs = UtilsCustom.tensorFlowClassifier_thin_lite.recognizeImage(bitmapList, 0);
+
+            long endTime_NN_1 = System.currentTimeMillis();
+            long totalTime_NN_1 = endTime_NN_1 - startTimeNN_1;
+            Log.d(TAG, "Deep learning Time, TF Lite: " + totalTime_NN_1);
+
+            Log.d(TAG, "list1: " + probs.size());
+
+            for (int i=0;i<probs.size()/2;i++){
+                // in the loaded TF model(Shiva's) 0 is infected, 1 is normal. Therefore, output[i*2] contains confidence for infected class
+
+                if (probs.get(i*2)<UtilsCustom.Th){
+                    // normal confidence higher
+                    UtilsCustom.results.add(0);
+                } else {
+                    // infected confidence higher
+                    UtilsCustom.results.add(1);
+                }
+            }
+
+            //--------------------------------------------------------
 
         } else if (UtilsCustom.whichClassifier==1){ // SVM
             svm_classifier.run(featureTable);
@@ -336,7 +343,27 @@ public class Cells {
 
     }
 
-    private float[] putInPixels(int i, int n, float[] floatPixels) {
+    private Bitmap convertToBitmap(int i){
+
+        Bitmap chip_bitmap;
+        Mat singlechip;
+
+        singlechip = cellChip.get(i);
+
+        singlechip.convertTo(singlechip, CvType.CV_8U);
+
+        int width = UtilsCustom.tensorFlowClassifier_thin_lite.getImageSizeX();
+        int height = UtilsCustom.tensorFlowClassifier_thin_lite.getImageSizeY();
+
+        Imgproc.resize(singlechip, singlechip, new Size(width, height), 0, 0, Imgproc.INTER_CUBIC);
+
+        chip_bitmap = Bitmap.createBitmap(singlechip.cols(), singlechip.rows(), Bitmap.Config.ARGB_8888);
+        Utils.matToBitmap(singlechip, chip_bitmap);
+
+        return chip_bitmap;
+    }
+
+    /*private float[] putInPixels(int i, int n, float[] floatPixels) {
 
         Bitmap chip_bitmap;
         Mat singlechip;
@@ -359,7 +386,7 @@ public class Cells {
         }
 
         return floatPixels;
-    }
+    }*/
 
     // compute feature vector for each chip/cell
     private Mat computeFeatureVector(Mat roi) {

@@ -11,9 +11,13 @@ import org.opencv.android.Utils;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.Rect;
+import org.opencv.core.Size;
+import org.opencv.imgproc.Imgproc;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import gov.nih.nlm.malaria_screener.custom.Utils.UtilsCustom;
 import gov.nih.nlm.malaria_screener.custom.Utils.UtilsData;
@@ -100,7 +104,7 @@ public class ThickSmearProcessor {
 
         int patch_num = candi_patches.height()/inputSize;
 
-        int iteration = patch_num / batch_size;
+        /*int iteration = patch_num / batch_size;
         int lastBatchSize = patch_num % batch_size;
 
         float[] floatPixels = new float[inputSize * inputSize * 3 * batch_size];
@@ -124,7 +128,39 @@ public class ThickSmearProcessor {
             floatPixels_last = putInPixels(iteration, n, floatPixels_last);
         }
 
-        UtilsCustom.tensorFlowClassifier_thick.recongnize_batch_thick(floatPixels, batch_size);
+        UtilsCustom.tensorFlowClassifier_thick.recongnize_batch_thick(floatPixels, batch_size);*/
+
+        // ------------------------------------ TF Lite -----------------------------------
+        List<Bitmap> bitmapList = new ArrayList<>();
+
+        for (int i=0;i<patch_num;i++){
+            bitmapList.add(convertToBitmap(i));
+        }
+
+        long startTimeNN_1 = System.currentTimeMillis();
+
+        List<Float> probs = UtilsCustom.tensorFlowClassifier_thick_lite.recognizeImage(bitmapList, 0);
+
+        Log.d(TAG, "list1: " + probs.size());
+
+        for (int i=0;i<probs.size()/2;i++){
+            // in the loaded TF model 0 is normal, 1 is infected
+
+            if (probs.get(i*2)>probs.get(i*2+1)){
+                // normal confidence higher
+                UtilsCustom.results.add(0);
+
+            } else {
+                // infected confidence higher
+                UtilsCustom.results.add(1);
+
+            }
+        }
+
+        long endTime_NN_1 = System.currentTimeMillis();
+        long totalTime_NN_1 = endTime_NN_1 - startTimeNN_1;
+        Log.d(TAG, "Deep learning Time, TF Lite: " + totalTime_NN_1);
+        // --------------------------------------------------------------------------------
 
         // draw results on image
         for (int i=0; i <patch_num; i++){
@@ -138,14 +174,6 @@ public class ThickSmearProcessor {
                     canvas.drawCircle(x[i], y[i], 20, paint);*/
             }
         }
-
-        // save results
-//        UtilsData.parasiteCurrent = parasiteNum;
-//        UtilsData.WBCCurrent = wbc_num;
-//        UtilsData.parasiteTotal = UtilsData.parasiteTotal + parasiteNum;
-//        UtilsData.WBCTotal = UtilsData.WBCTotal + wbc_num;
-//        UtilsData.addParasiteCount(String.valueOf(parasiteNum));
-//        UtilsData.addWBCCount(String.valueOf(wbc_num));
 
         int[] res = new int[2];
 
@@ -164,7 +192,21 @@ public class ThickSmearProcessor {
         return res;
     }
 
-    private float[] putInPixels(int i, int n, float[] floatPixels) {
+    private Bitmap convertToBitmap(int i){
+
+        Bitmap chip_bitmap;
+
+        Rect rect = new Rect(0, i * inputSize, inputSize, inputSize);
+        Mat temp = new Mat(candi_patches, rect);
+
+        temp.convertTo(temp, CvType.CV_8U);
+        chip_bitmap = Bitmap.createBitmap(temp.cols(), temp.rows(), Bitmap.Config.ARGB_8888);
+        Utils.matToBitmap(temp, chip_bitmap);
+
+        return chip_bitmap;
+    }
+
+    /*private float[] putInPixels(int i, int n, float[] floatPixels) {
 
         Bitmap chip_bitmap;
         int[] intPixels;
@@ -186,7 +228,7 @@ public class ThickSmearProcessor {
         }
 
         return floatPixels;
-    }
+    }*/
 
     /*OutputStream outStream = null;
                 File file = null;
