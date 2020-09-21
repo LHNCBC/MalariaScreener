@@ -8,6 +8,7 @@ Official repository for Malaria Screener
 1. [Features](#features)
 1. [Getting Started with Development](#getting-started-with-development)
 1. [Substitute Components in Parasite Detection Module](#substitute-components-in-parasite-detection-module)
+1. [User Guideline](#user-guideline)
 
 
 # Introduction
@@ -170,3 +171,6 @@ try {
 
 ```
 
+# User Guideline
+
+User Guideline is attached as a PDF file (User_guideline.pdf) in the source code package. 
