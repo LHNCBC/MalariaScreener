@@ -1,5 +1,9 @@
 # Malaria Screener
-Official repository for Malaria Screener
+Official repository for Malaria Screener.
+
+This software was developed under contract funded by the National Library of Medicine,
+which is part of the National Institutes of Health, an agency of the Department of Health and Human
+Services, United States Government.
 
 # Contents
 
@@ -12,6 +16,8 @@ Official repository for Malaria Screener
 
 
 # Introduction
+To improve malaria diagnostics, the Lister Hill National Center for Biomedical Communications, an R&D division of the US National Library of Medicine, in collaboration with NIH’s National Institute of Allergy and Infectious Diseases (NIAID) and Mahidol-Oxford University, is developing a fully-automated system for parasite detection and counting in blood films.
+
 Automated malaria light microscopy remains a challenge and an active area of research.
 Malaria Screener is an Android mobile application designed to make smartphones an
 affordable yet effective solution to this issue. The idea is to utilize the high-resolution
@@ -23,6 +29,8 @@ easy access to the acquired data. Malaria Screener makes the screening process f
 more consistent, and less dependent on human expertise. The app is modular, allowing
 other research groups to integrate their own methods and models for image processing and
 machine learning, while acquiring and analyzing their data.
+
+
 
 # Features
 
