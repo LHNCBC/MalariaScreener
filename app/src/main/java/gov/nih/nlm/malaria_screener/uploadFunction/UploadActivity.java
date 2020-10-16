@@ -106,7 +106,7 @@ public class UploadActivity extends AppCompatActivity implements CustomAdapter_U
 
                             if (!UploadHashManager.hashmap_for_upload.isEmpty()) {
 
-                                //export database for upload
+                                //export the latest database to csv file before upload
                                 UtilsMethods.exportDB(getApplicationContext());
 
                                 ArrayList[] entries = returnImgFromMap_all();

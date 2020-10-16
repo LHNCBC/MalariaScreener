@@ -40,14 +40,10 @@ import android.widget.Toast;
 import gov.nih.nlm.malaria_screener.R;
 import gov.nih.nlm.malaria_screener.custom.CustomAdapter_PatientDB;
 import gov.nih.nlm.malaria_screener.custom.RowItem_Patient;
+import gov.nih.nlm.malaria_screener.custom.Utils.UtilsMethods;
 import gov.nih.nlm.malaria_screener.uploadFunction.UploadActivity;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,8 +66,6 @@ public class DatabasePage extends AppCompatActivity {
     ListView listView_testPatients;
 
     Bundle bundle;
-
-    private final static String DROPBOX_FILE_DIR = "/NLM_Malaria_Screener/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,7 +95,8 @@ public class DatabasePage extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
 
-                        exportDB();
+                        // export database to csv file
+                        UtilsMethods.exportDB(getApplicationContext());
 
                         Toast.makeText(getApplicationContext(), "Database file has been exported.", Toast.LENGTH_SHORT).show();
 
@@ -236,89 +231,6 @@ public class DatabasePage extends AppCompatActivity {
                     }
                 }
         );
-
-        //delete images in image folder
-        /*deleteImagesButton.setOnClickListener(
-                new Button.OnClickListener() {
-                    public void onClick(View v) {
-
-                        boolean hasNotUploadedSlide = dbHandler.searchNotUploadedSlides();
-
-                        final AlertDialog.Builder alertDialog_again = new AlertDialog.Builder(v.getContext());
-
-                        alertDialog_again.setIcon(R.drawable.warning);
-
-                        alertDialog_again.setTitle(R.string.warning);
-
-                        alertDialog_again.setMessage(R.string.delete_all_images);
-
-                        // Setting Positive "YES" Button
-                        String string = getResources().getString(R.string.yes);
-                        alertDialog_again.setPositiveButton(string, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-
-                                deleteAllImages();
-
-                                dialog.dismiss();
-
-                            }
-                        });
-
-                        // Setting Negative "NO" Button
-                        String string1 = getResources().getString(R.string.no);
-                        alertDialog_again.setNegativeButton(string1, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                // Write your code here to invoke NO event
-                                String string = getResources().getString(R.string.click_no);
-                                Toast.makeText(getApplicationContext(), string, Toast.LENGTH_SHORT).show();
-                                dialog.cancel();
-                            }
-                        });
-
-
-                        if (hasNotUploadedSlide) {
-
-                            AlertDialog.Builder alertDialog = new AlertDialog.Builder(v.getContext());
-
-                            alertDialog.setIcon(R.drawable.warning);
-
-                            alertDialog.setTitle(R.string.warning);
-
-                            alertDialog.setMessage(R.string.delete_image_message);
-
-                            // Setting Positive "YES" Button
-                            String string2 = getResources().getString(R.string.proceed);
-                            alertDialog.setPositiveButton(string2, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-
-                                    alertDialog_again.show();
-
-                                    dialog.dismiss();
-
-                                }
-                            });
-
-                            // Setting Negative "NO" Button
-                            String string3 = getResources().getString(R.string.cancel);
-                            alertDialog.setNegativeButton(string3, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    // Write your code here to invoke NO event
-                                    String string = getResources().getString(R.string.click_cancel);
-                                    Toast.makeText(getApplicationContext(), string, Toast.LENGTH_SHORT).show();
-                                    dialog.cancel();
-                                }
-                            });
-
-                            alertDialog.show();
-
-
-                        } else {
-                            alertDialog_again.show();
-                        }
-
-                    }
-                }
-        );*/
 
         listView_allPatients.setOnItemClickListener(
                 new AdapterView.OnItemClickListener() {
@@ -462,82 +374,6 @@ public class DatabasePage extends AppCompatActivity {
         String string = getResources().getString(R.string.image_all_deleted);
         Toast.makeText(getApplicationContext(), string, Toast.LENGTH_SHORT).show();
     }
-
-    private void exportDB() {
-
-        File exportDir = new File(Environment.getExternalStorageDirectory(), DROPBOX_FILE_DIR);
-
-        File file = new File(exportDir, "MalariaScreenerDB.csv");
-
-        try {
-            file.createNewFile();
-            CSVFileWriter csvFileWriter = new CSVFileWriter(new FileWriter(file));
-            SQLiteDatabase db = dbHandler.getReadableDatabase();
-
-            String queryPatient = "SELECT * FROM patients";
-            Cursor cursor = db.rawQuery(queryPatient, null);
-            csvFileWriter.writeNext(cursor.getColumnNames());  // write column names into excel sheet
-
-            int patientColCount = cursor.getColumnCount();
-
-            while (cursor.moveToNext()) {
-                String arrStr[] = new String[patientColCount];
-                for (int i = 0; i < arrStr.length; i++) {
-                    arrStr[i] = cursor.getString(i);
-                }
-                csvFileWriter.writeNext(arrStr);
-            }
-
-            String querySlide = "SELECT * FROM slides";
-            cursor = db.rawQuery(querySlide, null);
-            csvFileWriter.writeNext(cursor.getColumnNames());
-
-            int slideColCount = cursor.getColumnCount();
-
-            while (cursor.moveToNext()) {
-                String arrStr[] = new String[slideColCount];
-                for (int i = 0; i < arrStr.length; i++) {
-                    arrStr[i] = cursor.getString(i);
-                }
-                csvFileWriter.writeNext(arrStr);
-            }
-
-            String queryImage = "SELECT * FROM images";
-            cursor = db.rawQuery(queryImage, null);
-            csvFileWriter.writeNext(cursor.getColumnNames());
-
-            int imageColCount = cursor.getColumnCount();
-
-            while (cursor.moveToNext()) {
-                String arrStr[] = new String[imageColCount];
-                for (int i = 0; i < arrStr.length; i++) {
-                    arrStr[i] = cursor.getString(i);
-                }
-                csvFileWriter.writeNext(arrStr);
-            }
-
-            String queryImage_thick = "SELECT * FROM images_thick";
-            cursor = db.rawQuery(queryImage_thick, null);
-            csvFileWriter.writeNext(cursor.getColumnNames());
-
-            int imageColCount_thick = cursor.getColumnCount();
-
-            while (cursor.moveToNext()) {
-                String arrStr[] = new String[imageColCount_thick];
-                for (int i = 0; i < arrStr.length; i++) {
-                    arrStr[i] = cursor.getString(i);
-                }
-                csvFileWriter.writeNext(arrStr);
-            }
-
-            csvFileWriter.close();
-            cursor.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

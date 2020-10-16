@@ -26,7 +26,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
+import android.os.Environment;
+import android.util.Log;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 
 /**
@@ -84,6 +89,8 @@ public class MyDBHandler extends SQLiteOpenHelper {
     private Context context;
 
     private HashMap<String, String> mAliasMap;
+
+    private final static String LOCAL_DATA_DIR = "/NLM_Malaria_Screener/";
 
     public MyDBHandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, DATABASE_NAME, factory, DATABASE_VERSION);
@@ -167,13 +174,16 @@ public class MyDBHandler extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
+        Log.d(TAG, "oldVersion: " + oldVersion);
+        Log.d(TAG, "newVersion: " + newVersion);
 
+        // export old database to a csv file
+        export_old_version_DB(db);
 
-        /*db.execSQL(" DROP TABLE IF EXISTS " + TABLE_PATIENTS);
-        db.execSQL(" DROP TABLE IF EXISTS " + TABLE_SLIDES);
-        db.execSQL(" DROP TABLE IF EXISTS " + TABLE_IMAGES);
-        db.execSQL(" DROP TABLE IF EXISTS " + TABLE_IMAGES_THICK);
-        onCreate(db);*/
+        // drop all tables of the old database
+        drop_all_tables(db);
+
+        onCreate(db);
     }
 
     // Add a new row to patient table
@@ -485,12 +495,6 @@ public class MyDBHandler extends SQLiteOpenHelper {
         db.execSQL(" DELETE FROM " + TABLE_IMAGES_THICK + " WHERE " + COLUMN_IMAGE_PATIENT_ID_THICK + "='" + pIDStr + "' " + " AND " + COLUMN_IMAGE_SLIDE_ID_THICK + " = \"" + sIDStr + "\"");
     }
 
-    //Delete all images after slide deleted
-    public void deleteImages(String sIDStr, String pIDStr) {
-
-
-    }
-
     //Delete entire table
     public void deleteTable(){
         SQLiteDatabase db = getWritableDatabase();
@@ -612,6 +616,78 @@ public class MyDBHandler extends SQLiteOpenHelper {
         Cursor c = db.rawQuery(query, null);
 
         return c.getCount();
+    }
+
+    /*
+     *   This function export database of the old version to a .csv file.
+     *   @param db: SQLiteDatabase object
+     *   @return
+     * */
+    private void export_old_version_DB(SQLiteDatabase db) {
+
+        File exportDir = new File(Environment.getExternalStorageDirectory(), LOCAL_DATA_DIR);
+
+        File file = new File(exportDir, "MalariaScreenerDB_oldVersion.csv");
+
+        try {
+            file.createNewFile();
+            CSVFileWriter csvFileWriter = new CSVFileWriter(new FileWriter(file));
+
+            String queryTables = "SELECT name FROM sqlite_master WHERE type ='table'";
+            Cursor cursor_table = db.rawQuery(queryTables, null);
+            while (cursor_table.moveToNext()) {
+
+                String table_name = cursor_table.getString(0);
+
+                if (table_name.equals("android_metadata") || table_name.equals("sqlite_sequence")){
+                    continue;
+                }
+
+                String query = "SELECT * FROM " + table_name;
+
+                Cursor cursor = db.rawQuery(query, null);
+                csvFileWriter.writeNext(cursor.getColumnNames());  // write column names into excel sheet
+
+                int colCount = cursor.getColumnCount();
+
+                while (cursor.moveToNext()) {
+                    String arrStr[] = new String[colCount];
+                    for (int i = 0; i < arrStr.length; i++) {
+                        arrStr[i] = cursor.getString(i);
+                    }
+                    csvFileWriter.writeNext(arrStr);
+                }
+
+            }
+
+            csvFileWriter.close();
+            //cursor.close();
+
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    /*
+     *   This function drops all tables of the old version database.
+     *   @param db: SQLiteDatabase object
+     *   @return
+     * */
+    private void drop_all_tables(SQLiteDatabase db) {
+
+        String queryTables = "SELECT name FROM sqlite_master WHERE type ='table'";
+        Cursor cursor_table = db.rawQuery(queryTables, null);
+        while (cursor_table.moveToNext()) {
+
+            String table_name = cursor_table.getString(0);
+
+            if (table_name.equals("sqlite_sequence")){
+                continue;
+            }
+
+            db.execSQL(" DROP TABLE IF EXISTS " + table_name);
+        }
     }
 
 

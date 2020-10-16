@@ -1,6 +1,1 @@
-[1/1] Re-running CMake...
--- Configuring done
--- Generating done
--- Build files have been written to: /Users/Hang/Downloads/MS_local_repo/MalariaScreener/app/.externalNativeBuild/cmake/debug/arm64-v8a
-[1/2] Building CXX object CMakeFiles/native-lib.dir/src/main/cpp/native-lib.cpp.o
-[2/2] Linking CXX shared library ../../../../build/intermediates/cmake/debug/obj/arm64-v8a/libnative-lib.so
+ninja: no work to do.
