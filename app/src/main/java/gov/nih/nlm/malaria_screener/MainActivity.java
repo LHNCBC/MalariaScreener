@@ -44,9 +44,6 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-//import com.github.amlcurran.showcaseview.ShowcaseView;
-//import com.github.amlcurran.showcaseview.targets.ViewTarget;
-
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
 

@@ -3,20 +3,12 @@
     package="gov.nih.nlm.malaria_screener"
     android:installLocation="auto">
 
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <uses-feature
@@ -37,11 +29,6 @@
             android:configChanges="orientation|screenSize"
             android:screenOrientation="fullSensor"
             />
-
-        <service
-            android:name=".frontEnd.UploadService"
-            android:enabled="true"
-            android:exported="true" />
 
         <service
             android:name=".uploadFunction.BoxUploadService"
@@ -76,14 +63,6 @@
 
             <!-- android:label="@string/title_activity_camera" -->
         </activity>
-        <!--
- <activity
-            android:name=".frontEnd.getResultNdisplay"
-            android:configChanges="orientation|screenSize"
-            android:label="Results"
-            android:parentActivityName=".CameraActivity"
-            android:screenOrientation="fullSensor" />
-        -->
         <activity
             android:name=".frontEnd.PatientInfoActivity"
             android:configChanges="orientation|screenSize"
@@ -139,19 +118,6 @@
             android:name=".tutorial.About"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="fullSensor" />
-        <activity
-            android:name=".database.Dropbox"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="fullSensor" />
-        <activity android:name="com.dropbox.client2.android.AuthActivity">
-            <intent-filter>
-                <data android:scheme="db-66gkai9g3vjhhl0" />
-
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.BROWSABLE" />
-            </intent-filter>
-        </activity>
         <activity
             android:name=".database.Register"
             android:configChanges="orientation|screenSize"
