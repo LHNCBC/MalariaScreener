@@ -85,13 +85,7 @@ public class DB_SlideInfoActivity extends AppCompatActivity {
 
         listView_slide = (ListView) findViewById(R.id.listView_slide);
 
-        //allManualCounts = readTxtFile4ManualCounts();
-
-//        if (patientStr.equals("test")) { // added for test folder images
-//            feedListView_test(slideStr);
-//        } else {
         feedListView(patientStr, slideStr);
-        //}
 
         imageGalleryButton = (Button) findViewById(R.id.button_imagegallery);
         imageGalleryButton.setOnClickListener(
@@ -238,7 +232,7 @@ public class DB_SlideInfoActivity extends AppCompatActivity {
         }
         slide_txt[10] = ParasitaemiaStr;
 
-        if ((cellCountGT == 0 && infectedCountGT == 0) || patientStr.equals("test")) {
+        if ((cellCountGT == 0 && infectedCountGT == 0)) {
             ParasitaemiaGTStr = "N/A";
         } else {
             ParasitaemiaGT = (int) (infectedCountGT * Integer.valueOf(slide_txt[7]) * 125.6);
@@ -257,138 +251,6 @@ public class DB_SlideInfoActivity extends AppCompatActivity {
         listView_slide.setAdapter(adapter_slide);
 
     }
-
-    /*private void feedListView_test(String slideStr) {
-
-        String cellCountStr;
-        String infectedCountStr;
-        int Parasitaemia;
-        int cellCount = 0;
-        int infectedCount = 0;
-        String ParasitaemiaStr;
-
-        for (int i=0;i<allManualCounts.length/2;i++){
-            Log.d(TAG, "allManualCounts: " + allManualCounts[i]);
-            if (allManualCounts[2*i].equals("N/A") || allManualCounts[2*i+1].equals("N/A")){
-                cellCount = 0;
-                infectedCount = 0;
-                break;
-            } else{
-                cellCount = cellCount + Integer.valueOf(allManualCounts[2*i]);
-                infectedCount = infectedCount + Integer.valueOf(allManualCounts[2*i+1]);
-            }
-
-        }
-
-        if (cellCount == 0 && infectedCount == 0){
-            cellCountStr = "N/A";
-            infectedCountStr = "N/A";
-
-        } else {
-            cellCountStr = String.valueOf(cellCount);
-            infectedCountStr = String.valueOf(infectedCount);
-        }
-
-        slide_txt = new String[14];
-        slide_txt[0] = slideStr;
-        slide_txt[1] = "N/A";
-        slide_txt[2] = "N/A";
-        slide_txt[3] = "N/A";
-        slide_txt[4] = "N/A";
-        slide_txt[5] = "N/A";
-        slide_txt[6] = "N/A";
-        slide_txt[7] = "N/A";
-        slide_txt[8] = "N/A";
-        slide_txt[9] = "N/A";
-        slide_txt[10] = "N/A";
-        slide_txt[11] = "N/A";
-        slide_txt[12] = "N/A";
-        slide_txt[13] = "N/A";
-
-        for (int i = 0; i < slide_item.length; i++) {
-            RowItem item = new RowItem(slide_item[i], slide_txt[i]);
-            rowItems_slide.add(item);
-        }
-
-        CustomAdapter adapter_slide = new CustomAdapter(this, rowItems_slide);
-        listView_slide.setAdapter(adapter_slide);
-
-    }*/
-
-    /*private String[] readTxtFile4ManualCounts() {
-
-        // Get image path
-        File slideDir = null;
-        if (patientStr.equals("test")) { // added for test folder images
-            slideDir = new File(Environment.getExternalStorageDirectory(
-            ), "NLM_Malaria_Screener/Test/" + slideStr);
-        } else {
-            slideDir = new File(Environment.getExternalStorageDirectory(
-            ), "NLM_Malaria_Screener/" + patientStr + "_" + slideStr);
-        }
-
-        File[] allImageListing = slideDir.listFiles(); // list all images in this slide directory
-
-        int imageNum = 0;
-        for (int i = 0; i < allImageListing.length; i++) {
-
-            String imagePath = allImageListing[i].getAbsolutePath();
-
-            if ((imagePath.indexOf("result") == -1) && (imagePath.indexOf("mask") == -1) && (imagePath.contains("png"))) { // pick out the original image by checking the image name
-                imageNum++;
-            }
-
-        }
-
-        String[] allCounts = new String[imageNum*2];
-        Arrays.fill(allCounts, "N/A");
-
-        if (slideDir.exists()) {
-
-            // get all original image file names
-            String[] imageName = new String[imageNum];
-            int index = 0;
-            for (int i = 0; i < allImageListing.length; i++) {
-                String imagePath = allImageListing[i].getAbsolutePath();
-
-                if ((imagePath.indexOf("result") == -1) && (imagePath.indexOf("mask") == -1) && (imagePath.indexOf("png") != -1)) {
-                    imageName[index] = imagePath.substring(imagePath.lastIndexOf("/")+1, imagePath.lastIndexOf("."));
-
-                    index++;
-                }
-
-            }
-
-            for (int i=0; i<imageName.length; i++){
-
-                for (int j = 0; j < allImageListing.length; j++) {
-                    String imagePath = allImageListing[j].getAbsolutePath();
-                    String fileName = imagePath.substring(imagePath.lastIndexOf("/")+1);
-                    String imageNameTemp = imagePath.substring(imagePath.lastIndexOf("/")+1, imagePath.lastIndexOf("."));
-                    if (imageNameTemp.equals(imageName[i]) && fileName.contains("txt")){
-                        File file = new File(imagePath);
-                        try {
-                            BufferedReader br = new BufferedReader(new FileReader(file));
-                            String line = br.readLine();
-                            String[] eachItem = line.split(" ");
-                            allCounts[2*i] = eachItem[1];
-                            allCounts[2*i+1] = eachItem[2];
-
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }
-
-            return allCounts;
-
-        }
-
-        return allCounts;
-    }*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

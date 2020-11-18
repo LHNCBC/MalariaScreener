@@ -83,8 +83,6 @@ public class CustomAdapter_ImageGalleryDB extends RecyclerView.Adapter<CustomAda
 
     int thinOrThick; // 0 is thin, 1 is thick
 
-    //String[] manualCountsFromTxt;
-
     public CustomAdapter_ImageGalleryDB(Context context, ArrayList<RowItem_Image> rowItem_imageArrayList, OnPhotoCallback photoCallback, String[] cell_eachImage, String[] infected_eachImage, String PIDstr, String SIDstr, String[] cell_eachImageGT, String[] infected_eachImageGT, int thinOrThick) {
         this.rowItem_imageArrayList = rowItem_imageArrayList;
         this.context = context;
@@ -251,69 +249,5 @@ public class CustomAdapter_ImageGalleryDB extends RecyclerView.Adapter<CustomAda
 
         void onPhotoLongClick(int position, String LOR, View view);
     }
-
-    /*private String[] readTxtFile4ManualCounts() {
-        // Get image path
-        File slideDir = null;
-        if (PIDstr.equals("test")) { // added for test folder images
-            slideDir = new File(Environment.getExternalStorageDirectory(
-            ), "NLM_Malaria_Screener/Test/" + SIDstr);
-        } else {
-            slideDir = new File(Environment.getExternalStorageDirectory(
-            ), "NLM_Malaria_Screener/" + PIDstr + "_" + SIDstr);
-        }
-
-        String[] allCounts = new String[rowItem_imageArrayList.size()*2];
-        Arrays.fill(allCounts, "N/A");
-
-        if (slideDir.exists()) {
-
-            File[] allImageListing = slideDir.listFiles(); // list all images in this slide directory
-
-            // get all original image file names
-            String[] imageName = new String[rowItem_imageArrayList.size()];
-            int index = 0;
-            for (int i = 0; i < allImageListing.length; i++) {
-                String imagePath = allImageListing[i].getAbsolutePath();
-
-                if ((imagePath.indexOf("result") == -1) && (imagePath.indexOf("mask") == -1) && (imagePath.indexOf("png") != -1)) {
-                    imageName[index] = imagePath.substring(imagePath.lastIndexOf("/")+1, imagePath.lastIndexOf("."));
-
-                    index++;
-                }
-
-            }
-
-            for (int i=0; i<imageName.length; i++){
-
-                for (int j = 0; j < allImageListing.length; j++) {
-                    String imagePath = allImageListing[j].getAbsolutePath();
-                    String fileName = imagePath.substring(imagePath.lastIndexOf("/")+1);
-                    String imageNameTemp = imagePath.substring(imagePath.lastIndexOf("/")+1, imagePath.lastIndexOf("."));
-                    if (imageNameTemp.equals(imageName[i]) && fileName.contains("txt")){
-                        File file = new File(imagePath);
-                        try {
-                            BufferedReader br = new BufferedReader(new FileReader(file));
-                            String line = br.readLine();
-                            String[] eachItem = line.split(" ");
-                            allCounts[2*i] = eachItem[1];
-                            allCounts[2*i+1] = eachItem[2];
-
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }
-
-            return allCounts;
-
-        }
-
-        return allCounts;
-    }*/
-
 
 }

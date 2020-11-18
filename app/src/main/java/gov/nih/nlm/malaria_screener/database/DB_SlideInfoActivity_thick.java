@@ -184,7 +184,7 @@ public class DB_SlideInfoActivity_thick extends DB_SlideInfoBaseActivity {
         }
         slide_txt[10] = ParasitaemiaStr;
 
-        if ((wbcCountGT == 0 && parasiteCountGT == 0) || patientStr.equals("test")) {
+        if ((wbcCountGT == 0 && parasiteCountGT == 0)) {
             ParasitaemiaGTStr = "N/A";
         } else {
             ParasitaemiaGT = (int) (parasiteCountGT * 40);

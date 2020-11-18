@@ -122,6 +122,9 @@ public class SummarySheetActivity extends SummarySheetBaseActivity {
                             PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putBoolean("first_session_done", true).apply();
                         }
 
+                        // export and update database file to include info from current slide
+                        UtilsMethods.exportDB(getApplicationContext());
+
                         // start upload event
                         for (int i=0;i<imageName.length;i++) {
                             UploadHashManager.hashmap_for_upload.put(imageName[i], patientIDStr + "_" + slideIDStr);

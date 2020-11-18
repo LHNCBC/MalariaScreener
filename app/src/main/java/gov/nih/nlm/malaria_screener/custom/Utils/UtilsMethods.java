@@ -34,6 +34,8 @@ import gov.nih.nlm.malaria_screener.database.MyDBHandler;
 
 public class UtilsMethods {
 
+    private static final String TAG = "MyDebug";
+
     private final static String LOCAL_DATA_DIR = "/NLM_Malaria_Screener/";
 
     /*
@@ -42,6 +44,8 @@ public class UtilsMethods {
     *   @return
     * */
     public static void exportDB(Context context) {
+
+        long startTime = System.currentTimeMillis();
 
         MyDBHandler dbHandler = new MyDBHandler(context, null, null, 1);
 
@@ -56,6 +60,7 @@ public class UtilsMethods {
 
             String queryTables = "SELECT name FROM sqlite_master WHERE type ='table'";
             Cursor cursor_table = db.rawQuery(queryTables, null);
+
             while (cursor_table.moveToNext()) {
 
                 String table_name = cursor_table.getString(0);
@@ -88,5 +93,11 @@ public class UtilsMethods {
             e.printStackTrace();
         }
 
+        long endTime = System.currentTimeMillis();
+        long totalTime = endTime - startTime;
+        Log.d(TAG, "totalTime writing excel sheet: " + totalTime);
+
     }
+
+
 }

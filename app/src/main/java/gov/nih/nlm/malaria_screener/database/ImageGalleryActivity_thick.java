@@ -113,13 +113,10 @@ public class ImageGalleryActivity_thick extends AppCompatActivity implements Cus
 
         // Get image path
         File slideDir;
-        if (patientStr.equals("test")) { // added for test folder images
-            slideDir = new File(Environment.getExternalStorageDirectory(
-            ), "NLM_Malaria_Screener/Test/" + slideStr);
-        } else {
-            slideDir = new File(Environment.getExternalStorageDirectory(
-            ), "NLM_Malaria_Screener/" + patientStr + "_" + slideStr);
-        }
+
+        slideDir = new File(Environment.getExternalStorageDirectory(
+        ), "NLM_Malaria_Screener/" + patientStr + "_" + slideStr);
+
 
         ArrayList<String> originalImagePath = new ArrayList<>();
         ArrayList<String> resultImagePath = new ArrayList<>();
