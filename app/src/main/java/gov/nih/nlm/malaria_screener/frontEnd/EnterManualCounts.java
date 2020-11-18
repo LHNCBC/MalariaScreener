@@ -41,6 +41,7 @@ import java.util.Arrays;
 
 import gov.nih.nlm.malaria_screener.R;
 import gov.nih.nlm.malaria_screener.custom.CustomAdapter_ManualCounts;
+import gov.nih.nlm.malaria_screener.custom.Utils.UtilsMethods;
 import gov.nih.nlm.malaria_screener.database.MyDBHandler;
 
 public class EnterManualCounts extends AppCompatActivity {
@@ -105,169 +106,11 @@ public class EnterManualCounts extends AppCompatActivity {
 
     }
 
-    /*private String[] readTxtFile4ManualCounts() {
-
-        File slideDir;
-        if (patientStr.equals("test")) { // added for test folder images
-            // Get image path
-            slideDir = new File(Environment.getExternalStorageDirectory(
-            ), "NLM_Malaria_Screener/Test/" + slideStr);
-        } else {
-            // Get image path
-            slideDir = new File(Environment.getExternalStorageDirectory(
-            ), "NLM_Malaria_Screener/" + patientStr + "_" + slideStr);
-        }
-
-        String[] allCounts = new String[imageNum * 2];
-        Arrays.fill(allCounts, "N/A");
-
-        if (slideDir.exists()) {
-
-            File[] allImageListing = slideDir.listFiles(); // list all images in this slide directory
-
-            // get all original image file names
-            String[] imageName = new String[imageNum];
-            int index = 0;
-            for (int i = 0; i < allImageListing.length; i++) {
-                String imagePath = allImageListing[i].getAbsolutePath();
-
-                if ((imagePath.indexOf("result") == -1) && (imagePath.indexOf("mask") == -1) && (imagePath.indexOf("png") != -1)) {
-                    imageName[index] = imagePath.substring(imagePath.lastIndexOf("/") + 1, imagePath.lastIndexOf("."));
-                    //Log.d(TAG, "ImageName:" + imageName[index] + " " +index);
-                    index++;
-                }
-
-            }
-
-            for (int i = 0; i < imageName.length; i++) {
-
-                for (int j = 0; j < allImageListing.length; j++) {
-                    String imagePath = allImageListing[j].getAbsolutePath();
-                    String fileName = imagePath.substring(imagePath.lastIndexOf("/") + 1);
-                    String imageNameTemp = imagePath.substring(imagePath.lastIndexOf("/") + 1, imagePath.lastIndexOf("."));
-                    if (imageNameTemp.equals(imageName[i]) && fileName.contains("txt")) {
-                        File file = new File(imagePath);
-                        try {
-                            BufferedReader br = new BufferedReader(new FileReader(file));
-                            String line = br.readLine();
-                            String[] eachItem = line.split(" ");
-                            allCounts[2 * i] = eachItem[1];
-                            allCounts[2 * i + 1] = eachItem[2];
-
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }
-
-            return allCounts;
-
-        }
-
-        return allCounts;
-    }*/
-
-    /*public void saveManualCounts2TextFile() {
-
-        File slideDir;
-        // Get image path
-        if (patientStr.equals("test")) { // added for test folder images
-            // Get image path
-            slideDir = new File(Environment.getExternalStorageDirectory(
-            ), "NLM_Malaria_Screener/Test/" + slideStr);
-        } else {
-            slideDir = new File(Environment.getExternalStorageDirectory(
-            ), "NLM_Malaria_Screener/" + patientStr + "_" + slideStr);
-        }
-
-        ArrayList<String> originalImageName = new ArrayList<>();
-
-        if (slideDir.exists()) {
-
-            File[] allImageListing = slideDir.listFiles(); // list all images in this slide directory
-
-            for (int i = 0; i < allImageListing.length; i++) {
-
-                String imagePath = allImageListing[i].getAbsolutePath();
-
-                if ((imagePath.indexOf("result") == -1) && (imagePath.indexOf("mask") == -1) && (imagePath.contains("png"))) { // pick out the original image by checking the image name
-                    int startIndex = imagePath.lastIndexOf("/") + 1;
-                    int endIndex = imagePath.lastIndexOf(".");
-                    String imageNameStr = imagePath.substring(startIndex, endIndex);
-                    originalImageName.add(imageNameStr);
-                }
-
-            }
-
-        }
-
-        for (int i = 0; i < originalImageName.size(); i++) {
-
-            File textFile = null;
-
-            try {
-
-                textFile = createTextFile(originalImageName.get(i));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            if (textFile != null) {
-                FileOutputStream outText = null;
-
-                try {
-
-                    if (textFile.length() == 0) {
-
-                        outText = new FileOutputStream(textFile, true);
-
-                        outText.write((originalImageName.get(i) + ".png " + customAdapter_manualCounts.slide_txt[2 * i] + " " + customAdapter_manualCounts.slide_txt[2 * i + 1]).getBytes());
-                    } else {
-
-                        outText = new FileOutputStream(textFile, false);
-
-                        outText.write((originalImageName.get(i) + ".png " + customAdapter_manualCounts.slide_txt[2 * i] + " " + customAdapter_manualCounts.slide_txt[2 * i + 1]).getBytes());
-                    }
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } finally {
-                    try {
-                        if (outText != null) {
-                            outText.close();
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-
-    }
-
-    private File createTextFile(String imagename) throws IOException {
-
-        File Dir;
-        // Get image path
-        if (patientStr.equals("test")) { // added for test folder images
-            // Get image path
-            Dir = new File(Environment.getExternalStorageDirectory(
-            ), "NLM_Malaria_Screener/Test/" + slideStr);
-        } else {
-            Dir = new File(Environment.getExternalStorageDirectory(
-            ), "NLM_Malaria_Screener/" + patientStr + "_" + slideStr);
-        }
-
-        File imgFile = new File(Dir, imagename + ".txt");
-
-        return imgFile;
-    }*/
-
     public void onBackPressed() {
         saveManualCounts2DB();
+
+        // export and update database file to include info from current slide
+        UtilsMethods.exportDB(getApplicationContext());
 
         finish();
 

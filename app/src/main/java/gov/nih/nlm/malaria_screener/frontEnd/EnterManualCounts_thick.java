@@ -32,6 +32,7 @@ import java.util.ArrayList;
 
 import gov.nih.nlm.malaria_screener.R;
 import gov.nih.nlm.malaria_screener.custom.CustomAdapter_ManualCounts_thick;
+import gov.nih.nlm.malaria_screener.custom.Utils.UtilsMethods;
 import gov.nih.nlm.malaria_screener.database.MyDBHandler;
 
 public class EnterManualCounts_thick extends AppCompatActivity {
@@ -99,6 +100,9 @@ public class EnterManualCounts_thick extends AppCompatActivity {
     public void onBackPressed() {
         saveManualCounts2DB();
 
+        // export and update database file to include info from current slide
+        UtilsMethods.exportDB(getApplicationContext());
+
         finish();
 
         return;
@@ -115,7 +119,6 @@ public class EnterManualCounts_thick extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                //saveManualCounts2TextFile();
 
                 onBackPressed();
                 return true;

@@ -37,7 +37,6 @@ import java.util.List;
 
 import gov.nih.nlm.malaria_screener.R;
 
-
 /**
  * Created by yuh5 on 9/14/2017.
  */

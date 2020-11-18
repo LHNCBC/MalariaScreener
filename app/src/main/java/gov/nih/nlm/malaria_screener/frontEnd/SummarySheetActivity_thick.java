@@ -33,6 +33,7 @@ import java.io.File;
 import gov.nih.nlm.malaria_screener.MainActivity;
 import gov.nih.nlm.malaria_screener.R;
 import gov.nih.nlm.malaria_screener.custom.Utils.UtilsData;
+import gov.nih.nlm.malaria_screener.custom.Utils.UtilsMethods;
 import gov.nih.nlm.malaria_screener.database.Images_thick;
 import gov.nih.nlm.malaria_screener.database.MyDBHandler;
 import gov.nih.nlm.malaria_screener.database.Patients;
@@ -110,6 +111,9 @@ public class SummarySheetActivity_thick extends SummarySheetBaseActivity {
                         if (num_slides == 1){
                             PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putBoolean("first_session_done", true).apply();
                         }
+
+                        // export and update database file to include info from current slide
+                        UtilsMethods.exportDB(getApplicationContext());
 
                         // start upload event
                         for (int i=0;i<imageName.length;i++) {

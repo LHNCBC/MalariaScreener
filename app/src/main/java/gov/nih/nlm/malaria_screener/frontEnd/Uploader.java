@@ -41,7 +41,6 @@ import java.util.List;
 
 import gov.nih.nlm.malaria_screener.R;
 import gov.nih.nlm.malaria_screener.database.CSVFileWriter;
-import gov.nih.nlm.malaria_screener.database.Dropbox;
 import gov.nih.nlm.malaria_screener.database.MyDBHandler;
 import gov.nih.nlm.malaria_screener.database.Upload;
 

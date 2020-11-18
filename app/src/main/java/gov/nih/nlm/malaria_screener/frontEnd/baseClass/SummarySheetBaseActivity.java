@@ -239,9 +239,6 @@ public abstract class SummarySheetBaseActivity extends AppCompatActivity{
 
     public void prepare_and_upload(String[] imageName, String patientIDStr, String slideIDStr){
 
-        //export database for upload
-        UtilsMethods.exportDB(getApplicationContext());
-
         for (int i=0;i<imageName.length;i++) {
             imageNameList.add(imageName[i]);
             folderNameList.add(patientIDStr + "_" + slideIDStr);
