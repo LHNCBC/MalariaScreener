@@ -35,6 +35,7 @@ import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.BaseSwipeAdapter;
 
 import gov.nih.nlm.malaria_screener.R;
+import gov.nih.nlm.malaria_screener.custom.Utils.UtilsMethods;
 import gov.nih.nlm.malaria_screener.database.MyDBHandler;
 import gov.nih.nlm.malaria_screener.uploadFunction.UploadHashManager;
 
@@ -133,6 +134,9 @@ public class CustomAdapter_SlideDB extends BaseSwipeAdapter {
                                 rowItemSlides.remove(position);
                                 notifyDataSetChanged();
 
+                                // export and update database file to include info from current slide
+                                UtilsMethods.exportDB(context);
+
                                 // Write your code here to invoke YES event
                                 String string = context.getResources().getString(R.string.s_deleted);
                                 Toast.makeText(context, string, Toast.LENGTH_SHORT).show();
@@ -163,75 +167,34 @@ public class CustomAdapter_SlideDB extends BaseSwipeAdapter {
 
     private void deleteImagesInSlide(String PID, String SID) {
 
-        if (PID.equals("test")) {
+        final File file = new File(Environment.getExternalStorageDirectory(
+        ), "NLM_Malaria_Screener");
 
-            final File file = new File(Environment.getExternalStorageDirectory(
-            ), "NLM_Malaria_Screener/Test");
+        File[] folderList = file.listFiles(); // list all folder with "PID_"
 
-            File[] folderList = file.listFiles();
+        if (folderList != null) {
+            int length = folderList.length;
 
-            if (folderList != null) {
-                int length = folderList.length;
+            // delete files
+            for (int i = 0; i < length; i++) {
 
-                // delete files
-                for (int i = 0; i < length; i++) {
+                if (folderList[i].getAbsolutePath().toString().contains(PID + "_" + SID)) {
 
-                    String imagePath = folderList[i].getAbsolutePath().toString();
-                    String SlideIDStr = imagePath.substring(imagePath.lastIndexOf("/") + 1);
+                    // delete files
+                    File[] imageList = folderList[i].listFiles();
 
-                    if (SlideIDStr.equals(SID)) {
-                        // delete files
-                        File[] imageList = folderList[i].listFiles();
+                    if (imageList != null) {
+                        int length1 = imageList.length;
 
-                        if (imageList != null) {
-                            int length1 = imageList.length;
-
-                            if (length1 != 0) {
-                                for (int j = 0; j < length1; j++) {
-                                    imageList[j].delete();
-                                }
-
-                                folderList[i].delete();
+                        if (length1 != 0) {
+                            for (int j = 0; j < length1; j++) {
+                                imageList[j].delete();
                             }
-                        }
-                    }
 
-                }
-
-            }
-
-        } else {
-
-            final File file = new File(Environment.getExternalStorageDirectory(
-            ), "NLM_Malaria_Screener");
-
-            File[] folderList = file.listFiles(); // list all folder with "PID_"
-
-            if (folderList != null) {
-                int length = folderList.length;
-
-                // delete files
-                for (int i = 0; i < length; i++) {
-
-                    if (folderList[i].getAbsolutePath().toString().contains(PID + "_" + SID)) {
-
-                        // delete files
-                        File[] imageList = folderList[i].listFiles();
-
-                        if (imageList != null) {
-                            int length1 = imageList.length;
-
-                            if (length1 != 0) {
-                                for (int j = 0; j < length1; j++) {
-                                    imageList[j].delete();
-                                }
-
-                                folderList[i].delete();
-                            }
+                            folderList[i].delete();
                         }
                     }
                 }
-
             }
 
         }

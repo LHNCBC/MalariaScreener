@@ -36,6 +36,7 @@ import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.BaseSwipeAdapter;
 
 import gov.nih.nlm.malaria_screener.R;
+import gov.nih.nlm.malaria_screener.custom.Utils.UtilsMethods;
 import gov.nih.nlm.malaria_screener.database.MyDBHandler;
 import gov.nih.nlm.malaria_screener.uploadFunction.UploadHashManager;
 
@@ -55,12 +56,9 @@ public class CustomAdapter_PatientDB extends BaseSwipeAdapter {
     private Context context;
     List<RowItem_Patient> rowItemPatients;
 
-    public boolean testPatient = false;
-
-    public CustomAdapter_PatientDB(Context context, List<RowItem_Patient> rowItemPatients, boolean testPatient) {
+    public CustomAdapter_PatientDB(Context context, List<RowItem_Patient> rowItemPatients) {
         this.context = context;
         this.rowItemPatients = rowItemPatients;
-        this.testPatient = testPatient;
 
         dbHandler = new MyDBHandler(context, null, null, 1);
     }
@@ -110,16 +108,14 @@ public class CustomAdapter_PatientDB extends BaseSwipeAdapter {
 
                                 deleteAllPatientImagesFromHashMap(PID);
 
-                                if (!testPatient) {
-                                    dbHandler.deletePatient(PID);
-                                    deleteImagesInPatient(PID);
-                                } else {
-                                    dbHandler.deletePatient("test");
-                                    deleteImagesInTest();
-                                }
+                                dbHandler.deletePatient(PID);
+                                deleteImagesInPatient(PID);
 
                                 rowItemPatients.remove(position);
                                 notifyDataSetChanged();
+
+                                // export and update database file to include info from current slide
+                                UtilsMethods.exportDB(context);
 
                                 // Write your code here to invoke YES event
                                 String string = context.getResources().getString(R.string.p_deleted);
@@ -181,40 +177,6 @@ public class CustomAdapter_PatientDB extends BaseSwipeAdapter {
                 }
             }
 
-        }
-
-    }
-
-    private void deleteImagesInTest() {
-
-        final File fileTest = new File(Environment.getExternalStorageDirectory(
-        ), "NLM_Malaria_Screener/Test");
-
-
-        File[] folderListTest = fileTest.listFiles();
-
-        if (folderListTest != null) {
-            int length = folderListTest.length;
-
-            // delete files
-            for (int i = 0; i < length; i++) {
-
-                File[] imageList = folderListTest[i].listFiles();
-
-                if (imageList != null) {
-                    int length1 = imageList.length;
-
-                    if (length1 != 0) {
-                        for (int j = 0; j < length1; j++) {
-                            imageList[j].delete();
-                        }
-
-                        folderListTest[i].delete();
-                    }
-                }
-            }
-
-            fileTest.delete();
         }
 
     }

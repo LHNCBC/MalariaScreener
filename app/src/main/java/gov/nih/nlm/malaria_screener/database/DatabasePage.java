@@ -63,7 +63,6 @@ public class DatabasePage extends AppCompatActivity {
     private final static String DROPBOX_REGISTER = "registered";
 
     ListView listView_allPatients;
-    ListView listView_testPatients;
 
     Bundle bundle;
 
@@ -86,7 +85,6 @@ public class DatabasePage extends AppCompatActivity {
         //deleteImagesButton = (Button) findViewById(R.id.button_delete_all_images);
 
         listView_allPatients = (ListView) findViewById(R.id.listView_allPatient);
-        listView_testPatients = (ListView) findViewById(R.id.listView_testPatient);
 
         printDatabase();
 
@@ -252,61 +250,33 @@ public class DatabasePage extends AppCompatActivity {
                 }
         );
 
-        listView_testPatients.setOnItemClickListener(
-                new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-
-                        Intent intentSlideLog = new Intent(getApplicationContext(), DatabaseSlideLogPage.class);
-                        bundle = new Bundle();
-                        bundle.putString("itemPID", "test"); // the ID for retrieve patient records from database
-
-                        intentSlideLog.putExtras(bundle);
-                        startActivity(intentSlideLog);
-
-                    }
-                }
-        );
-
-
     }
 
     public void printDatabase() {
 
         List<RowItem_Patient> rowItems_allpatients = new ArrayList<RowItem_Patient>();
-        List<RowItem_Patient> rowItems_testpatients = new ArrayList<RowItem_Patient>();
-        ;
 
         String dbString[][] = dbHandler.databaseToString();
 
         int dbLength = dbHandler.getTableSize();
 
         for (int i = 0; i < dbLength; i++) {
-            if (!dbString[i][0].equals("test")) { // don't print out test patient here
-                if (dbString[i][2].equals("male")) {
-                    String string = getResources().getString(R.string.male);
-                    dbString[i][2] = string;
-                } else if (dbString[i][2].equals("female")){
-                    String string = getResources().getString(R.string.female);
-                    dbString[i][2] = string;
-                }
 
-                RowItem_Patient item = new RowItem_Patient(dbString[i][0], dbString[i][1], dbString[i][2], dbString[i][3]);
-                rowItems_allpatients.add(item);
+            if (dbString[i][2].equals("male")) {
+                String string = getResources().getString(R.string.male);
+                dbString[i][2] = string;
+            } else if (dbString[i][2].equals("female")){
+                String string = getResources().getString(R.string.female);
+                dbString[i][2] = string;
             }
+
+            RowItem_Patient item = new RowItem_Patient(dbString[i][0], dbString[i][1], dbString[i][2], dbString[i][3]);
+            rowItems_allpatients.add(item);
+
         }
 
-        CustomAdapter_PatientDB adapter_patientDB = new CustomAdapter_PatientDB(this, rowItems_allpatients, false);
+        CustomAdapter_PatientDB adapter_patientDB = new CustomAdapter_PatientDB(this, rowItems_allpatients);
         listView_allPatients.setAdapter(adapter_patientDB);
-
-        //test patient
-        /*if (dbHandler.checkExist_Patient("test")) {
-            RowItem_Patient item_testPatient = new RowItem_Patient("Test", "", "", "");
-            rowItems_testpatients.add(item_testPatient);
-        }
-
-        CustomAdapter_PatientDB adapter_patientDB_test = new CustomAdapter_PatientDB(this, rowItems_testpatients, true);
-        listView_testPatients.setAdapter(adapter_patientDB_test);*/
 
     }
 
@@ -338,36 +308,6 @@ public class DatabasePage extends AppCompatActivity {
                 }
             }
 
-        }
-
-        final File fileTest = new File(Environment.getExternalStorageDirectory(
-        ), "NLM_Malaria_Screener/Test");
-
-
-        File[] folderListTest = fileTest.listFiles();
-
-        if (folderListTest != null) {
-            int length = folderListTest.length;
-
-            // delete files
-            for (int i = 0; i < length; i++) {
-
-                File[] imageList = folderListTest[i].listFiles();
-
-                if (imageList != null) {
-                    int length1 = imageList.length;
-
-                    if (length1 != 0) {
-                        for (int j = 0; j < length1; j++) {
-                            imageList[j].delete();
-                        }
-
-                        folderListTest[i].delete();
-                    }
-                }
-            }
-
-            fileTest.delete();
         }
 
         // Write your code here to invoke NO event
