@@ -3,19 +3,6 @@
     package="gov.nih.nlm.malaria_screener"
     android:installLocation="auto">
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-
-    <uses-feature
-        android:name="android.hardware.camera"
-        android:required="true" />
-    <uses-feature android:name="android.hardware.camera.autofocus" />
-
     <application
         android:allowBackup="false"
         android:hardwareAccelerated="true"
@@ -24,28 +11,20 @@
         android:largeHeap="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
+        <activity android:name=".settings.NavToPermissionActivity"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="fullSensor"/>
         <activity
             android:name=".uploadFunction.UploadActivity"
             android:configChanges="orientation|screenSize"
-            android:screenOrientation="fullSensor"
-            />
-
-        <service
-            android:name=".uploadFunction.BoxUploadService"
-            android:enabled="true"
-            android:exported="true" />
+            android:screenOrientation="fullSensor" />
 
         <activity
-            android:name=".userOnboard.DisclaimerActivity"
+            android:name=".settings.DisclaimerActivity"
             android:label="@string/title_activity_disclaimer"
             android:theme="@style/NoActionBar" />
-        <activity android:name=".userOnboard.UserOnBoardActivity" />
-        <!--
-            <provider
-            android:name=".frontEnd.MySuggestionProvider"
-            android:authorities="com.example.hang.malaria.SuggestionProvider"
-            android:exported="true" />
-        -->
+
+        <activity android:name=".settings.UserOnBoardActivity" />
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|screenSize"
@@ -53,9 +32,16 @@
             android:screenOrientation="fullSensor">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <!--
+            <provider
+            android:name=".frontEnd.MySuggestionProvider"
+            android:authorities="com.example.hang.malaria.SuggestionProvider"
+            android:exported="true" />
+        -->
         <activity
             android:name=".camera.CameraActivity"
             android:configChanges="orientation|screenSize"
@@ -159,6 +145,24 @@
             android:label="Results"
             android:parentActivityName=".camera.CameraActivity"
             android:screenOrientation="fullSensor" />
+        <service
+            android:name=".uploadFunction.BoxUploadService"
+            android:enabled="true"
+            android:exported="true" />
     </application>
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.ACTION_MANAGE_OVERLAY_PERMISSION" />
 
 </manifest>

@@ -22,7 +22,9 @@ package gov.nih.nlm.malaria_screener.custom.Utils;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+
 import android.os.Environment;
+
 import android.util.Log;
 
 import java.io.File;
@@ -39,10 +41,10 @@ public class UtilsMethods {
     private final static String LOCAL_DATA_DIR = "/NLM_Malaria_Screener/";
 
     /*
-    *   This function export database to a .csv file.
-    *   @param context: context of the caller activity
-    *   @return
-    * */
+     *   This function export database to a .csv file.
+     *   @param context: context of the caller activity
+     *   @return
+     * */
     public static void exportDB(Context context) {
 
         long startTime = System.currentTimeMillis();
@@ -98,6 +100,5 @@ public class UtilsMethods {
         Log.d(TAG, "totalTime writing excel sheet: " + totalTime);
 
     }
-
 
 }

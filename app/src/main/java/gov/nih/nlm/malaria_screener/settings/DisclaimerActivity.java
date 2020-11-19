@@ -17,12 +17,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
 
-package gov.nih.nlm.malaria_screener.userOnboard;
+package gov.nih.nlm.malaria_screener.settings;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;

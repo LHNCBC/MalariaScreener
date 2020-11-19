@@ -9,4 +9,9 @@
     <color name="toolbar_longpressed">#F85891EC</color>
     <color name="toolbar_normal">#1F568a</color>
 
+    <color name="button">#D95891EC</color>
+
+    <color name="button_no_bg">#005891EC</color>
+    <color name="button_no_bg_selected">#D9C9C9C9</color>
+
 </resources>

@@ -421,4 +421,12 @@
     <string name="no_selected_item">No selections has been made.</string>
     <string name="quick_upload_explained">Quick Upload is an one-click function that automatically uploads all remaining folders.</string>
 
+    <!-- Strings in NavToPermission Activity -->
+    <string name="go_to_settings">Go To Settings</string>
+    <string name="not_now">Not Now</string>
+    <string name="show_upload">Show Upload Progress</string>
+    <string name="show_upload_reason">Floating widget shows you the upload progress, even while you are using other apps.\n\n Turn on \"Allow
+        display over other apps\".
+    </string>
+
 </resources>

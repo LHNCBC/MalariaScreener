@@ -17,7 +17,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
 
-package gov.nih.nlm.malaria_screener.userOnboard;
+package gov.nih.nlm.malaria_screener.settings;
 
 import android.content.Intent;
 import android.preference.PreferenceManager;
@@ -29,7 +29,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
 import gov.nih.nlm.malaria_screener.R;
-import gov.nih.nlm.malaria_screener.database.Register;
 
 public class UserOnBoardActivity extends AppCompatActivity {
 

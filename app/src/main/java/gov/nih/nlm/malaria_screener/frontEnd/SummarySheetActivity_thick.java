@@ -21,12 +21,15 @@ package gov.nih.nlm.malaria_screener.frontEnd;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Environment;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.text.Html;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import java.io.File;
 
@@ -39,12 +42,15 @@ import gov.nih.nlm.malaria_screener.database.MyDBHandler;
 import gov.nih.nlm.malaria_screener.database.Patients;
 import gov.nih.nlm.malaria_screener.database.Slides;
 import gov.nih.nlm.malaria_screener.frontEnd.baseClass.SummarySheetBaseActivity;
+import gov.nih.nlm.malaria_screener.settings.NavToPermissionActivity;
 import gov.nih.nlm.malaria_screener.uploadFunction.ListOfImagesUploader;
 import gov.nih.nlm.malaria_screener.uploadFunction.UploadActivity;
 import gov.nih.nlm.malaria_screener.uploadFunction.UploadHashManager;
 import gov.nih.nlm.malaria_screener.uploadFunction.UploadSessionManager;
 
 public class SummarySheetActivity_thick extends SummarySheetBaseActivity {
+
+    private static final int SYSTEM_ALERT_WINDOW_PERMISSION = 102;
 
     private final static String DROPBOX_NAME = "dropbox_prefs";
     private final static String DROPBOX_REGISTER = "registered";
@@ -126,17 +132,45 @@ public class SummarySheetActivity_thick extends SummarySheetBaseActivity {
 
                         if (sharedPreferences.getBoolean(DROPBOX_REGISTER, false)) { // if registered
 
-                            prepare_and_upload(imageName, patientIDStr, slideIDStr);
-                        }
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(getApplicationContext())) {
+                                Intent permissionIntent = new Intent(view.getContext(), NavToPermissionActivity.class);
+                                startActivityForResult(permissionIntent, SYSTEM_ALERT_WINDOW_PERMISSION);
+                            } else {
 
-                        Intent intent = new Intent(view.getContext(), MainActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // kill all the other activities on top of the old MainActivity.class activity
-                        startActivity(intent);
-                        finish();
+                                prepare_and_upload(imageName, patientIDStr, slideIDStr);
+                                exit_activity();
+                            }
+
+                        } else{
+
+                            exit_activity();
+                        }
 
                     }
                 }
         );
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == SYSTEM_ALERT_WINDOW_PERMISSION && resultCode == RESULT_OK) {
+
+            prepare_and_upload(imageName, patientIDStr, slideIDStr);
+            exit_activity();
+        } else {
+            Toast.makeText(this, "Draw over other app permission not enabled. Upload stopped.", Toast.LENGTH_SHORT).show();
+
+            exit_activity();
+        }
+    }
+
+    private void exit_activity(){
+
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // kill all the other activities on top of the old MainActivity.class activity
+        startActivity(intent);
+        finish();
     }
 
     @Override

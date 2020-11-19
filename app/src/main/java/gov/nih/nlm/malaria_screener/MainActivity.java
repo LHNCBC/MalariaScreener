@@ -26,12 +26,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -53,7 +50,7 @@ import gov.nih.nlm.malaria_screener.tutorial.About;
 import gov.nih.nlm.malaria_screener.tutorial.Diagram;
 import gov.nih.nlm.malaria_screener.tutorial.TutorialActivity;
 import gov.nih.nlm.malaria_screener.uploadFunction.UploadHashManager;
-import gov.nih.nlm.malaria_screener.userOnboard.UserOnBoardActivity;
+import gov.nih.nlm.malaria_screener.settings.UserOnBoardActivity;
 //import gov.nih.nlm.malaria_screener.tutorial.Diagram;
 //import gov.nih.nlm.malaria_screener.tutorial.TutorialActivity;
 
@@ -82,7 +79,6 @@ public class MainActivity extends AppCompatActivity {
 
     static final int REQUEST_CAM = 2;
     final private int REQUEST_CODE_ASK_PERMISSIONS = 123;
-    private static final int APP_PERMISSION_REQUEST = 102;
 
     // Static code clocks are used for assigning initial values to static variables. These are also called “static initializers”.
     static {
@@ -228,26 +224,24 @@ public class MainActivity extends AppCompatActivity {
             recreate();
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
-            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                    Uri.parse("package:" + getPackageName()));
-            startActivityForResult(intent, APP_PERMISSION_REQUEST);
-        } /*else {
-            initializeView();
-        }*/
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
+//            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+//                    Uri.parse("package:" + getPackageName()));
+//            startActivityForResult(intent, SYSTEM_ALERT_WINDOW_PERMISSION);
+//        }
 
     }
 
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == APP_PERMISSION_REQUEST && resultCode == RESULT_OK) {
-            //initializeView();
-        } else {
-            Toast.makeText(this, "Draw over other app permission not enable.", Toast.LENGTH_SHORT).show();
-        }
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        if (requestCode == SYSTEM_ALERT_WINDOW_PERMISSION && resultCode == RESULT_OK) {
+//            //initializeView();
+//        } else {
+//            Toast.makeText(this, "Draw over other app permission not enable.", Toast.LENGTH_SHORT).show();
+//        }
+//    }
 
     private boolean addPermission(List<String> permissionsList, String permission) {
         if (ActivityCompat.checkSelfPermission(getApplicationContext(), permission) != PackageManager.PERMISSION_GRANTED) {

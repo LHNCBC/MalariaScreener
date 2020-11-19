@@ -19,9 +19,9 @@ limitations under the License.
 
 package gov.nih.nlm.malaria_screener.uploadFunction;
 
-import android.app.AlertDialog;
+
 import android.content.Context;
-import android.content.DialogInterface;
+
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.Network;
@@ -38,6 +38,7 @@ import com.box.androidsdk.content.models.BoxSession;
 import java.util.ArrayList;
 
 import gov.nih.nlm.malaria_screener.R;
+import gov.nih.nlm.malaria_screener.settings.NavToPermissionActivity;
 
 public class UploadSessionManager implements BoxAuthentication.AuthListener{
 

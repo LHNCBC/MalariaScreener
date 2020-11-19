@@ -19,7 +19,10 @@ limitations under the License.
 
 package gov.nih.nlm.malaria_screener.uploadFunction;
 
+import android.content.Intent;
+import android.os.Build;
 import android.os.Environment;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -49,12 +52,15 @@ import java.util.Map;
 import gov.nih.nlm.malaria_screener.R;
 import gov.nih.nlm.malaria_screener.custom.Utils.UtilsMethods;
 import gov.nih.nlm.malaria_screener.database.UpdateListViewEvent;
+import gov.nih.nlm.malaria_screener.settings.NavToPermissionActivity;
 import gov.nih.nlm.malaria_screener.uploadFunction.custom.CustomAdapter_Upload;
 import gov.nih.nlm.malaria_screener.uploadFunction.custom.RowItem_Folders;
 
 public class UploadActivity extends AppCompatActivity implements CustomAdapter_Upload.OnSelectedListener{
 
     private static final String TAG = "MyDebug";
+
+    private static final int SYSTEM_ALERT_WINDOW_PERMISSION = 102;
 
     String RootFolderName_str = "NLM_Malaria_Screener";
 
@@ -102,50 +108,71 @@ public class UploadActivity extends AppCompatActivity implements CustomAdapter_U
                 new Button.OnClickListener() {
                     public void onClick(View v) {
 
-                        if (!isSelectionMode) {
-
-                            if (!UploadHashManager.hashmap_for_upload.isEmpty()) {
-
-                                //export the latest database to csv file before upload
-                                UtilsMethods.exportDB(getApplicationContext());
-
-                                ArrayList[] entries = returnImgFromMap_all();
-
-                                ArrayList<String> imageNameList = entries[0];
-                                ArrayList<String> folderNameList = entries[1];
-
-                                UploadSessionManager uploadSessionManager = new UploadSessionManager();
-                                uploadSessionManager.authenticate(getApplicationContext(), imageNameList, folderNameList);
-
-                            } else {
-                                String string = getApplicationContext().getResources().getString(R.string.empty_upload);
-                                Toast.makeText(getApplicationContext(), string, Toast.LENGTH_SHORT).show();
-                            }
-
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(getApplicationContext())) {
+                            Intent permissionIntent = new Intent(getApplicationContext(), NavToPermissionActivity.class);
+                            startActivityForResult(permissionIntent, SYSTEM_ALERT_WINDOW_PERMISSION);
                         } else {
-
-                            if (customAdapter_upload.getSelect_num()==0){
-                                String string = getApplicationContext().getResources().getString(R.string.no_selected_item);
-                                Toast.makeText(getApplicationContext(), string, Toast.LENGTH_SHORT).show();
-
-                            } else {
-                                ArrayList[] entries = get_user_selected_images();
-
-                                ArrayList<String> imageNameList = entries[0];
-                                ArrayList<String> folderNameList = entries[1];
-
-                                //export database for upload
-                                UtilsMethods.exportDB(getApplicationContext());
-
-                                UploadSessionManager uploadSessionManager = new UploadSessionManager();
-                                uploadSessionManager.authenticate(getApplicationContext(), imageNameList, folderNameList);
-                            }
+                            execute_upload();
                         }
-
-
                     }
                 }
         );
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == SYSTEM_ALERT_WINDOW_PERMISSION && resultCode == RESULT_OK) {
+
+            execute_upload();
+        } else {
+            Toast.makeText(this, "Draw over other app permission not enabled. Upload stopped.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void execute_upload(){
+
+        if (!isSelectionMode) {
+
+            if (!UploadHashManager.hashmap_for_upload.isEmpty()) {
+
+                //export the latest database to csv file before upload
+                UtilsMethods.exportDB(getApplicationContext());
+
+                ArrayList[] entries = returnImgFromMap_all();
+
+                ArrayList<String> imageNameList = entries[0];
+                ArrayList<String> folderNameList = entries[1];
+
+                UploadSessionManager uploadSessionManager = new UploadSessionManager();
+                uploadSessionManager.authenticate(getApplicationContext(), imageNameList, folderNameList);
+
+            } else {
+                String string = getApplicationContext().getResources().getString(R.string.empty_upload);
+                Toast.makeText(getApplicationContext(), string, Toast.LENGTH_SHORT).show();
+            }
+
+        } else {
+
+            if (customAdapter_upload.getSelect_num()==0){
+                String string = getApplicationContext().getResources().getString(R.string.no_selected_item);
+                Toast.makeText(getApplicationContext(), string, Toast.LENGTH_SHORT).show();
+
+            } else {
+                ArrayList[] entries = get_user_selected_images();
+
+                ArrayList<String> imageNameList = entries[0];
+                ArrayList<String> folderNameList = entries[1];
+
+                //export database for upload
+                UtilsMethods.exportDB(getApplicationContext());
+
+                UploadSessionManager uploadSessionManager = new UploadSessionManager();
+                uploadSessionManager.authenticate(getApplicationContext(), imageNameList, folderNameList);
+            }
+        }
+
 
     }
 
