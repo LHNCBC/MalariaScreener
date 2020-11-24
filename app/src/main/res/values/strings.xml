@@ -122,7 +122,7 @@
     <string name="language_dialog_message">Select your language</string>
 
     <!-- Strings for app permissions-->
-    <string name="perm_denied">Permission denied</string>
+    <string name="perm_denied">Permission denied.\nYou need to grant all permissions to use this app. </string>
 
     <!-- Strings for MainActivity unsaved dialog-->
     <string name="unsaved_title">Unsaved files...</string>

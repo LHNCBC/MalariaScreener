@@ -29,9 +29,9 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -274,6 +274,8 @@ public class MainActivity extends AppCompatActivity {
                     // Permission Denied
                     Toast.makeText(MainActivity.this, R.string.perm_denied, Toast.LENGTH_SHORT)
                             .show();
+                    finish();
+                    //System.exit(0);
                 }
                 break;
             default:

@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/Users/Hang/Downloads/MS_local_repo/MalariaScreener/app/.cxx/cmake/debug/armeabi-v7a",
+  "command": "/Users/Hang/Library/Android/sdk/ndk/20.0.5594570/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++ --target=armv7-none-linux-androideabi21 --gcc-toolchain=/Users/Hang/Library/Android/sdk/ndk/20.0.5594570/toolchains/llvm/prebuilt/darwin-x86_64 --sysroot=/Users/Hang/Library/Android/sdk/ndk/20.0.5594570/toolchains/llvm/prebuilt/darwin-x86_64/sysroot  -Dnative_lib_EXPORTS -I/Users/Hang/Downloads/MS_local_repo/MalariaScreener/openCVLibrary342/include  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -fno-addrsig -march=armv7-a -mthumb -Wa,--noexecstack -Wformat -Werror=format-security  -std=c++11 -frtti -fexceptions -O0 -fno-limit-debug-info  -fPIC   -o CMakeFiles/native-lib.dir/src/main/cpp/native-lib.cpp.o -c /Users/Hang/Downloads/MS_local_repo/MalariaScreener/app/src/main/cpp/native-lib.cpp",
+  "file": "/Users/Hang/Downloads/MS_local_repo/MalariaScreener/app/src/main/cpp/native-lib.cpp"
+}
+]

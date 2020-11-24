@@ -19,14 +19,12 @@ limitations under the License.
 
 package gov.nih.nlm.malaria_screener.frontEnd.baseClass;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.view.Menu;
 import android.view.Surface;
 import android.widget.CompoundButton;
@@ -35,7 +33,6 @@ import android.widget.Switch;
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
-import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
 import java.io.File;

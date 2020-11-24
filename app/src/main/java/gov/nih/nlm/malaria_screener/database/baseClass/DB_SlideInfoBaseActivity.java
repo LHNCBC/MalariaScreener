@@ -19,25 +19,13 @@ limitations under the License.
 
 package gov.nih.nlm.malaria_screener.database.baseClass;
 
-import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.text.Html;
-import android.util.Log;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ListView;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
-import java.util.ArrayList;
-import java.util.List;
+import android.view.MenuItem;
 
 import gov.nih.nlm.malaria_screener.R;
-import gov.nih.nlm.malaria_screener.custom.CustomAdapter;
-import gov.nih.nlm.malaria_screener.custom.RowItem;
-import gov.nih.nlm.malaria_screener.database.ImageGallery;
 import gov.nih.nlm.malaria_screener.database.MyDBHandler;
 
 public abstract class DB_SlideInfoBaseActivity extends AppCompatActivity {

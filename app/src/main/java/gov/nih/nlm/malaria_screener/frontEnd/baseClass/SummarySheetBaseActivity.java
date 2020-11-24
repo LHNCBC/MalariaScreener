@@ -19,11 +19,10 @@ limitations under the License.
 
 package gov.nih.nlm.malaria_screener.frontEnd.baseClass;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.ListView;
 
@@ -35,8 +34,6 @@ import gov.nih.nlm.malaria_screener.R;
 import gov.nih.nlm.malaria_screener.custom.CustomAdapter;
 import gov.nih.nlm.malaria_screener.custom.CustomAdapterBold;
 import gov.nih.nlm.malaria_screener.custom.RowItem;
-import gov.nih.nlm.malaria_screener.custom.Utils.UtilsMethods;
-import gov.nih.nlm.malaria_screener.uploadFunction.BoxUploadService;
 import gov.nih.nlm.malaria_screener.uploadFunction.UploadSessionManager;
 
 public abstract class SummarySheetBaseActivity extends AppCompatActivity{

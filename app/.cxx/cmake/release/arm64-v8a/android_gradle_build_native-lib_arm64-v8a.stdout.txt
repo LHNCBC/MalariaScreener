@@ -1,0 +1,2 @@
+ninja: Entering directory `/Users/Hang/Downloads/MS_local_repo/MalariaScreener/app/.cxx/cmake/release/arm64-v8a'
+ninja: no work to do.
