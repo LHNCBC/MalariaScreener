@@ -43,8 +43,6 @@ import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
 import gov.nih.nlm.malaria_screener.custom.Utils.UtilsCustom;
-import gov.nih.nlm.malaria_screener.imageProcessing.SVM_Classifier;
-import gov.nih.nlm.malaria_screener.imageProcessing.TensorFlowClassifier;
 
 
 public class Cells {
@@ -66,9 +64,10 @@ public class Cells {
 
     private SVM_Classifier svm_classifier;
 
-    //private int batchSize = UtilsCustom.batch_size;
+    private int batchSize = UtilsCustom.batch_size;
 
-    //private int[] intPixels;
+    private int height;
+    private int width;
 
     public void runCells(Mat mask, Mat WBC_Mask) {
 
@@ -282,11 +281,14 @@ public class Cells {
 
         if (UtilsCustom.whichClassifier == 0) { // Deep Learning
 
+            height = UtilsCustom.tensorFlowClassifier_thin.getHeight();
+            width = UtilsCustom.tensorFlowClassifier_thin.getWidth();
+
             long startTimeNN = System.currentTimeMillis();
 
             UtilsCustom.results.clear();
 
-            /*float[] floatPixels = new float[width * height * 3 * batchSize];
+            float[] floatPixels = new float[width * height * 3 * batchSize];
 
             float[] floatPixels_last;
 
@@ -302,27 +304,28 @@ public class Cells {
 
                 for (int n = 0; n < batchSize; n++) {
 
-                    floatPixels = putInPixels(i, n, floatPixels);
+                    floatPixels = putInPixels(i, n, batchSize, floatPixels);
                 }
 
-                tensorFlowClassifier.recongnize_batch(floatPixels, batchSize);
+                UtilsCustom.tensorFlowClassifier_thin.recongnize_batch(floatPixels, batchSize);
 
             }
 
             // last batch
             for (int n = 0; n < lastBatchSize; n++) {
 
-                floatPixels_last = putInPixels(iteration, n, floatPixels_last);
+                floatPixels_last = putInPixels(iteration, n, batchSize, floatPixels_last);
             }
 
-            tensorFlowClassifier.recongnize_batch(floatPixels_last, lastBatchSize);
+            UtilsCustom.tensorFlowClassifier_thin.recongnize_batch(floatPixels_last, lastBatchSize);
 
             long endTime_NN = System.currentTimeMillis();
             long totalTime_NN = endTime_NN - startTimeNN;
-            Log.d(TAG, "Deep learning Time, TF mobile: " + totalTime_NN);*/
+            Log.d(TAG, "Deep learning Time, TF mobile: " + totalTime_NN);
+
             //--------------------------------------------------------
             // TF Lite
-            List<Bitmap> bitmapList = new ArrayList<>();
+            /*List<Bitmap> bitmapList = new ArrayList<>();
 
             int NumOfImage = cellChip.size();
             Log.d(TAG, "NumOfImage: " + NumOfImage);
@@ -353,7 +356,7 @@ public class Cells {
                 }
             }
 
-            //--------------------------------------------------------
+            //--------------------------------------------------------*/
 
         } else if (UtilsCustom.whichClassifier==1){ // SVM
             svm_classifier.run(featureTable);
@@ -362,7 +365,8 @@ public class Cells {
 
     }
 
-    private Bitmap convertToBitmap(int i){
+    // TF Lite code
+    /*private Bitmap convertToBitmap(int i){
 
         Bitmap chip_bitmap;
         Mat singlechip;
@@ -380,12 +384,13 @@ public class Cells {
         Utils.matToBitmap(singlechip, chip_bitmap);
 
         return chip_bitmap;
-    }
+    }*/
 
-    /*private float[] putInPixels(int i, int n, float[] floatPixels) {
+    private float[] putInPixels(int i, int n, int batchSize, float[] floatPixels) {
 
         Bitmap chip_bitmap;
         Mat singlechip;
+        int[] intPixels = new int[width * height];
 
         singlechip = cellChip.get(i * batchSize + n);
 
@@ -405,7 +410,7 @@ public class Cells {
         }
 
         return floatPixels;
-    }*/
+    }
 
     // compute feature vector for each chip/cell
     private Mat computeFeatureVector(Mat roi) {

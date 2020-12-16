@@ -88,7 +88,7 @@
 
     <!-- Strings for about-->
 
-    <string name="version">Version 1.6</string>
+    <string name="version">Version: </string>
 
     <string name="description">NLM Malaria Screener is an R&amp;D project of the Lister Hill National Center of Biomedical Communications, a division of the National
     Library of Medicine (NLM), part of the National Institutes of Health (NIH), in collaboration with Mahidol University, University of Oxford, and University of Missouri.</string>

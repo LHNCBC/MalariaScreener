@@ -68,9 +68,9 @@ import gov.nih.nlm.malaria_screener.custom.Utils.UtilsCustom;
 import gov.nih.nlm.malaria_screener.custom.Utils.UtilsData;
 import gov.nih.nlm.malaria_screener.frontEnd.ResultDisplayer;
 import gov.nih.nlm.malaria_screener.frontEnd.ResultDisplayer_thickSmear;
-import gov.nih.nlm.malaria_screener.imageProcessing.Classifier_Lite;
 import gov.nih.nlm.malaria_screener.imageProcessing.SVM_Classifier;
 import gov.nih.nlm.malaria_screener.frontEnd.SettingsActivity;
+import gov.nih.nlm.malaria_screener.imageProcessing.TensorFlowClassifier;
 import gov.nih.nlm.malaria_screener.imageProcessing.ThickSmearProcessor;
 import gov.nih.nlm.malaria_screener.imageProcessing.ThinSmearProcessor;
 
@@ -265,28 +265,31 @@ public class CameraActivity extends AppCompatActivity {
                     // load TF model
                     try {
 
+                        // TF Lite code
+                        /*UtilsCustom.tensorFlowClassifier_thin_lite = Classifier_Lite.create(context, Classifier_Lite.Model.FLOAT_THINSMEAR, Classifier_Lite.Device.CPU, 4);
+                        UtilsCustom.tensorFlowClassifier_thick_lite = Classifier_Lite.create(context, Classifier_Lite.Model.FLOAT_THICKSMEAR, Classifier_Lite.Device.CPU, 4);*/
+
+
                         // thin smear
-                        /*String modelNameStr_thin = "malaria_thinsmear_44.h5.pb";
+                        String modelNameStr_thin = "malaria_thinsmear_44.h5.pb";
                         int TF_input_size_thin = 44;
                         String inputLayerNameStr_thin = "conv2d_20_input";
                         String outputLayerNameStr_thin = "output_node0";
 
-                        UtilsCustom.tensorFlowClassifier_thin = TensorFlowClassifier.create(context.getAssets(), modelNameStr_thin, TF_input_size_thin, TF_input_size_thin, inputLayerNameStr_thin, outputLayerNameStr_thin);*/
+                        UtilsCustom.tensorFlowClassifier_thin = TensorFlowClassifier.create(context.getAssets(), modelNameStr_thin, TF_input_size_thin, TF_input_size_thin, inputLayerNameStr_thin, outputLayerNameStr_thin);
                         //UtilsCustom.tensorFlowClassifier_thin = TensorFlowClassifier.create(context.getAssets(), "malaria_thinsmear.h5.pb", UtilsCustom.TF_input_size, "input_2", "output_node0");
                         //UtilsCustom.tfClassifier_lite = TFClassifier_Lite.create(context.getAssets(), "thinSmear_100_quantized.tflite", UtilsCustom.TF_input_size);
 
-                        UtilsCustom.tensorFlowClassifier_thin_lite = Classifier_Lite.create(context, Classifier_Lite.Model.FLOAT_THINSMEAR, Classifier_Lite.Device.CPU, 4);
-                        UtilsCustom.tensorFlowClassifier_thick_lite = Classifier_Lite.create(context, Classifier_Lite.Model.FLOAT_THICKSMEAR, Classifier_Lite.Device.CPU, 4);
-
                         //thick smear
-                        /*String modelNameStr_thick = "ThickSmearModel.h5.pb";
+                        String modelNameStr_thick = "ThickSmearModel.h5.pb";
                         int TF_input_size_thick = 44;
                         String inputLayerNameStr_thick = "conv2d_1_input";
                         String outputLayerNameStr_thick = "output_node0";
 
-                        UtilsCustom.tensorFlowClassifier_thick = TensorFlowClassifier.create(context.getAssets(), modelNameStr_thick, TF_input_size_thick, TF_input_size_thick, inputLayerNameStr_thick, outputLayerNameStr_thick);*/
+                        UtilsCustom.tensorFlowClassifier_thick = TensorFlowClassifier.create(context.getAssets(), modelNameStr_thick, TF_input_size_thick, TF_input_size_thick, inputLayerNameStr_thick, outputLayerNameStr_thick);
 
                         //UtilsCustom.tensorFlowClassifier_thick = TensorFlowClassifier.create(context.getAssets(), "ThickSmearModel_7LayerConv.h5.pb", UtilsCustom.TF_input_size, "conv2d_1_input", "output_node0");
+
 
                         //for blur detection
                         //UtilsCustom.tensorFlowClassifier_fMeasure_thin = TensorFlowClassifier.create(context.getAssets(), "ThinSmear_7LayerConv_fMeasure_115x85.h5.pb", UtilsCustom.TF_input_width, UtilsCustom.TF_input_height, "conv2d_1_input", "output_node0");

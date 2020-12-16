@@ -35,7 +35,6 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
-import gov.nih.nlm.malaria_screener.imageProcessing.Classifier_Lite;
 import gov.nih.nlm.malaria_screener.imageProcessing.SVM_Classifier;
 import gov.nih.nlm.malaria_screener.imageProcessing.TensorFlowClassifier;
 
@@ -47,10 +46,10 @@ public final class UtilsCustom {
 
     private static final String TAG = "MyDebug";
 
-    //public static TensorFlowClassifier tensorFlowClassifier_thin;
-    //public static TensorFlowClassifier tensorFlowClassifier_thick;
-    public static Classifier_Lite tensorFlowClassifier_thin_lite;
-    public static Classifier_Lite tensorFlowClassifier_thick_lite;
+    public static TensorFlowClassifier tensorFlowClassifier_thin;
+    public static TensorFlowClassifier tensorFlowClassifier_thick;
+    //public static Classifier_Lite tensorFlowClassifier_thin_lite;
+    //public static Classifier_Lite tensorFlowClassifier_thick_lite;
     public static SVM_Classifier svm_classifier;
 
     public static Mat oriSizeMat;

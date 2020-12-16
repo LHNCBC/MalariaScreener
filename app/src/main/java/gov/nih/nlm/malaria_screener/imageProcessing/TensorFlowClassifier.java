@@ -20,8 +20,14 @@ limitations under the License.
 package gov.nih.nlm.malaria_screener.imageProcessing;
 
 import android.content.res.AssetManager;
+import android.graphics.Bitmap;
 import android.util.Log;
 
+import org.opencv.android.Utils;
+import org.opencv.core.CvType;
+import org.opencv.core.Mat;
+import org.opencv.core.Size;
+import org.opencv.imgproc.Imgproc;
 import org.tensorflow.contrib.android.TensorFlowInferenceInterface;
 
 import java.io.IOException;

@@ -23,18 +23,29 @@ android {
                 //proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             }
         }
-        aaptOptions {
-            noCompress "tflite"
-        }
 
+        // for TF Lite -------------------------------------
         sourceSets {
             main {
                 jniLibs.srcDirs = ['src/main/jniLibs']
+                java {
+                    exclude '**/Classifier_Lite.java'
+                    exclude '**/ClassifierFloat_ThickSmear.java'
+                    exclude '**/ClassifierFloat_ThinSmear.java'
+                }
             }
             androidTest {
-
+                java {
+                    exclude '**/Classifier_Lite.java'
+                    exclude '**/ClassifierFloat_ThickSmear.java'
+                    exclude '**/ClassifierFloat_ThinSmear.java'
+                }
             }
         }
+        aaptOptions {
+            noCompress "tflite"
+        }
+        // -------------------------------------------------
 
         // for C++ native code
         externalNativeBuild {
@@ -68,9 +79,9 @@ android {
         implementation 'com.box:box-android-sdk:4.2.3'
         implementation files('libs/dropbox-android-sdk-1.6.3.jar')
         implementation 'org.tensorflow:tensorflow-android:+'
-        implementation('org.tensorflow:tensorflow-lite:0.0.0-nightly') { changing = true }
-        implementation('org.tensorflow:tensorflow-lite-gpu:0.0.0-nightly') { changing = true }
-        implementation('org.tensorflow:tensorflow-lite-support:0.0.0-nightly') { changing = true }
+        //implementation('org.tensorflow:tensorflow-lite:0.0.0-nightly') { changing = true }
+        //implementation('org.tensorflow:tensorflow-lite-gpu:0.0.0-nightly') { changing = true }
+        //implementation('org.tensorflow:tensorflow-lite-support:0.0.0-nightly') { changing = true }
         //implementation 'org.tensorflow:tensorflow-lite:0.0.0-nightly'
 
         implementation 'androidx.legacy:legacy-support-v13:1.0.0'

@@ -1,0 +1,2 @@
+ninja: Entering directory `/Users/Hang/Downloads/MS_local_repo/MalariaScreener/app/.cxx/cmake/debug/x86'
+ninja: no work to do.

@@ -1,0 +1,42 @@
+{
+  "stringTable": {
+    "0": "/Users/Hang/Downloads/MS_local_repo/MalariaScreener/app/.cxx/cmake/debug/x86",
+    "1": "--target=i686-none-linux-android21 --gcc-toolchain=/Users/Hang/Library/Android/sdk/ndk/20.0.5594570/toolchains/llvm/prebuilt/darwin-x86_64 --sysroot=/Users/Hang/Library/Android/sdk/ndk/20.0.5594570/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -Dnative_lib_EXPORTS -I/Users/Hang/Downloads/MS_local_repo/MalariaScreener/openCVLibrary342/include -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -fno-addrsig -Wa,--noexecstack -Wformat -Werror=format-security -std=c++11 -frtti -fexceptions -O0 -fno-limit-debug-info -fPIC"
+  },
+  "buildFiles": [
+    "/Users/Hang/Library/Android/sdk/ndk/20.0.5594570/build/cmake/platforms.cmake",
+    "/Users/Hang/Library/Android/sdk/ndk/20.0.5594570/build/cmake/android.toolchain.cmake",
+    "/Users/Hang/Downloads/MS_local_repo/MalariaScreener/app/CMakeLists.txt"
+  ],
+  "cleanCommands": [
+    "/Users/Hang/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja -C \"/Users/Hang/Downloads/MS_local_repo/MalariaScreener/app/.cxx/cmake/debug/x86\" clean"
+  ],
+  "buildTargetsCommand": "/Users/Hang/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja  -C \"/Users/Hang/Downloads/MS_local_repo/MalariaScreener/app/.cxx/cmake/debug/x86\" {LIST_OF_TARGETS_TO_BUILD}",
+  "libraries": {
+    "native-lib-Debug-x86": {
+      "buildCommand": "/Users/Hang/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja -C \"/Users/Hang/Downloads/MS_local_repo/MalariaScreener/app/.cxx/cmake/debug/x86\" native-lib",
+      "buildType": "debug",
+      "toolchain": "3120099194",
+      "abi": "x86",
+      "artifactName": "native-lib",
+      "files": [
+        {
+          "src": "/Users/Hang/Downloads/MS_local_repo/MalariaScreener/app/src/main/cpp/native-lib.cpp",
+          "flagsOrdinal": 1,
+          "workingDirectoryOrdinal": 0
+        }
+      ],
+      "headers": [],
+      "output": "/Users/Hang/Downloads/MS_local_repo/MalariaScreener/app/build/intermediates/cmake/debug/obj/x86/libnative-lib.so"
+    }
+  },
+  "toolchains": {
+    "3120099194": {
+      "cppCompilerExecutable": "/Users/Hang/Library/Android/sdk/ndk/20.0.5594570/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++"
+    }
+  },
+  "cFileExtensions": [],
+  "cppFileExtensions": [
+    "cpp"
+  ]
+}

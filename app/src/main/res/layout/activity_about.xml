@@ -34,8 +34,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/textView_title"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="15dp"
-            android:text="@string/version" />
+            android:layout_marginTop="15dp" />
 
         <TextView
             android:id="@+id/textView_description"

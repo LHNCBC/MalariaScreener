@@ -123,7 +123,7 @@ public class ThickSmearProcessor {
 
         int patch_num = candi_patches.height()/inputSize;
 
-        /*int iteration = patch_num / batch_size;
+        int iteration = patch_num / batch_size;
         int lastBatchSize = patch_num % batch_size;
 
         float[] floatPixels = new float[inputSize * inputSize * 3 * batch_size];
@@ -134,7 +134,7 @@ public class ThickSmearProcessor {
 
             for (int n = 0; n < batch_size; n++) {
 
-                floatPixels = putInPixels(i, n, floatPixels);
+                floatPixels = putInPixels(i, n, batch_size, floatPixels);
 
             }
 
@@ -144,13 +144,13 @@ public class ThickSmearProcessor {
         // last batch
         for (int n = 0; n < lastBatchSize; n++) {
 
-            floatPixels_last = putInPixels(iteration, n, floatPixels_last);
+            floatPixels_last = putInPixels(iteration, n, batch_size, floatPixels_last);
         }
 
-        UtilsCustom.tensorFlowClassifier_thick.recongnize_batch_thick(floatPixels, batch_size);*/
+        UtilsCustom.tensorFlowClassifier_thick.recongnize_batch_thick(floatPixels, batch_size);
 
         // ------------------------------------ TF Lite -----------------------------------
-        List<Bitmap> bitmapList = new ArrayList<>();
+        /*List<Bitmap> bitmapList = new ArrayList<>();
 
         for (int i=0;i<patch_num;i++){
             bitmapList.add(convertToBitmap(i));
@@ -178,7 +178,7 @@ public class ThickSmearProcessor {
 
         long endTime_NN_1 = System.currentTimeMillis();
         long totalTime_NN_1 = endTime_NN_1 - startTimeNN_1;
-        Log.d(TAG, "Deep learning Time, TF Lite: " + totalTime_NN_1);
+        Log.d(TAG, "Deep learning Time, TF Lite: " + totalTime_NN_1);*/
         // --------------------------------------------------------------------------------
 
         // draw results on image
@@ -211,7 +211,8 @@ public class ThickSmearProcessor {
         return res;
     }
 
-    private Bitmap convertToBitmap(int i){
+    // TF Lite code
+    /*private Bitmap convertToBitmap(int i){
 
         Bitmap chip_bitmap;
 
@@ -223,12 +224,12 @@ public class ThickSmearProcessor {
         Utils.matToBitmap(temp, chip_bitmap);
 
         return chip_bitmap;
-    }
+    }*/
 
-    /*private float[] putInPixels(int i, int n, float[] floatPixels) {
+    private float[] putInPixels(int i, int n, int batch_size, float[] floatPixels) {
 
         Bitmap chip_bitmap;
-        int[] intPixels;
+        int[] intPixels = new int[inputSize * inputSize];
 
         Rect rect = new Rect(0, (i * batch_size + n) * inputSize, inputSize, inputSize);
         Mat temp = new Mat(candi_patches, rect);
@@ -237,7 +238,6 @@ public class ThickSmearProcessor {
         chip_bitmap = Bitmap.createBitmap(temp.cols(), temp.rows(), Bitmap.Config.ARGB_8888);
         Utils.matToBitmap(temp, chip_bitmap);
 
-        intPixels = new int[inputSize * inputSize];
         chip_bitmap.getPixels(intPixels, 0, chip_bitmap.getWidth(), 0, 0, chip_bitmap.getWidth(), chip_bitmap.getHeight());
 
         for (int j = 0; j < intPixels.length; ++j) {
@@ -247,7 +247,7 @@ public class ThickSmearProcessor {
         }
 
         return floatPixels;
-    }*/
+    }
 
     /*OutputStream outStream = null;
                 File file = null;

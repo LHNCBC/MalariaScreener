@@ -22,7 +22,11 @@ package gov.nih.nlm.malaria_screener.tutorial;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import gov.nih.nlm.malaria_screener.BuildConfig;
+import gov.nih.nlm.malaria_screener.R;
+
 import android.view.MenuItem;
+import android.widget.TextView;
 
 /**
  * Created by yuh5 on 12/2/2016.
@@ -40,6 +44,10 @@ public class About extends AppCompatActivity{
         // set home button
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        TextView textView_version = findViewById(R.id.textView_version);
+        String version_str = getResources().getString(R.string.version) + " " + BuildConfig.VERSION_NAME;
+        textView_version.setText(version_str);
 
     }
 
