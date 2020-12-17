@@ -135,7 +135,10 @@ public class CustomAdapter_ImageGalleryDB extends RecyclerView.Adapter<CustomAda
         imageViewOriginal.setTag(R.id.imageview_original, i);
 
         viewHolder.imageView_original.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        Glide.with(context).load(rowItem_imageArrayList.get(i).getImage_original()).transform(new RotateTransformation(context, 90f)).override(width / 2 - 25, width / 2 - 25).into(imageViewOriginal);
+        // original image was rotated when being saved, so here we don't rotate it anymore
+        //Glide.with(context).load(rowItem_imageArrayList.get(i).getImage_original()).transform(new RotateTransformation(context, 90f)).override(width / 2 - 25, width / 2 - 25).into(imageViewOriginal);
+        Glide.with(context).load(rowItem_imageArrayList.get(i).getImage_original()).override(width / 2 - 25, width / 2 - 25).into(imageViewOriginal);
+
 
         // image view 2
         final ImageView imageViewResult = viewHolder.imageView_result;

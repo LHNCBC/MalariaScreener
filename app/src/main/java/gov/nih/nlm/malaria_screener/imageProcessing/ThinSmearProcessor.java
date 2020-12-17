@@ -115,7 +115,8 @@ public class ThinSmearProcessor {
 
             drawAll(orientation, RV, takenFromCam);
 
-            saveMaskImageHandler.sendEmptyMessage(0);
+            // 12/17/2020, not saving mask images anymore. by Hang
+            //saveMaskImageHandler.sendEmptyMessage(0);
 
             int[] res = new int[2];
 
@@ -144,13 +145,13 @@ public class ThinSmearProcessor {
                 if (takenFromCam) { // test this canvas rotate
                     canvas.save();
                     // draw texts according to phone rotation while image was taken
-                    if (orientation == Surface.ROTATION_0) { //portrait
+                    if (orientation == Surface.ROTATION_0) {                //portrait
                         canvas.rotate(270, UtilsCustom.cellLocation[i][1] / RV, UtilsCustom.cellLocation[i][0] / RV);
-                    } else if (orientation == Surface.ROTATION_270) { //landscape
+                    } else if (orientation == Surface.ROTATION_270) {      //reverse landscape
                         canvas.rotate(180, UtilsCustom.cellLocation[i][1] / RV, UtilsCustom.cellLocation[i][0] / RV);
-                    } else if (orientation == Surface.ROTATION_180) { //reverse portrait
+                    } else if (orientation == Surface.ROTATION_180) {      //reverse portrait
                         canvas.rotate(90, UtilsCustom.cellLocation[i][1] / RV, UtilsCustom.cellLocation[i][0] / RV);
-                    } else if (orientation == Surface.ROTATION_90) { // reverse landscape
+                    } else if (orientation == Surface.ROTATION_90) {       //landscape
                         canvas.rotate(0, UtilsCustom.cellLocation[i][1] / RV, UtilsCustom.cellLocation[i][0] / RV);
                     }
                     canvas.drawText(String.valueOf(infectedCount), UtilsCustom.cellLocation[i][1] / RV - 7, UtilsCustom.cellLocation[i][0] / RV - 7, paint);

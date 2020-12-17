@@ -450,7 +450,7 @@ public class ImageGallery extends AppCompatActivity implements CustomAdapter_Ima
 
             String imgStr; // image path to pass to fragment page
 
-            if (position % 2 == 0) { // Calculate corrent
+            if (position % 2 == 0) { // Calculate current
                 imgStr = imageList.get(position / 2).getImage_original();
             } else {
                 imgStr = imageList.get(position / 2).getImage_result();

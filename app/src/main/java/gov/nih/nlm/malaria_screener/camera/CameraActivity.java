@@ -75,6 +75,7 @@ import gov.nih.nlm.malaria_screener.imageProcessing.ThickSmearProcessor;
 import gov.nih.nlm.malaria_screener.imageProcessing.ThinSmearProcessor;
 
 import org.opencv.android.Utils;
+import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfInt;
@@ -110,6 +111,7 @@ public class CameraActivity extends AppCompatActivity {
     public static final int REQUEST_GALLERY = 10;
     static final int REQUEST_RESULTS = 3;
     static final int REQUEST_SETTING = 4;
+    static final String MSG_KEY = "MSG_KEY_FROM_CAM";
 
     private Activity context;
 
@@ -167,6 +169,8 @@ public class CameraActivity extends AppCompatActivity {
     public CharSequence[] cs;
 
     private boolean imageAcquisition = false;
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -586,6 +590,7 @@ public class CameraActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         // when return from Gallery event
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_GALLERY && resultCode == Activity.RESULT_OK) {
 
             String str1 = getResources().getString(R.string.image_process1);
@@ -636,7 +641,7 @@ public class CameraActivity extends AppCompatActivity {
             imgprocessThread.start();
 
         } else if (requestCode == REQUEST_RESULTS && resultCode == Activity.RESULT_OK) {
-         // when return from ResultDisplayer with RESULT_OK
+            // when return from ResultDisplayer with RESULT_OK
             captureCount++;
 
             updateToolbar();
@@ -845,7 +850,7 @@ public class CameraActivity extends AppCompatActivity {
         UtilsCustom.canvasBitmap = Bitmap.createBitmap(UtilsCustom.oriSizeMat.width(), UtilsCustom.oriSizeMat.height(), Bitmap.Config.RGB_565);
         Utils.matToBitmap(UtilsCustom.oriSizeMat, UtilsCustom.canvasBitmap);
 
-        saveImageHandler.sendEmptyMessage(0);
+        saveImageHandler.sendMessage(generateTakenFromCamMsg(takenFromCam));
 
         goToNextActivity();
 
@@ -862,7 +867,7 @@ public class CameraActivity extends AppCompatActivity {
         UtilsCustom.canvasBitmap = Bitmap.createBitmap(UtilsCustom.oriSizeMat.width(), UtilsCustom.oriSizeMat.height(), Bitmap.Config.RGB_565);
         Utils.matToBitmap(UtilsCustom.oriSizeMat, UtilsCustom.canvasBitmap);
 
-        saveImageHandler.sendEmptyMessage(0);
+        saveImageHandler.sendMessage(generateTakenFromCamMsg(takenFromCam));
         goToNextActivity_thickSmear();
     }
     //  ********************************** image acquisition mode **********************************
@@ -893,10 +898,9 @@ public class CameraActivity extends AppCompatActivity {
 
             //save image to file
             //saveOriImage(); // taken out of handler, otherwise original image not saved before needed in next activity. 09/26/2017
-            saveImageHandler.sendEmptyMessage(0);                // put in handler again, original image is copied for saving, display in result page using image in memory. 03/12/2019
-            //if (takenFromCam) {
+            saveImageHandler.sendMessage(generateTakenFromCamMsg(takenFromCam));
+            // put in handler again, original image is copied for saving, display in result page using image in memory. 03/12/2019
 
-            //}
 
             goToNextActivity();
 
@@ -920,7 +924,7 @@ public class CameraActivity extends AppCompatActivity {
         Log.d(TAG, "One image time: " + totalTime_w);
         processingTime = totalTime_w;
 
-        saveImageHandler.sendEmptyMessage(0);
+        saveImageHandler.sendMessage(generateTakenFromCamMsg(takenFromCam));
 
         goToNextActivity_thickSmear();
     }
@@ -968,7 +972,6 @@ public class CameraActivity extends AppCompatActivity {
             }
             UtilsCustom.canvasBitmap = Bitmap.createBitmap(UtilsCustom.canvasBitmap, 0, 0, UtilsCustom.canvasBitmap.getWidth(), UtilsCustom.canvasBitmap.getHeight(), m, false);
         }
-
 
         intent.putExtra("picFile", pictureFileCopy.toString()); //pass original file dir
         intent.putExtra("RV", RV); // pass resize value of original image
@@ -1033,14 +1036,17 @@ public class CameraActivity extends AppCompatActivity {
 
     private Handler saveImageHandler = new Handler() {
 
-        public void handleMessage(Message msg) {
+        public void handleMessage(final Message msg) {
             super.handleMessage(msg);
+
+            Bundle bundle = msg.getData();
+            final boolean isFromCam = bundle.getBoolean(MSG_KEY);
 
             Runnable r1 = new Runnable() {
                 @Override
                 public void run() {
 
-                    saveOriImage();
+                    saveOriImage(isFromCam);
 
                 }
             };
@@ -1051,11 +1057,25 @@ public class CameraActivity extends AppCompatActivity {
         }
     };
 
-    public void saveOriImage() {
+    private Message generateTakenFromCamMsg(boolean isFromCam){
+
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(MSG_KEY, isFromCam);
+        Message msg = new Message();
+        msg.setData(bundle);
+
+        return msg;
+    }
+
+    public void saveOriImage(boolean isfromCam) {
 
         long startTime = System.currentTimeMillis();
 
         Mat oriSizeMat_clone = UtilsCustom.oriSizeMat.clone();
+
+        if (isfromCam) {
+            oriSizeMat_clone = rotateImage(oriSizeMat_clone);
+        }
 
         String file_name = pictureFileCopy.toString();
         Imgproc.cvtColor(oriSizeMat_clone, oriSizeMat_clone, Imgproc.COLOR_RGB2BGR);
@@ -1073,7 +1093,30 @@ public class CameraActivity extends AppCompatActivity {
         Log.d(TAG, "save Pic Time: " + totalTime);
 
         oriSizeMat_clone.release();
+    }
 
+    // rotate the original image to be saved in the orientation as it was taken.
+    private Mat rotateImage(Mat image){
+
+        // Surface.ROTATION indicates the orientation when the image was taken.
+        // The angle is the rotation of the drawn graphics on the screen, which is the opposite direction of the physical rotation of the device.
+        // For example, if the device is rotated 90 degrees counter-clockwise, to compensate rendering will be rotated by 90 degrees clockwise
+        // and thus the returned value here will be Surface.ROTATION_90.
+
+        if (orientation == Surface.ROTATION_0) {
+            //taken in portrait, image saved top facing 9 o'clock direction, hence rotate 90 clockwise.
+            Core.rotate(image, image, Core.ROTATE_90_CLOCKWISE);
+        } else if (orientation == Surface.ROTATION_270) {
+            //taken in landscape, image saved top facing 3 o'clock direction, hence rotate 180.
+            Core.rotate(image, image, Core.ROTATE_180);
+        } else if (orientation == Surface.ROTATION_180) {
+            //taken in reverse portrait, image saved top facing 3 o'clock direction, hence rotate 90 counter-clockwise.
+            Core.rotate(image, image, Core.ROTATE_90_COUNTERCLOCKWISE);
+        } else if (orientation == Surface.ROTATION_90) {
+            //taken in landscape, image saved top facing 9 o'clock direction, hence no rotation needed.
+        }
+
+        return image;
     }
 
     // handle the event to retake image when the program rejects the captured image

@@ -34,6 +34,8 @@ import gov.nih.nlm.malaria_screener.R;
 
 /**
  * Created by yuh5 on 4/3/2017.
+ *
+ * This Fragment is used for displaying the full screen image in ImageGallery after user click on the preview image
  */
 
 public class PhotoFragment extends Fragment{
@@ -89,26 +91,18 @@ public class PhotoFragment extends Fragment{
 
         backgroundImage = (TouchImageView) rootView.findViewById(R.id.imageView_full);
 
-        if (position%2==0) {
-            Glide.with(this).load(imagePath).transform(new RotateTransformation(context, 90f)).skipMemoryCache(true).into(backgroundImage);
-        } else {
-            Glide.with(this).load(imagePath).skipMemoryCache(true).into(backgroundImage);
-        }
+        // original image was rotated when being saved, so here we don't rotate it anymore
+//        if (position%2==0) {
+//            Glide.with(this).load(imagePath).transform(new RotateTransformation(context, 90f)).skipMemoryCache(true).into(backgroundImage);
+//        } else {
+//            Glide.with(this).load(imagePath).skipMemoryCache(true).into(backgroundImage);
+//        }
+
+        Glide.with(getActivity()).load(imagePath).skipMemoryCache(true).into(backgroundImage);
 
         //passView.passExpandedImageView_Container(backgroundImage, frameLayout);
 
         return rootView;
     }
-
-//    public void setImageView(){
-//        Glide.with(this).load(imagePath).into(backgroundImage);
-//
-//    }
-
-//    public interface PassView{
-//
-//        void passExpandedImageView_Container(TouchImageView imageView, FrameLayout frameLayout);
-//
-//    }
 
 }
