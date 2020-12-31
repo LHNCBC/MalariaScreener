@@ -146,11 +146,11 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
                 new Button.OnClickListener() {
                     public void onClick(View view) {
 
-                        // save results image
-                        createDirectoryAndSaveResultImage(bundle);
                         writeLogFile();
 
                         setManualCounts();
+
+                        releaseMemory();
 
                         Intent returnIntent = new Intent();
                         setResult(Activity.RESULT_OK, returnIntent);
@@ -163,11 +163,11 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
                 new Button.OnClickListener() {
                     public void onClick(View view) {
 
-                        // save results image
-                        createDirectoryAndSaveResultImage(bundle);
                         writeLogFile();
 
                         setManualCounts();
+
+                        releaseMemory();
 
                         finishActivity(REQUEST_CAM);
 
@@ -245,11 +245,7 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
 
                 if (picFile != null) {
                     // delete saved pics
-                    File fdelete = new File(picFile);
-
-                    if (fdelete.exists()) {
-                        fdelete.delete();
-                    }
+                    deleteRejectedImages(picFile);
 
                     // delete data from current image
                     UtilsData.parasiteTotal = UtilsData.parasiteTotal - UtilsData.parasiteCurrent;
@@ -260,6 +256,8 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
                     UtilsData.resetCurrentCounts_thick();
 
                 }
+
+                releaseMemory();
 
                 setResult(Activity.RESULT_CANCELED, returnIntent);
                 finish();
@@ -381,11 +379,11 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
 
         } else if (id == R.id.action_endSession) {
 
-            // save results image
-            createDirectoryAndSaveResultImage(bundle);
             writeLogFile();
 
             setManualCounts();
+
+            releaseMemory();
 
             finishActivity(REQUEST_CAM);
 

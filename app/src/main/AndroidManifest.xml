@@ -11,7 +11,7 @@
         android:largeHeap="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
-        <activity android:name=".settings.NavToPermissionActivity"
+        <activity android:name=".others.NavToPermissionActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="fullSensor"/>
         <activity
@@ -20,11 +20,11 @@
             android:screenOrientation="fullSensor" />
 
         <activity
-            android:name=".settings.DisclaimerActivity"
+            android:name=".others.DisclaimerActivity"
             android:label="@string/title_activity_disclaimer"
             android:theme="@style/NoActionBar" />
 
-        <activity android:name=".settings.UserOnBoardActivity" />
+        <activity android:name=".others.UserOnBoardActivity" />
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|screenSize"

@@ -25,6 +25,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.Surface;
 import android.widget.CompoundButton;
@@ -119,7 +120,39 @@ public abstract class ResultDisplayerBaseActivity extends AppCompatActivity {
 
     }
 
-    public void createDirectoryAndSaveResultImage(Bundle bundle) {
+    // delete the rejected image. original image and result image
+    public void deleteRejectedImages(String picFileStr){
+
+        // get image name
+        String imgStr = picFileStr.substring(picFileStr.lastIndexOf("/") + 1);
+        int endIndex = imgStr.lastIndexOf(".");
+        String imageName = imgStr.substring(0, endIndex);
+
+        File file_ori = new File(picFileStr);
+        File file_res = new File(new File(Environment.getExternalStorageDirectory(), "NLM_Malaria_Screener/New"), imageName + "_result.png");
+
+        Log.d(TAG, "file_ori: " + file_ori.toString());
+        Log.d(TAG, "file_res: " + file_res.toString());
+
+        if (file_ori.exists()) {
+            file_ori.delete();
+        }
+
+        if (file_res.exists()) {
+            file_res.delete();
+        }
+
+    }
+
+    public void releaseMemory(){
+        UtilsCustom.oriSizeMat.release();
+        UtilsCustom.canvasBitmap.recycle();
+
+        System.gc();
+        Runtime.getRuntime().gc();
+    }
+
+    /*public void createDirectoryAndSaveResultImage(Bundle bundle) {
 
         String picFile = bundle.getString("picFile");
 
@@ -152,7 +185,7 @@ public abstract class ResultDisplayerBaseActivity extends AppCompatActivity {
 
         UtilsCustom.canvasBitmap.recycle();
 
-    }
+    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

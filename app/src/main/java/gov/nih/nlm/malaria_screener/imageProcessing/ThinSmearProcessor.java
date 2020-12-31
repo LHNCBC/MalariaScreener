@@ -38,6 +38,7 @@ import java.io.File;
 import java.io.IOException;
 
 import gov.nih.nlm.malaria_screener.custom.Utils.UtilsCustom;
+import gov.nih.nlm.malaria_screener.imageProcessing.Segmentation.MarkerBasedWatershed;
 
 public class ThinSmearProcessor {
 

@@ -50,7 +50,6 @@ import java.util.ArrayList;
 
 import gov.nih.nlm.malaria_screener.R;
 import gov.nih.nlm.malaria_screener.custom.CustomAdapter_ImageGalleryDB;
-import gov.nih.nlm.malaria_screener.custom.PhotoFragment;
 import gov.nih.nlm.malaria_screener.custom.RowItem_Image;
 import gov.nih.nlm.malaria_screener.custom.TouchImageView;
 import gov.nih.nlm.malaria_screener.frontEnd.EnterManualCounts;

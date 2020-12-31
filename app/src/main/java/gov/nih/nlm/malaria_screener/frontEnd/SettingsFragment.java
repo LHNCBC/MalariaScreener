@@ -43,8 +43,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
 
     SharedPreferences sharedPreferences;
 
-    SeekBarPreference seekBarPreference;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

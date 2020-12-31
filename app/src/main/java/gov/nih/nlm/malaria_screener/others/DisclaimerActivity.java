@@ -17,7 +17,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
 
-package gov.nih.nlm.malaria_screener.settings;
+package gov.nih.nlm.malaria_screener.others;
 
 import android.content.Intent;
 import android.os.Bundle;

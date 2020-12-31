@@ -1,4 +1,4 @@
-package gov.nih.nlm.malaria_screener.settings;
+package gov.nih.nlm.malaria_screener.others;
 
 import android.app.Activity;
 import android.content.Intent;

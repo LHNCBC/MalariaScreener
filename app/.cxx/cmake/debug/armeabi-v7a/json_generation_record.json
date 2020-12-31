@@ -13,24 +13,6 @@
   },
   {
     "level": "INFO",
-    "message": "Trying to locate CMake in local SDK repository.",
-    "file": "/Users/Hang/Downloads/MS_local_repo/MalariaScreener/app/CMakeLists.txt",
-    "tag": "debug|armeabi-v7a"
-  },
-  {
-    "level": "INFO",
-    "message": "- CMake found in SDK at \u0027/Users/Hang/Library/Android/sdk/cmake/3.10.2.4988404\u0027 had version \u00273.10.2\u0027",
-    "file": "/Users/Hang/Downloads/MS_local_repo/MalariaScreener/app/CMakeLists.txt",
-    "tag": "debug|armeabi-v7a"
-  },
-  {
-    "level": "INFO",
-    "message": "CMake \u00273.6.0\u0027 found in SDK did not match requested version \u00273.10.2\u0027.",
-    "file": "/Users/Hang/Downloads/MS_local_repo/MalariaScreener/app/CMakeLists.txt",
-    "tag": "debug|armeabi-v7a"
-  },
-  {
-    "level": "INFO",
     "message": "JSON \u0027/Users/Hang/Downloads/MS_local_repo/MalariaScreener/app/.cxx/cmake/debug/armeabi-v7a/android_gradle_build.json\u0027 was up-to-date",
     "file": "/Users/Hang/Downloads/MS_local_repo/MalariaScreener/app/CMakeLists.txt",
     "tag": "debug|armeabi-v7a"

@@ -113,17 +113,18 @@ public class TensorFlowClassifier {
 
             for (int i = 0; i < output.length / 2; i++) {
 
-                //Log.d(TAG, "DL chip output: " + i + " , " + output[i*2]);
-
-                if (output[i*2] < UtilsCustom.Th) {  // in the loaded TF model(Shiva's) 0 is infected, 1 is normal. Therefore, output[i*2] contains confidence for infected class
+                // In the loaded TF thin smear model(Shiva's) 0 is infected, 1 is normal.
+                // Therefore, output[i*2] contains confidence for infected class
+                if (output[i*2] > UtilsCustom.Th) {
                     // normal confidence higher
-                    UtilsCustom.results.add(0);
+                    UtilsCustom.results.add(1);
 
                 } else {
                     // infected confidence higher
-                    UtilsCustom.results.add(1);
+                    UtilsCustom.results.add(0);
                 }
 
+                //Log.d(TAG, "DL chip output: " + i + " , " + output[i*2]);
             }
 
             //Log.d(TAG, "One batch over");
@@ -144,11 +145,13 @@ public class TensorFlowClassifier {
 
         for (int i = 0; i < output.length / 2; i++) {
 
-            if (output[i*2] > output[i*2+1]) {  // in the loaded TF model 0 is normal, 1 is infected
-                UtilsCustom.results.add(0);
+            // in the loaded TF thick smear model 0 is normal, 1 is infected
+            // Therefore, output[i*2] contains confidence for normal class
+            if (output[i*2+1] > UtilsCustom.Th_thick) {
+                UtilsCustom.results.add(1);
 
             } else {
-                UtilsCustom.results.add(1);
+                UtilsCustom.results.add(0);
 
             }
         }

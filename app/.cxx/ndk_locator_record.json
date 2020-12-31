@@ -31,6 +31,10 @@
     },
     {
       "level": "INFO",
+      "message": "Rejected /Users/Hang/Library/Android/sdk/ndk-bundle in SDK ndk-bundle folder because that location has no source.properties"
+    },
+    {
+      "level": "INFO",
       "message": "Found requested NDK version 20.0.5594570 at /Users/Hang/Library/Android/sdk/ndk/20.0.5594570"
     }
   ]

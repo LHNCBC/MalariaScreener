@@ -194,24 +194,33 @@ public class ListOfImagesUploader {
                                         }
                                     });
 
-                                    try {
-                                        request.send();
-                                    } catch (BoxException e) {
-                                        e.printStackTrace();
-
+                                    int num_tries = 5;
+                                    while (num_tries-- != 0) {
+                                        try {
+                                            request.send();
+                                        } catch (BoxException e) {
+                                            //e.printStackTrace();
+                                            Log.d(TAG, "Tries on " + imgFile.toString() + ": " + num_tries);
+                                            
+                                            if (e.getErrorType().toString().equals("OTHER")){
+                                                continue;
+                                            }
+                                        }
+                                        break;
                                     }
 
                                 }
 
                             }.start();
+
                         }
+
                     }
 
 
                 }
 
             }
-
 
 
             // ------------ 7. Upload .txt and database (.csv) files in root folder ----------------

@@ -38,7 +38,6 @@ import com.box.androidsdk.content.models.BoxSession;
 import java.util.ArrayList;
 
 import gov.nih.nlm.malaria_screener.R;
-import gov.nih.nlm.malaria_screener.settings.NavToPermissionActivity;
 
 public class UploadSessionManager implements BoxAuthentication.AuthListener{
 

@@ -51,8 +51,8 @@
     <string name="EC">增加或减少曝光度</string>
 
     <string name="category2">其它</string>
-    <string name="SVM_Th">支持向量机的阈值</string>
-    <string name="SVM_Th_summary">调整支持向量机的敏感度, 推荐数值：65</string>
+    <string name="Sensitivity_level_title">支持向量机的阈值</string>
+    <string name="Classifier_Th_summary">调整支持向量机的敏感度, 推荐数值：65</string>
     <string name="celltotal">所需细胞总数</string>
     <string name="celltotal_summary">每个病人所要达到的细胞数</string>
 

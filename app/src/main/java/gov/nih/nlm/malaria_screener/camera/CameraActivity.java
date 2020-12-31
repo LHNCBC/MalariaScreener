@@ -489,6 +489,8 @@ public class CameraActivity extends AppCompatActivity {
 
         double value = sharedPreferences.getInt("Th", 50);
         UtilsCustom.Th = (100 - value) / 100;
+        double value_thick = sharedPreferences.getInt("Th_thick", 50);
+        UtilsCustom.Th_thick = (100 - value_thick) / 100;
 
         totalCellNeeded = sharedPreferences.getInt("celltotal", 1000);
 
@@ -851,6 +853,9 @@ public class CameraActivity extends AppCompatActivity {
         Utils.matToBitmap(UtilsCustom.oriSizeMat, UtilsCustom.canvasBitmap);
 
         saveImageHandler.sendMessage(generateTakenFromCamMsg(takenFromCam));
+        // save result image
+        rotateResultImage();
+        SaveResultImage(pictureFileCopy.toString());
 
         goToNextActivity();
 
@@ -868,10 +873,19 @@ public class CameraActivity extends AppCompatActivity {
         Utils.matToBitmap(UtilsCustom.oriSizeMat, UtilsCustom.canvasBitmap);
 
         saveImageHandler.sendMessage(generateTakenFromCamMsg(takenFromCam));
+        // save result image
+        rotateResultImage();
+
+        // resize result image
+        int width = (int) ((float) UtilsCustom.canvasBitmap.getWidth() / RV);
+        int height = (int) ((float) UtilsCustom.canvasBitmap.getHeight() / RV);
+        UtilsCustom.canvasBitmap = Bitmap.createScaledBitmap(UtilsCustom.canvasBitmap, width, height, false);
+
+        SaveResultImage(pictureFileCopy.toString());
+
         goToNextActivity_thickSmear();
     }
     //  ********************************** image acquisition mode **********************************
-
 
     private void ProcessThinSmearImage() {
 
@@ -901,6 +915,11 @@ public class CameraActivity extends AppCompatActivity {
             saveImageHandler.sendMessage(generateTakenFromCamMsg(takenFromCam));
             // put in handler again, original image is copied for saving, display in result page using image in memory. 03/12/2019
 
+            // save result image
+            if(takenFromCam) {
+                rotateResultImage();
+            }
+            SaveResultImage(pictureFileCopy.toString());
 
             goToNextActivity();
 
@@ -926,7 +945,22 @@ public class CameraActivity extends AppCompatActivity {
 
         saveImageHandler.sendMessage(generateTakenFromCamMsg(takenFromCam));
 
+        // save result image
+        if(takenFromCam) {
+            rotateResultImage();
+        }
+
+        // resize result image
+        int width = (int) ((float) UtilsCustom.canvasBitmap.getWidth() / RV);
+        int height = (int) ((float) UtilsCustom.canvasBitmap.getHeight() / RV);
+        UtilsCustom.canvasBitmap = Bitmap.createScaledBitmap(UtilsCustom.canvasBitmap, width, height, false);
+
+        SaveResultImage(pictureFileCopy.toString());
+
         goToNextActivity_thickSmear();
+
+        System.gc();
+        Runtime.getRuntime().gc();
     }
 
     private void saveResults(int infectedCurrent, int cellCurrent) {
@@ -959,28 +993,19 @@ public class CameraActivity extends AppCompatActivity {
         if (takenFromCam) {
             intent.putExtra("Orientation", orientation); // pass orientation when image was taken for next activity
             intent.putExtra("cam", takenFromCam);
+
             takenFromCam = false;
-            Matrix m = new Matrix(); // rotate image according to phone orientation when image was taken
-            if (orientation == Surface.ROTATION_0) {
-                m.postRotate(90);
-            } else if (orientation == Surface.ROTATION_270) {
-                m.postRotate(180);
-            } else if (orientation == Surface.ROTATION_180) {
-                m.postRotate(270);
-            } else if (orientation == Surface.ROTATION_90) {
-                m.postRotate(0);
-            }
-            UtilsCustom.canvasBitmap = Bitmap.createBitmap(UtilsCustom.canvasBitmap, 0, 0, UtilsCustom.canvasBitmap.getWidth(), UtilsCustom.canvasBitmap.getHeight(), m, false);
         }
+
+        // add image name to list
+        String imgNameStr = pictureFileCopy.toString().substring(pictureFileCopy.toString().lastIndexOf("/") + 1);
+        UtilsData.addImageName(imgNameStr);
 
         intent.putExtra("picFile", pictureFileCopy.toString()); //pass original file dir
         intent.putExtra("RV", RV); // pass resize value of original image
         intent.putExtra("WB", cs[Integer.valueOf(WB)]); // white balance setting
         intent.putExtra("time", String.valueOf(processingTime));
         intent.putExtra("imgCount", captureCount + 1);
-
-        String imgNameStr = pictureFileCopy.toString().substring(pictureFileCopy.toString().lastIndexOf("/") + 1);
-        UtilsData.addImageName(imgNameStr);
 
         System.gc();
         Runtime.getRuntime().gc();
@@ -995,30 +1020,14 @@ public class CameraActivity extends AppCompatActivity {
 
         Intent intent = new Intent(context, ResultDisplayer_thickSmear.class);
 
-        // pass resized result image to new activity
-        int width = (int) ((float) UtilsCustom.canvasBitmap.getWidth() / RV);
-        int height = (int) ((float) UtilsCustom.canvasBitmap.getHeight() / RV);
-
-        UtilsCustom.canvasBitmap = Bitmap.createScaledBitmap(UtilsCustom.canvasBitmap, width, height, false);
-
         if (takenFromCam) {
             intent.putExtra("Orientation", orientation); // pass orientation when image was taken for next activity
             intent.putExtra("cam", takenFromCam);
+
             takenFromCam = false;
-            Matrix m = new Matrix(); // rotate image according to phone orientation when image was taken
-            if (orientation == Surface.ROTATION_0) {
-                m.postRotate(90);
-            } else if (orientation == Surface.ROTATION_270) {
-                m.postRotate(180);
-            } else if (orientation == Surface.ROTATION_180) {
-                m.postRotate(270);
-            } else if (orientation == Surface.ROTATION_90) {
-                m.postRotate(0);
-            }
-            UtilsCustom.canvasBitmap = Bitmap.createBitmap(UtilsCustom.canvasBitmap, 0, 0, UtilsCustom.canvasBitmap.getWidth(), UtilsCustom.canvasBitmap.getHeight(), m, false);
         }
 
-        // pass image names
+        // add image name to list
         String imgNameStr = pictureFileCopy.toString().substring(pictureFileCopy.toString().lastIndexOf("/") + 1);
         UtilsData.addImageName(imgNameStr);
 
@@ -1074,7 +1083,7 @@ public class CameraActivity extends AppCompatActivity {
         Mat oriSizeMat_clone = UtilsCustom.oriSizeMat.clone();
 
         if (isfromCam) {
-            oriSizeMat_clone = rotateImage(oriSizeMat_clone);
+            oriSizeMat_clone = rotateOriImage(oriSizeMat_clone);
         }
 
         String file_name = pictureFileCopy.toString();
@@ -1096,7 +1105,7 @@ public class CameraActivity extends AppCompatActivity {
     }
 
     // rotate the original image to be saved in the orientation as it was taken.
-    private Mat rotateImage(Mat image){
+    private Mat rotateOriImage(Mat image){
 
         // Surface.ROTATION indicates the orientation when the image was taken.
         // The angle is the rotation of the drawn graphics on the screen, which is the opposite direction of the physical rotation of the device.
@@ -1117,6 +1126,54 @@ public class CameraActivity extends AppCompatActivity {
         }
 
         return image;
+    }
+
+    // save result image
+    private void SaveResultImage(String picFileStr) {
+
+        File direct = new File(Environment.getExternalStorageDirectory(), "NLM_Malaria_Screener/New");
+
+        if (!direct.exists()) {
+            direct.mkdirs();
+        }
+
+        // get image name
+        String imgStr = picFileStr.substring(picFileStr.lastIndexOf("/") + 1);
+        int endIndex = imgStr.lastIndexOf(".");
+        String imageName = imgStr.substring(0, endIndex);
+
+        File file = new File(new File(Environment.getExternalStorageDirectory(), "NLM_Malaria_Screener/New"), imageName + "_result.png");
+
+        if (file.exists()) {
+            file.delete();
+        }
+
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            UtilsCustom.canvasBitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        //UtilsCustom.canvasBitmap.recycle();
+    }
+
+    // rotate the result image to the orientation when its taken
+    private void rotateResultImage(){
+
+        Matrix m = new Matrix(); // rotate image according to phone orientation when image was taken
+        if (orientation == Surface.ROTATION_0) {
+            m.postRotate(90);
+        } else if (orientation == Surface.ROTATION_270) {
+            m.postRotate(180);
+        } else if (orientation == Surface.ROTATION_180) {
+            m.postRotate(270);
+        } else if (orientation == Surface.ROTATION_90) {
+            m.postRotate(0);
+        }
+        UtilsCustom.canvasBitmap = Bitmap.createBitmap(UtilsCustom.canvasBitmap, 0, 0, UtilsCustom.canvasBitmap.getWidth(), UtilsCustom.canvasBitmap.getHeight(), m, false);
     }
 
     // handle the event to retake image when the program rejects the captured image

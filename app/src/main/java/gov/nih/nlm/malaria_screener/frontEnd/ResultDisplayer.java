@@ -41,6 +41,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.opencv.android.Utils;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -162,11 +164,11 @@ public class ResultDisplayer extends ResultDisplayerBaseActivity {
                 new Button.OnClickListener() {
                     public void onClick(View view) {
 
-                        // save results image
-                        createDirectoryAndSaveResultImage(bundle);
                         writeLogFile();
 
                         setManualCounts();
+
+                        releaseMemory();
 
                         Intent returnIntent = new Intent();
                         setResult(Activity.RESULT_OK, returnIntent);
@@ -180,11 +182,11 @@ public class ResultDisplayer extends ResultDisplayerBaseActivity {
                 new Button.OnClickListener() {
                     public void onClick(View view) {
 
-                        // save results image
-                        createDirectoryAndSaveResultImage(bundle);
                         writeLogFile();
 
                         setManualCounts();
+
+                        releaseMemory();
 
                         finishActivity(REQUEST_CAM);
 
@@ -222,11 +224,6 @@ public class ResultDisplayer extends ResultDisplayerBaseActivity {
 
         numOfImageText.setText("Image: " + bundle.getInt("imgCount"));
 
-        UtilsCustom.oriSizeMat.release();
-
-        System.gc();
-        Runtime.getRuntime().gc();
-
     }
 
     private void setManualCounts() {
@@ -262,11 +259,7 @@ public class ResultDisplayer extends ResultDisplayerBaseActivity {
 
                 if (picFile != null) {
                     // delete saved pics
-                    File fdelete = new File(picFile);
-
-                    if (fdelete.exists()) {
-                        fdelete.delete();
-                    }
+                    deleteRejectedImages(picFile);
 
                     // delete data from current image
                     UtilsData.cellTotal = UtilsData.cellTotal - UtilsData.cellCurrent;
@@ -277,6 +270,8 @@ public class ResultDisplayer extends ResultDisplayerBaseActivity {
                     UtilsData.resetCurrentCounts();
 
                 }
+
+                releaseMemory();
 
                 setResult(Activity.RESULT_CANCELED, returnIntent);
                 finish();
@@ -398,11 +393,11 @@ public class ResultDisplayer extends ResultDisplayerBaseActivity {
 
         } else if (id == R.id.action_endSession) {
 
-            // save results image
-            createDirectoryAndSaveResultImage(bundle);
             writeLogFile();
 
             setManualCounts();
+
+            releaseMemory();
 
             finishActivity(REQUEST_CAM);
 
@@ -478,6 +473,5 @@ public class ResultDisplayer extends ResultDisplayerBaseActivity {
 
         return imgFile;
     }
-
 
 }

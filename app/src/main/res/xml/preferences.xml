@@ -30,8 +30,8 @@
         <gov.nih.nlm.malaria_screener.custom.SeekBarPreference
             android:defaultValue="50"
             android:key="Th"
-            android:summary="@string/SVM_Th_summary"
-            android:title="@string/SVM_Th"/>
+            android:summary="@string/Classifier_Th_summary"
+            android:title="@string/Sensitivity_level_title"/>
 
         <gov.nih.nlm.malaria_screener.custom.SeekBarPreference_CellNeeded
             android:defaultValue="1000"

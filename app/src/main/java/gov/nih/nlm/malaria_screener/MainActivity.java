@@ -50,7 +50,7 @@ import gov.nih.nlm.malaria_screener.tutorial.About;
 import gov.nih.nlm.malaria_screener.tutorial.Diagram;
 import gov.nih.nlm.malaria_screener.tutorial.TutorialActivity;
 import gov.nih.nlm.malaria_screener.uploadFunction.UploadHashManager;
-import gov.nih.nlm.malaria_screener.settings.UserOnBoardActivity;
+import gov.nih.nlm.malaria_screener.others.UserOnBoardActivity;
 //import gov.nih.nlm.malaria_screener.tutorial.Diagram;
 //import gov.nih.nlm.malaria_screener.tutorial.TutorialActivity;
 

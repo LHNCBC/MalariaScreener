@@ -52,7 +52,7 @@ import java.util.Map;
 import gov.nih.nlm.malaria_screener.R;
 import gov.nih.nlm.malaria_screener.custom.Utils.UtilsMethods;
 import gov.nih.nlm.malaria_screener.database.UpdateListViewEvent;
-import gov.nih.nlm.malaria_screener.settings.NavToPermissionActivity;
+import gov.nih.nlm.malaria_screener.others.NavToPermissionActivity;
 import gov.nih.nlm.malaria_screener.uploadFunction.custom.CustomAdapter_Upload;
 import gov.nih.nlm.malaria_screener.uploadFunction.custom.RowItem_Folders;
 

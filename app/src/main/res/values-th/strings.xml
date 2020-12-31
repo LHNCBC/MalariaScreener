@@ -53,8 +53,8 @@
     <string name="EC">การเพิ่มหรือลดระดับการเปิดรับแสง</string>
 
     <string name="category2">อื่นๆ</string>
-    <string name="SVM_Th">ระดับความไว</string>
-    <string name="SVM_Th_summary">ปรับะดับความไว</string>
+    <string name="Sensitivity_level_title">ระดับความไว</string>
+    <string name="Classifier_Th_summary">ปรับะดับความไว</string>
     <string name="celltotal">เซลล์ทั้งหมดที่ต้องการ</string>
     <string name="celltotal_summary">จำนวนเซลล์ทั้งหมดที่ควรใช้นับในผู้ป่วยแต่ละคน ค่ามาตรฐานคือ 1000</string>
 

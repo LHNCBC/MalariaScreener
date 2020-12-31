@@ -17,12 +17,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
 
-package gov.nih.nlm.malaria_screener.custom;
+package gov.nih.nlm.malaria_screener.database;
 
 import android.content.Context;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
-import androidx.appcompat.widget.Toolbar;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +30,7 @@ import android.view.ViewGroup;
 import com.bumptech.glide.Glide;
 
 import gov.nih.nlm.malaria_screener.R;
+import gov.nih.nlm.malaria_screener.custom.TouchImageView;
 
 /**
  * Created by yuh5 on 4/3/2017.

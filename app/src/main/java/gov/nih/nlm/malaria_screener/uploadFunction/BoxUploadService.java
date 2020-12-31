@@ -243,6 +243,7 @@ public class BoxUploadService extends Service {
         textView.setText(getResources().getString(R.string.upload_float) + currentProgress + "/" + fileNum);
 
         if (currentProgress==fileNum) {
+            Log.d(TAG, "ProgressDoneEvent");
             EventBus.getDefault().post(new ProgressDoneEvent(true));
         }
     }
