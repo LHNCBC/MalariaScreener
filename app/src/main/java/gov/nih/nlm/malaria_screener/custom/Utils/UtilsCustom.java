@@ -46,9 +46,6 @@ public final class UtilsCustom {
 
     private static final String TAG = "MyDebug";
 
-    public static int count = 0;
-    public static int threads = 0;
-
     public static TensorFlowClassifier tensorFlowClassifier_thin;
     public static TensorFlowClassifier tensorFlowClassifier_thick;
     //public static Classifier_Lite tensorFlowClassifier_thin_lite;

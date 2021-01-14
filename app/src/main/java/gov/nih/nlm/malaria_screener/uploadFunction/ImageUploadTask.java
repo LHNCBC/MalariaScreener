@@ -1,3 +1,11 @@
+/* Copyright 2020 The Malaria Screener Authors. All Rights Reserved.
+
+This software was developed under contract funded by the National Library of Medicine,
+which is part of the National Institutes of Health, an agency of the Department of Health and Human
+Services, United States Government.
+
+==============================================================================*/
+
 package gov.nih.nlm.malaria_screener.uploadFunction;
 
 import android.content.Context;
@@ -17,6 +25,11 @@ import java.util.Map;
 import gov.nih.nlm.malaria_screener.custom.Utils.UtilsCustom;
 import gov.nih.nlm.malaria_screener.database.ProgressBarEvent;
 import gov.nih.nlm.malaria_screener.database.UpdateListViewEvent;
+
+/*
+*   This runnable class executes an image upload request using Box API.
+*   The upload request is added to thread pool to be executed.
+* */
 
 public class ImageUploadTask implements Runnable {
 
@@ -62,29 +75,19 @@ public class ImageUploadTask implements Runnable {
                     // update ListView for Upload Activity's UI
                     EventBus.getDefault().post(new UpdateListViewEvent(folderNameStr));
 
-                    // **** update upload progress to floating Service widget *****
-                    //EventBus.getDefault().post(new ProgressBarEvent(1));
-
-                    UtilsCustom.count += 1;
-                    Log.d(TAG, "UtilsCustom.count: " + UtilsCustom.count);
                 }
 
             }
         });
 
-        int num_tries = 0;
+        // send upload request. keeps trying until upload succeeded when socket error happens.
         while (true) {
             try {
                 request.send();
             } catch (BoxException e) {
                 //e.printStackTrace();
 
-                Log.d(TAG, "e.getErrorType().toString(): " + e.getErrorType().toString());
-
-                //Log.d(TAG, "e.getResponse(): " + e.getResponse());
-
-                //Log.d(TAG, "e.getAsBoxError(): " + e.getAsBoxError().getCode());
-
+                // Check type of error. Response code 0 means internet error (socket connection timeout on server side?).
                 if (e.getResponseCode()==0){
 
                     try {
@@ -93,8 +96,6 @@ public class ImageUploadTask implements Runnable {
                         e1.printStackTrace();
                     }
 
-                    num_tries +=1;
-                    Log.d(TAG, "Tries on " + imgFile.toString() + ": " + num_tries);
                     continue;
                 }
             }

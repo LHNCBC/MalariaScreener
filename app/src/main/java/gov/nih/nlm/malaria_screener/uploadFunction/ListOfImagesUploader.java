@@ -4,17 +4,6 @@ This software was developed under contract funded by the National Library of Med
 which is part of the National Institutes of Health, an agency of the Department of Health and Human
 Services, United States Government.
 
-Licensed under GNU General Public License v3.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    https://www.gnu.org/licenses/gpl-3.0.html
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
 ==============================================================================*/
 
 package gov.nih.nlm.malaria_screener.uploadFunction;
@@ -111,7 +100,7 @@ public class ListOfImagesUploader {
             //start thread pool
             UploadExecutorManager.getUploadExecutorManager().startpool();
 
-            // monitor image uploading threads only
+            // start monitor thread. monitor image uploading threads only, do not monitor text files
             MonitorThread monitorThread = new MonitorThread(numOfFiles);
             Thread thread = new Thread(monitorThread);
             thread.start();
@@ -119,7 +108,6 @@ public class ListOfImagesUploader {
             for (int i = 0; i < imgName_arrayList.size(); i++) {
 
                 if (BoxUploadService.stopUpload){
-
                     break;
                 }
 
@@ -174,69 +162,17 @@ public class ListOfImagesUploader {
 
                             // -------- 5. create new thread and upload each image file ------------
 
+                            // create image upload task. And run it in thread pool
                             ImageUploadTask imageUploadTask = new ImageUploadTask(context, mFileApi, imgFile, cur_folder_id, folderNameStr, imgNameStr);
                             UploadExecutorManager.getUploadExecutorManager().runUploadImage(imageUploadTask);
 
-                            UtilsCustom.threads += 1;
-                            Log.d(TAG, "UtilsCustom.threads: " + UtilsCustom.threads);
-
+                            // sleep in between tasks to reduce the amount of tasks waiting at the same time.
                             try {
                                 Thread.sleep(1000);
                             } catch (InterruptedException e1) {
                                 e1.printStackTrace();
                             }
 
-                            /*new Thread() {
-                                @Override
-                                public void run() {
-
-
-                                    // get image file path
-                                    //String imagePathStr = RootFolderName_str + "/" + folderNameStr + "/" + imgNameStr;
-                                    //File imgFile = new File(Environment.getExternalStorageDirectory(), imagePathStr);
-
-                                    BoxRequestsFile.UploadFile request = mFileApi.getUploadRequest(imgFile, cur_folder_id).setProgressListener(new ProgressListener() {
-                                        @Override
-                                        public void onProgressChanged(long numBytes, long totalBytes) {
-
-                                            if (numBytes == totalBytes) {
-
-                                                // -------------------- 6. delete image ID from HashMap ------------------------
-                                                Map<String, String> map = UploadHashManager.hashmap_for_upload;
-
-                                                if (map.containsKey(imgNameStr)) {
-                                                    map.remove(imgNameStr);
-                                                }
-                                                UploadHashManager.saveMap(context, UploadHashManager.hashmap_for_upload);
-
-                                                // update ListView for Upload Activity's UI
-                                                EventBus.getDefault().post(new UpdateListViewEvent(folderNameStr));
-
-                                                // **** update upload progress to floating Service widget *****
-                                                EventBus.getDefault().post(new ProgressBarEvent(1));
-                                            }
-
-                                        }
-                                    });
-
-                                    int num_tries = 5;
-                                    while (num_tries-- != 0) {
-                                        try {
-                                            request.send();
-                                        } catch (BoxException e) {
-                                            //e.printStackTrace();
-                                            Log.d(TAG, "Tries on " + imgFile.toString() + ": " + num_tries);
-
-                                            if (e.getErrorType().toString().equals("OTHER")){
-                                                continue;
-                                            }
-                                        }
-                                        break;
-                                    }
-
-                                }
-
-                            }.start();*/
 
                         }
 
@@ -285,9 +221,6 @@ public class ListOfImagesUploader {
 
                 }
             }
-
-            // **** update upload progress to floating Service widget *****
-            //EventBus.getDefault().post(new ProgressDoneEvent(true));
 
         }
 
