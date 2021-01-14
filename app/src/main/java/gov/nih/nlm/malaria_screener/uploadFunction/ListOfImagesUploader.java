@@ -43,7 +43,9 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Future;
 
 import gov.nih.nlm.malaria_screener.R;
 import gov.nih.nlm.malaria_screener.custom.Utils.UtilsCustom;
@@ -86,7 +88,7 @@ public class ListOfImagesUploader {
     }
 
     // execute 2 and 3, which is listed above in the Class Description.
-    public Void upload_images(ArrayList<String>... arrayLists) {
+    public Void upload_images(int numOfFiles, ArrayList<String>... arrayLists) {
 
         Log.d(TAG, "start to upload");
 
@@ -106,9 +108,18 @@ public class ListOfImagesUploader {
         // ------- 1. iterate all image ID to be uploaded in the provided list ---------------------
         if(imgName_arrayList.size()  == folderName_arrayList.size()) {
 
+            //start thread pool
+            UploadExecutorManager.getUploadExecutorManager().startpool();
+
+            // monitor image uploading threads only
+            MonitorThread monitorThread = new MonitorThread(numOfFiles);
+            Thread thread = new Thread(monitorThread);
+            thread.start();
+
             for (int i = 0; i < imgName_arrayList.size(); i++) {
 
                 if (BoxUploadService.stopUpload){
+
                     break;
                 }
 
@@ -162,9 +173,23 @@ public class ListOfImagesUploader {
                         if (imgFile.toString().contains(imageNameOnly)){
 
                             // -------- 5. create new thread and upload each image file ------------
-                            new Thread() {
+
+                            ImageUploadTask imageUploadTask = new ImageUploadTask(context, mFileApi, imgFile, cur_folder_id, folderNameStr, imgNameStr);
+                            UploadExecutorManager.getUploadExecutorManager().runUploadImage(imageUploadTask);
+
+                            UtilsCustom.threads += 1;
+                            Log.d(TAG, "UtilsCustom.threads: " + UtilsCustom.threads);
+
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException e1) {
+                                e1.printStackTrace();
+                            }
+
+                            /*new Thread() {
                                 @Override
                                 public void run() {
+
 
                                     // get image file path
                                     //String imagePathStr = RootFolderName_str + "/" + folderNameStr + "/" + imgNameStr;
@@ -201,7 +226,7 @@ public class ListOfImagesUploader {
                                         } catch (BoxException e) {
                                             //e.printStackTrace();
                                             Log.d(TAG, "Tries on " + imgFile.toString() + ": " + num_tries);
-                                            
+
                                             if (e.getErrorType().toString().equals("OTHER")){
                                                 continue;
                                             }
@@ -211,7 +236,7 @@ public class ListOfImagesUploader {
 
                                 }
 
-                            }.start();
+                            }.start();*/
 
                         }
 
@@ -221,7 +246,6 @@ public class ListOfImagesUploader {
                 }
 
             }
-
 
             // ------------ 7. Upload .txt and database (.csv) files in root folder ----------------
             final File rootFile = new File(Environment.getExternalStorageDirectory(

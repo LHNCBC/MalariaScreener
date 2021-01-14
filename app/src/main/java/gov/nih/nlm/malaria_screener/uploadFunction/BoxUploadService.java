@@ -45,6 +45,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import gov.nih.nlm.malaria_screener.R;
+import gov.nih.nlm.malaria_screener.custom.Utils.UtilsCustom;
 import gov.nih.nlm.malaria_screener.database.ProgressBarEvent;
 import gov.nih.nlm.malaria_screener.database.ProgressDoneEvent;
 
@@ -170,6 +171,8 @@ public class BoxUploadService extends Service {
 
                                     stopUpload = true;
                                     stopSelf();
+
+                                    MonitorThread.run = false;
                                 }
                             });
 
@@ -237,21 +240,24 @@ public class BoxUploadService extends Service {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onProgressEvent(ProgressBarEvent event) {
 
-        currentProgress = currentProgress + event.getProgress();
+        //currentProgress = currentProgress + event.getProgress();
+        currentProgress = event.getProgress();
 
         progressBar.setProgress(currentProgress);
         textView.setText(getResources().getString(R.string.upload_float) + currentProgress + "/" + fileNum);
 
-        if (currentProgress==fileNum) {
+        /*if (currentProgress==fileNum) {
             Log.d(TAG, "ProgressDoneEvent");
             EventBus.getDefault().post(new ProgressDoneEvent(true));
-        }
+        }*/
+
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onProgressDone(ProgressDoneEvent event) {
         progressBar_circle.setVisibility(View.GONE);
         textView.setText(R.string.upload_finished);
+
         //stopSelf();
     }
 
@@ -298,7 +304,7 @@ public class BoxUploadService extends Service {
             }
         }
 
-        final File rootFile = new File(Environment.getExternalStorageDirectory(
+        /*final File rootFile = new File(Environment.getExternalStorageDirectory(
         ), RootFolderName_str);
 
         if (rootFile.listFiles() != null) {
@@ -318,7 +324,7 @@ public class BoxUploadService extends Service {
                     }
                 }
             }
-        }
+        }*/
 
         return numOfFiles;
     }

@@ -26,6 +26,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkInfo;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -35,6 +36,7 @@ import com.box.androidsdk.content.BoxConfig;
 import com.box.androidsdk.content.auth.BoxAuthentication;
 import com.box.androidsdk.content.models.BoxSession;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import gov.nih.nlm.malaria_screener.R;
@@ -112,7 +114,7 @@ public class UploadSessionManager implements BoxAuthentication.AuthListener{
                     context.startService(intent);
 
                     ListOfImagesUploader listOfImagesUploader = new ListOfImagesUploader(context, mSession);
-                    listOfImagesUploader.upload_images(imageNameList, folderNameList);
+                    listOfImagesUploader.upload_images(cal_num_of_files(), imageNameList, folderNameList);
                 }
 
             }.start();
@@ -160,6 +162,63 @@ public class UploadSessionManager implements BoxAuthentication.AuthListener{
         }
 
         return isWifiConn;
+    }
+
+    private int cal_num_of_files(){
+
+        String RootFolderName_str = "NLM_Malaria_Screener";
+
+        int numOfFiles = 0;
+
+        for (int i = 0; i < imageNameList.size(); i++) {
+
+            final String imgNameStr = imageNameList.get(i);
+            final String folderNameStr = folderNameList.get(i);
+
+            int endIndex = imgNameStr.lastIndexOf(".");
+            final String imageNameOnly = imgNameStr.substring(0, endIndex);
+
+            final File folderFile = new File(Environment.getExternalStorageDirectory(
+            ), RootFolderName_str + "/" + folderNameStr);
+
+            File[] imageListing = folderFile.listFiles(); // list all images of one session
+
+            if (imageListing == null){
+
+            } else {
+
+                for (final File imgFile : imageListing) {
+
+                    if (imgFile.toString().contains(imageNameOnly)) {
+                        numOfFiles += 1;
+                    }
+                }
+            }
+        }
+
+        /*final File rootFile = new File(Environment.getExternalStorageDirectory(
+        ), RootFolderName_str);
+
+        if (rootFile.listFiles() != null) {
+
+            final File[] listing = rootFile.listFiles();    // list all files & folders
+            final int length = listing.length;
+
+            if (length > 0) {
+
+                // iterate through folders & files
+                for (final File file : listing) {
+
+                    String filePathStr = file.toString();
+
+                    if (filePathStr.contains(".txt") || filePathStr.contains(".csv")) {
+                        numOfFiles += 1;
+                    }
+                }
+            }
+        }*/
+
+        return numOfFiles;
     }
 
 }

@@ -99,6 +99,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Log.d(TAG, "AvailableProcessors: " + Runtime.getRuntime().availableProcessors());
+
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
         boolean doNotShow_register = settings.getBoolean("do_not_show_again_register", false);
 
