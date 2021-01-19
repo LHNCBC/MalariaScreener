@@ -312,12 +312,14 @@ public class Cells {
             }
 
             // last batch
-            for (int n = 0; n < lastBatchSize; n++) {
+            if (lastBatchSize != 0) {
+                for (int n = 0; n < lastBatchSize; n++) {
 
-                floatPixels_last = putInPixels(iteration, n, batchSize, floatPixels_last);
+                    floatPixels_last = putInPixels(iteration, n, batchSize, floatPixels_last);
+                }
+
+                UtilsCustom.tensorFlowClassifier_thin.recongnize_batch(floatPixels_last, lastBatchSize);
             }
-
-            UtilsCustom.tensorFlowClassifier_thin.recongnize_batch(floatPixels_last, lastBatchSize);
 
             long endTime_NN = System.currentTimeMillis();
             long totalTime_NN = endTime_NN - startTimeNN;

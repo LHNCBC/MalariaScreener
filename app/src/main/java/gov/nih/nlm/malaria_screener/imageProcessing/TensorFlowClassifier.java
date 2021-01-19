@@ -101,8 +101,6 @@ public class TensorFlowClassifier {
 
             float[] output = new float[numClasses * dims];
 
-            float[] output_mapped = new float[dims];
-
             tfHelper.feed(inputName, pixels, dims, height, width, 3);
 
             //get the possible outputs
@@ -149,7 +147,6 @@ public class TensorFlowClassifier {
             // Therefore, output[i*2] contains confidence for normal class
             if (output[i*2+1] > UtilsCustom.Th_thick) {
                 UtilsCustom.results.add(1);
-
             } else {
                 UtilsCustom.results.add(0);
 

@@ -123,6 +123,7 @@ public class ThickSmearProcessor {
 
         int patch_num = candi_patches.height()/inputSize;
 
+
         int iteration = patch_num / batch_size;
         int lastBatchSize = patch_num % batch_size;
 
@@ -142,12 +143,14 @@ public class ThickSmearProcessor {
         }
 
         // last batch
-        for (int n = 0; n < lastBatchSize; n++) {
+        if (lastBatchSize != 0) {
+            for (int n = 0; n < lastBatchSize; n++) {
 
-            floatPixels_last = putInPixels(iteration, n, batch_size, floatPixels_last);
+                floatPixels_last = putInPixels(iteration, n, batch_size, floatPixels_last);
+            }
+
+            UtilsCustom.tensorFlowClassifier_thick.recongnize_batch_thick(floatPixels, batch_size);
         }
-
-        UtilsCustom.tensorFlowClassifier_thick.recongnize_batch_thick(floatPixels, batch_size);
 
         // ------------------------------------ TF Lite -----------------------------------
         /*List<Bitmap> bitmapList = new ArrayList<>();
