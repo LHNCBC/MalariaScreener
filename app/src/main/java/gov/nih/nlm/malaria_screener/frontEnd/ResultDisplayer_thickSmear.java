@@ -29,6 +29,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import androidx.appcompat.widget.Toolbar;
+
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -162,6 +164,8 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
         endButton.setOnClickListener(
                 new Button.OnClickListener() {
                     public void onClick(View view) {
+
+                        get_slide_pred();
 
                         writeLogFile();
 
@@ -457,6 +461,33 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
         }
 
         return imgFile;
+    }
+
+    /*
+    *   Calculate the confidence for current slide. Reset variables.
+    * */
+    private boolean get_slide_pred(){
+
+        float slide_conf = 0;
+        float slide_th = 0.9f;
+
+        for (float conf : UtilsCustom.pos_confs_im){
+            Log.d(TAG, "image confidence: " + conf);
+            if (conf > slide_conf){
+                slide_conf = conf;
+            }
+        }
+
+        UtilsCustom.pos_confs_im.clear();
+        Log.d(TAG, "UtilsCustom.confs_im size: " + UtilsCustom.pos_confs_im.size());
+
+        if (slide_conf > slide_th){
+            Log.d(TAG, "Positive.");
+        } else {
+            Log.d(TAG, "Negative.");
+        }
+
+        return true;
     }
 
 }

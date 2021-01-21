@@ -14,4 +14,13 @@
     <color name="button_no_bg">#005891EC</color>
     <color name="button_no_bg_selected">#D9C9C9C9</color>
 
+    <!-- parasite marking colors-->
+    <color name="level_0">#02e02b</color>
+    <color name="level_1">#ffef63</color>
+    <color name="level_2">#ffb963</color>
+    <color name="level_3">#fc6a0f</color>
+    <color name="level_4">#db1600</color>
+    <color name="level_5">#910000</color>
+
+
 </resources>

@@ -147,8 +147,10 @@ public class TensorFlowClassifier {
             // Therefore, output[i*2] contains confidence for normal class
             if (output[i*2+1] > UtilsCustom.Th_thick) {
                 UtilsCustom.results.add(1);
+                UtilsCustom.confs.add(output[i*2+1]);
             } else {
                 UtilsCustom.results.add(0);
+                UtilsCustom.confs.add(output[i*2]);
 
             }
         }

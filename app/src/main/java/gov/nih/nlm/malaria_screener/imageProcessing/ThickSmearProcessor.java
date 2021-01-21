@@ -19,6 +19,7 @@ limitations under the License.
 
 package gov.nih.nlm.malaria_screener.imageProcessing;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -30,14 +31,11 @@ import org.opencv.android.Utils;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.Rect;
-import org.opencv.core.Size;
-import org.opencv.imgproc.Imgproc;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
+import gov.nih.nlm.malaria_screener.R;
 import gov.nih.nlm.malaria_screener.custom.Utils.UtilsCustom;
 import gov.nih.nlm.malaria_screener.custom.Utils.UtilsData;
 
@@ -60,11 +58,13 @@ public class ThickSmearProcessor {
     Mat candi_patches = new Mat(); // concatenated parasite candidate patches
 
     Mat extra_Mat = new Mat();
-    Bitmap exraBitmap;
 
-    public ThickSmearProcessor(Mat oriSizeMat) {
+    Context context;
+
+    public ThickSmearProcessor(Context context, Mat oriSizeMat) {
 
         this.oriSizeMat = oriSizeMat;
+        this.context =context;
     }
 
     public int[] processImage() {
@@ -112,7 +112,7 @@ public class ThickSmearProcessor {
 
         Canvas canvas = new Canvas(UtilsCustom.canvasBitmap);
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setStrokeWidth(5);
+        paint.setStrokeWidth(6);
         paint.setStyle(Paint.Style.STROKE);
         paint.setColor(Color.RED);
 
@@ -120,9 +120,9 @@ public class ThickSmearProcessor {
         int parasiteCount = 0;
 
         UtilsCustom.results.clear();
+        UtilsCustom.confs.clear();
 
         int patch_num = candi_patches.height()/inputSize;
-
 
         int iteration = patch_num / batch_size;
         int lastBatchSize = patch_num % batch_size;
@@ -189,13 +189,42 @@ public class ThickSmearProcessor {
 
             if (UtilsCustom.results.get(i)==1) {
                 parasiteCount++;
-                paint.setColor(Color.RED);
-                canvas.drawCircle(x[i], y[i], 20, paint);
+
+                Log.d(TAG, "conf: " + UtilsCustom.confs.get(i));
+
+                //draw color according to confidence level
+                if (UtilsCustom.confs.get(i) > 0.5 && UtilsCustom.confs.get(i) <= 0.6){             // level 1
+                    paint.setColor(context.getResources().getColor(R.color.level_1));
+                } else if (UtilsCustom.confs.get(i) > 0.6 && UtilsCustom.confs.get(i) <= 0.7){      // level 2
+                    paint.setColor(context.getResources().getColor(R.color.level_2));
+                } else if (UtilsCustom.confs.get(i) > 0.7 && UtilsCustom.confs.get(i) <= 0.8){      // level 3
+                    paint.setColor(context.getResources().getColor(R.color.level_3));
+                } else if (UtilsCustom.confs.get(i) > 0.8 && UtilsCustom.confs.get(i) <= 0.9){      // level 4
+                    paint.setColor(context.getResources().getColor(R.color.level_4));
+                } else if (UtilsCustom.confs.get(i) > 0.9 && UtilsCustom.confs.get(i) <= 1.0){      // level 4
+                    paint.setColor(context.getResources().getColor(R.color.level_5));
+                } else {
+                    paint.setColor(context.getResources().getColor(R.color.level_0));
+                }
+
+                canvas.drawCircle(x[i], y[i], 25, paint);
             } else {
                     /*paint.setColor(Color.BLUE);
                     canvas.drawCircle(x[i], y[i], 20, paint);*/
             }
         }
+
+        // get image confidence
+        float conf_im = 0;
+        for (int i=0; i <patch_num; i++) {
+
+            if (UtilsCustom.results.get(i) == 1) {
+                if (UtilsCustom.confs.get(i) > conf_im){
+                    conf_im = UtilsCustom.confs.get(i);
+                }
+            }
+        }
+        UtilsCustom.pos_confs_im.add(conf_im);
 
         int[] res = new int[2];
 

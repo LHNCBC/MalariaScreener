@@ -64,7 +64,10 @@ public final class UtilsCustom {
     public static double Th_thick = 0.5;
 
     // Cell global variables
-    public static ArrayList<Integer> results = new ArrayList<>();
+    public static ArrayList<Integer> results = new ArrayList<>();   // pred label for each patch
+    public static ArrayList<Float> confs = new ArrayList<>();       // confidence for each patch
+    public static ArrayList<Float> pos_confs_im = new ArrayList<>();       // image confidence
+
     public static int[][] cellLocation;
     public static int cellCount = 0;
 

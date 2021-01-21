@@ -933,7 +933,7 @@ public class CameraActivity extends AppCompatActivity {
 
         long startTime_w = System.currentTimeMillis();
 
-        ThickSmearProcessor thickSmearProcessor = new ThickSmearProcessor(UtilsCustom.oriSizeMat);
+        ThickSmearProcessor thickSmearProcessor = new ThickSmearProcessor(getApplicationContext(), UtilsCustom.oriSizeMat);
         int[] res = thickSmearProcessor.processImage();
 
         saveResults_thick(res[0], res[1]);
