@@ -30,6 +30,7 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import androidx.appcompat.widget.Toolbar;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -142,6 +143,7 @@ public class ResultDisplayer extends ResultDisplayerBaseActivity {
         Intent intent = getIntent();
         bundle = intent.getExtras();
         picFile = bundle.getString("picFile");
+        final int im_num = bundle.getInt("imgCount");
 
         WB = intent.getStringExtra("WB");
         processingTime = Long.valueOf(intent.getStringExtra("time"));
@@ -181,6 +183,8 @@ public class ResultDisplayer extends ResultDisplayerBaseActivity {
         endButton.setOnClickListener(
                 new Button.OnClickListener() {
                     public void onClick(View view) {
+
+                        get_slide_pred(im_num);
 
                         writeLogFile();
 
@@ -222,7 +226,7 @@ public class ResultDisplayer extends ResultDisplayerBaseActivity {
         progressBar.setMax(totalCellNeeded);
         progressText.setText(UtilsData.cellTotal + "/" + totalCellNeeded);
 
-        numOfImageText.setText("Image: " + bundle.getInt("imgCount"));
+        numOfImageText.setText("Image: " + im_num);
 
     }
 
@@ -472,6 +476,35 @@ public class ResultDisplayer extends ResultDisplayerBaseActivity {
         }
 
         return imgFile;
+    }
+
+    /*
+     *   Calculate the confidence for current slide. Reset variables.
+     * */
+    private boolean get_slide_pred(int im_num){
+
+        float slide_conf = 0;
+        float slide_th = 0.5f;
+
+        if (!UtilsCustom.pos_confs_im.isEmpty()) {
+            for (float conf : UtilsCustom.pos_confs_im) {
+                slide_conf += conf;
+            }
+            slide_conf = slide_conf / (float) im_num;
+        }
+
+        Log.d(TAG, "slide_conf: " + slide_conf);
+
+        UtilsCustom.pos_confs_im.clear();
+        Log.d(TAG, "UtilsCustom.confs_im size: " + UtilsCustom.pos_confs_im.size());
+
+        if (slide_conf > slide_th){
+            Log.d(TAG, "Positive.");
+        } else {
+            Log.d(TAG, "Negative.");
+        }
+
+        return true;
     }
 
 }

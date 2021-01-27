@@ -65,7 +65,7 @@ public final class UtilsCustom {
 
     // Cell global variables
     public static ArrayList<Integer> results = new ArrayList<>();   // pred label for each patch
-    public static ArrayList<Float> confs = new ArrayList<>();       // confidence for each patch
+    public static ArrayList<Float> confs_patch = new ArrayList<>();       // confidence for each patch
     public static ArrayList<Float> pos_confs_im = new ArrayList<>();       // image confidence
 
     public static int[][] cellLocation;

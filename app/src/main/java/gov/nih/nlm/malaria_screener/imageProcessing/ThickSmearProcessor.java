@@ -121,7 +121,7 @@ public class ThickSmearProcessor {
         int parasiteCount = 0;
 
         UtilsCustom.results.clear();
-        UtilsCustom.confs.clear();
+        UtilsCustom.confs_patch.clear();
 
         int patch_num = candi_patches.height()/inputSize;
 
@@ -195,16 +195,17 @@ public class ThickSmearProcessor {
 
                 // added for displaying pred possibility
                 paint.setStrokeWidth(6);
+
                 //draw color according to confidence level
-                if (UtilsCustom.confs.get(i) > 0.5 && UtilsCustom.confs.get(i) <= 0.6){             // level 1
+                if (UtilsCustom.confs_patch.get(i) > 0.5 && UtilsCustom.confs_patch.get(i) <= 0.6){             // level 1
                     paint.setColor(context.getResources().getColor(R.color.level_1));
-                } else if (UtilsCustom.confs.get(i) > 0.6 && UtilsCustom.confs.get(i) <= 0.7){      // level 2
+                } else if (UtilsCustom.confs_patch.get(i) > 0.6 && UtilsCustom.confs_patch.get(i) <= 0.7){      // level 2
                     paint.setColor(context.getResources().getColor(R.color.level_2));
-                } else if (UtilsCustom.confs.get(i) > 0.7 && UtilsCustom.confs.get(i) <= 0.8){      // level 3
+                } else if (UtilsCustom.confs_patch.get(i) > 0.7 && UtilsCustom.confs_patch.get(i) <= 0.8){      // level 3
                     paint.setColor(context.getResources().getColor(R.color.level_3));
-                } else if (UtilsCustom.confs.get(i) > 0.8 && UtilsCustom.confs.get(i) <= 0.9){      // level 4
+                } else if (UtilsCustom.confs_patch.get(i) > 0.8 && UtilsCustom.confs_patch.get(i) <= 0.9){      // level 4
                     paint.setColor(context.getResources().getColor(R.color.level_4));
-                } else if (UtilsCustom.confs.get(i) > 0.9 && UtilsCustom.confs.get(i) <= 1.0){      // level 4
+                } else if (UtilsCustom.confs_patch.get(i) > 0.9 && UtilsCustom.confs_patch.get(i) <= 1.0){      // level 4
                     paint.setColor(context.getResources().getColor(R.color.level_5));
                 } else {
                     paint.setColor(context.getResources().getColor(R.color.level_0));
@@ -213,7 +214,7 @@ public class ThickSmearProcessor {
                 canvas.drawCircle(x[i], y[i], 25, paint);
 
                 // added for displaying pred possibility
-                String text = new DecimalFormat("##.##").format(UtilsCustom.confs.get(i));
+                String text = new DecimalFormat("##.##").format(UtilsCustom.confs_patch.get(i));
                 paint.setStrokeWidth(5);
                 paint.setTextSize(50);
                 canvas.drawText(text, x[i]-50, y[i]-50, paint);
@@ -225,20 +226,11 @@ public class ThickSmearProcessor {
         }
 
         // get image confidence
-        float conf_im = 0;
-        /*for (int i=0; i <patch_num; i++) {
-
-            if (UtilsCustom.results.get(i) == 1) {
-                if (UtilsCustom.confs.get(i) > conf_im){
-                    conf_im = UtilsCustom.confs.get(i);
-                }
-            }
-        }*/
-
         if (parasiteCount >0) {
+            float conf_im = 0;
             for (int i = 0; i < patch_num; i++) {
                 if (UtilsCustom.results.get(i) == 1) {
-                    conf_im += UtilsCustom.confs.get(i);
+                    conf_im += UtilsCustom.confs_patch.get(i);
                 }
             }
             UtilsCustom.pos_confs_im.add(conf_im / (float) parasiteCount);

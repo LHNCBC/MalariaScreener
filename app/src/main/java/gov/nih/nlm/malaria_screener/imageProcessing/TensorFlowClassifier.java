@@ -20,14 +20,7 @@ limitations under the License.
 package gov.nih.nlm.malaria_screener.imageProcessing;
 
 import android.content.res.AssetManager;
-import android.graphics.Bitmap;
-import android.util.Log;
 
-import org.opencv.android.Utils;
-import org.opencv.core.CvType;
-import org.opencv.core.Mat;
-import org.opencv.core.Size;
-import org.opencv.imgproc.Imgproc;
 import org.tensorflow.contrib.android.TensorFlowInferenceInterface;
 
 import java.io.IOException;
@@ -114,12 +107,13 @@ public class TensorFlowClassifier {
                 // In the loaded TF thin smear model(Shiva's) 0 is infected, 1 is normal.
                 // Therefore, output[i*2] contains confidence for infected class
                 if (output[i*2] > UtilsCustom.Th) {
-                    // normal confidence higher
-                    UtilsCustom.results.add(1);
-
-                } else {
                     // infected confidence higher
+                    UtilsCustom.results.add(1);
+                    UtilsCustom.confs_patch.add(output[i*2]);
+                } else {
+                    // normal confidence higher
                     UtilsCustom.results.add(0);
+                    UtilsCustom.confs_patch.add(output[i*2+1]);
                 }
 
                 //Log.d(TAG, "DL chip output: " + i + " , " + output[i*2]);
@@ -147,10 +141,10 @@ public class TensorFlowClassifier {
             // Therefore, output[i*2] contains confidence for normal class
             if (output[i*2+1] > UtilsCustom.Th_thick) {
                 UtilsCustom.results.add(1);
-                UtilsCustom.confs.add(output[i*2+1]);
+                UtilsCustom.confs_patch.add(output[i*2+1]);
             } else {
                 UtilsCustom.results.add(0);
-                UtilsCustom.confs.add(output[i*2]);
+                UtilsCustom.confs_patch.add(output[i*2]);
 
             }
         }
