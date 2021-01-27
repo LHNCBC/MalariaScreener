@@ -44,6 +44,7 @@ import android.widget.Toast;
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
+import gov.nih.nlm.malaria_screener.batchProcessing.BatchProcessing;
 import gov.nih.nlm.malaria_screener.camera.CameraActivity;
 import gov.nih.nlm.malaria_screener.database.DatabasePage;
 import gov.nih.nlm.malaria_screener.tutorial.About;
@@ -126,6 +127,7 @@ public class MainActivity extends AppCompatActivity {
 
         Button newSessionButton = (Button) findViewById(R.id.newSession_button);
         Button databaseButton = (Button) findViewById(R.id.database_button);
+        Button batchProcessingButton = (Button) findViewById(R.id.batchProcessing_button);
 
         //Disable if no camera
         if (!hasCamera()) {
@@ -150,6 +152,18 @@ public class MainActivity extends AppCompatActivity {
 
                         Intent dbIntent = new Intent(v.getContext(), DatabasePage.class);
                         startActivity(dbIntent);
+
+                    }
+                }
+        );
+
+        // batch processing
+        batchProcessingButton.setOnClickListener(
+                 new Button.OnClickListener() {
+                    public void onClick(View v) {
+
+                        Intent bpIntent = new Intent(v.getContext(), BatchProcessing.class);
+                        startActivity(bpIntent);
 
                     }
                 }

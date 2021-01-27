@@ -18,6 +18,18 @@
         android:background="#66FFFFFF"
         android:textAppearance="@android:style/TextAppearance.Large"
         android:id="@+id/newSession_button"
+        android:layout_above="@+id/batchProcessing_button"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="18dp" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/import_images"
+        android:textColor="#1F568a"
+        android:background="#66FFFFFF"
+        android:textAppearance="@android:style/TextAppearance.Large"
+        android:id="@+id/batchProcessing_button"
         android:layout_above="@+id/database_button"
         android:layout_alignParentStart="true"
         android:layout_marginBottom="18dp" />

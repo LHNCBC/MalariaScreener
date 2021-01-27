@@ -11,19 +11,21 @@
         android:largeHeap="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
-        <activity android:name=".others.NavToPermissionActivity"
+        <activity android:name=".batchProcessing.BatchProcessing"
             android:configChanges="orientation|screenSize"
-            android:screenOrientation="fullSensor"/>
+            android:screenOrientation="fullSensor" />
+        <activity
+            android:name=".others.NavToPermissionActivity"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="fullSensor" />
         <activity
             android:name=".uploadFunction.UploadActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="fullSensor" />
-
         <activity
             android:name=".others.DisclaimerActivity"
             android:label="@string/title_activity_disclaimer"
             android:theme="@style/NoActionBar" />
-
         <activity android:name=".others.UserOnBoardActivity" />
         <activity
             android:name=".MainActivity"
@@ -145,6 +147,7 @@
             android:label="Results"
             android:parentActivityName=".camera.CameraActivity"
             android:screenOrientation="fullSensor" />
+
         <service
             android:name=".uploadFunction.BoxUploadService"
             android:enabled="true"
@@ -153,16 +156,16 @@
     <uses-feature
         android:name="android.hardware.camera"
         android:required="true" />
+
     <uses-feature android:name="android.hardware.camera.autofocus" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
-
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
     <uses-permission android:name="android.permission.ACTION_MANAGE_OVERLAY_PERMISSION" />
 
 </manifest>

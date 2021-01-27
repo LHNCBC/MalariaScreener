@@ -119,6 +119,8 @@ public class ThinSmearProcessor {
             // 12/17/2020, not saving mask images anymore. by Hang
             //saveMaskImageHandler.sendEmptyMessage(0);
 
+
+
             int[] res = new int[2];
 
             res[0] = infectedCount;

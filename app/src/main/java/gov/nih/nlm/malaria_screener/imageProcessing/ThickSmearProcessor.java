@@ -34,6 +34,7 @@ import org.opencv.core.Rect;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
 
 import gov.nih.nlm.malaria_screener.R;
 import gov.nih.nlm.malaria_screener.custom.Utils.UtilsCustom;
@@ -190,8 +191,10 @@ public class ThickSmearProcessor {
             if (UtilsCustom.results.get(i)==1) {
                 parasiteCount++;
 
-                Log.d(TAG, "conf: " + UtilsCustom.confs.get(i));
+                //Log.d(TAG, "conf: " + UtilsCustom.confs.get(i));
 
+                // added for displaying pred possibility
+                paint.setStrokeWidth(6);
                 //draw color according to confidence level
                 if (UtilsCustom.confs.get(i) > 0.5 && UtilsCustom.confs.get(i) <= 0.6){             // level 1
                     paint.setColor(context.getResources().getColor(R.color.level_1));
@@ -208,6 +211,13 @@ public class ThickSmearProcessor {
                 }
 
                 canvas.drawCircle(x[i], y[i], 25, paint);
+
+                // added for displaying pred possibility
+                String text = new DecimalFormat("##.##").format(UtilsCustom.confs.get(i));
+                paint.setStrokeWidth(5);
+                paint.setTextSize(50);
+                canvas.drawText(text, x[i]-50, y[i]-50, paint);
+
             } else {
                     /*paint.setColor(Color.BLUE);
                     canvas.drawCircle(x[i], y[i], 20, paint);*/
@@ -216,15 +226,23 @@ public class ThickSmearProcessor {
 
         // get image confidence
         float conf_im = 0;
-        for (int i=0; i <patch_num; i++) {
+        /*for (int i=0; i <patch_num; i++) {
 
             if (UtilsCustom.results.get(i) == 1) {
                 if (UtilsCustom.confs.get(i) > conf_im){
                     conf_im = UtilsCustom.confs.get(i);
                 }
             }
+        }*/
+
+        if (parasiteCount >0) {
+            for (int i = 0; i < patch_num; i++) {
+                if (UtilsCustom.results.get(i) == 1) {
+                    conf_im += UtilsCustom.confs.get(i);
+                }
+            }
+            UtilsCustom.pos_confs_im.add(conf_im / (float) parasiteCount);
         }
-        UtilsCustom.pos_confs_im.add(conf_im);
 
         int[] res = new int[2];
 

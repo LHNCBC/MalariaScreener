@@ -430,4 +430,7 @@
         display over other apps\".
     </string>
 
+    <!-- Strings for batchProcessing -->
+    <string name="import_images">Import Images</string>
+
 </resources>
