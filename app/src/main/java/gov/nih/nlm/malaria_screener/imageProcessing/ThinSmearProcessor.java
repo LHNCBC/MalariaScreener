@@ -19,6 +19,7 @@ limitations under the License.
 
 package gov.nih.nlm.malaria_screener.imageProcessing;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -37,6 +38,7 @@ import org.opencv.imgcodecs.Imgcodecs;
 import java.io.File;
 import java.io.IOException;
 
+import gov.nih.nlm.malaria_screener.R;
 import gov.nih.nlm.malaria_screener.custom.Utils.UtilsCustom;
 import gov.nih.nlm.malaria_screener.imageProcessing.Segmentation.MarkerBasedWatershed;
 
@@ -54,6 +56,12 @@ public class ThinSmearProcessor {
     int[][] cellLocation;
     private int cellCount = 0;
     private int infectedCount = 0;
+
+    Context context;
+
+    public ThinSmearProcessor(Context context){
+        this.context = context;
+    }
 
     public int[] processImage(Mat resizedMat, int orientation, float RV, boolean takenFromCam, File pictureFileCopy){
 
@@ -119,6 +127,19 @@ public class ThinSmearProcessor {
             // 12/17/2020, not saving mask images anymore. by Hang
             //saveMaskImageHandler.sendEmptyMessage(0);
 
+            // get image confidence
+            if (infectedCount > 0) {
+                float conf_im = 0;
+                for (int i = 0; i < cellCount; i++) {
+
+                    if (UtilsCustom.results.get(i) == 1) {
+                        conf_im += UtilsCustom.confs_patch.get(i);
+                    }
+                }
+                conf_im = conf_im / (float) infectedCount;
+                UtilsCustom.pos_confs_im.add(conf_im);
+            }
+
             int[] res = new int[2];
 
             res[0] = infectedCount;
@@ -140,7 +161,22 @@ public class ThinSmearProcessor {
                 //canvas.drawText(String.valueOf(infectedNum), cellLocation[i][1] - 7, cellLocation[i][0] - 7, paint);
             } else if (UtilsCustom.results.get(i) == 1) {
                 infectedCount++;
-                paint.setColor(Color.RED);
+
+                //draw color according to confidence level
+                if (UtilsCustom.confs_patch.get(i) > 0.5 && UtilsCustom.confs_patch.get(i) <= 0.6){             // level 1
+                    paint.setColor(context.getResources().getColor(R.color.level_1));
+                } else if (UtilsCustom.confs_patch.get(i) > 0.6 && UtilsCustom.confs_patch.get(i) <= 0.7){      // level 2
+                    paint.setColor(context.getResources().getColor(R.color.level_2));
+                } else if (UtilsCustom.confs_patch.get(i) > 0.7 && UtilsCustom.confs_patch.get(i) <= 0.8){      // level 3
+                    paint.setColor(context.getResources().getColor(R.color.level_3));
+                } else if (UtilsCustom.confs_patch.get(i) > 0.8 && UtilsCustom.confs_patch.get(i) <= 0.9){      // level 4
+                    paint.setColor(context.getResources().getColor(R.color.level_4));
+                } else if (UtilsCustom.confs_patch.get(i) > 0.9 && UtilsCustom.confs_patch.get(i) <= 1.0){      // level 4
+                    paint.setColor(context.getResources().getColor(R.color.level_5));
+                } else {
+                    paint.setColor(context.getResources().getColor(R.color.level_0));
+                }
+
                 canvas.drawCircle(UtilsCustom.cellLocation[i][1] / RV, UtilsCustom.cellLocation[i][0] / RV, 2, paint);
 
                 if (takenFromCam) { // test this canvas rotate

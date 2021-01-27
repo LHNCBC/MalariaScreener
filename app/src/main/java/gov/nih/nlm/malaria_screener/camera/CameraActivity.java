@@ -891,7 +891,7 @@ public class CameraActivity extends AppCompatActivity {
 
         long startTime = System.currentTimeMillis();
 
-        ThinSmearProcessor thinSmearProcessor = new ThinSmearProcessor();
+        ThinSmearProcessor thinSmearProcessor = new ThinSmearProcessor(getApplicationContext());
         int[] res = thinSmearProcessor.processImage(resizedMat, orientation, RV, takenFromCam, pictureFileCopy);
 
         if (res == null){
