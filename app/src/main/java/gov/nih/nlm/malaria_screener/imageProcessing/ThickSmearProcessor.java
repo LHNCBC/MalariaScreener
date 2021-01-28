@@ -236,6 +236,7 @@ public class ThickSmearProcessor {
             UtilsCustom.pos_confs_im.add(conf_im / (float) parasiteCount);
         }
 
+
         int[] res = new int[2];
 
         res[0] = parasiteCount;
