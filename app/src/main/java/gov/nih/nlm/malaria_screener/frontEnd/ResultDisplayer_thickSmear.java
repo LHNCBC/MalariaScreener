@@ -74,6 +74,8 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
 
     boolean imageAcquisition = false;
 
+    int im_num;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -127,6 +129,7 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
         Intent intent = getIntent();
         bundle = intent.getExtras();
         picFile = bundle.getString("picFile");
+        im_num = bundle.getInt("imgCount");
 
         WB = intent.getStringExtra("WB");
         processingTime = Long.valueOf(intent.getStringExtra("time"));
@@ -165,7 +168,7 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
                 new Button.OnClickListener() {
                     public void onClick(View view) {
 
-                        get_slide_pred();
+                        get_slide_pred(im_num);
 
                         writeLogFile();
 
@@ -186,16 +189,17 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
 
         String[] values_title = getResources().getStringArray(R.array.count_item);
 
-        int[] values_parasites = new int[2];
         int[] values_wbcs = new int[2];
-        values_parasites[0] = UtilsData.parasiteCurrent;
-        values_parasites[1] = UtilsData.parasiteTotal;
+        int[] values_parasites = new int[2];
         values_wbcs[0] = UtilsData.WBCCurrent;
         values_wbcs[1] = UtilsData.WBCTotal;
+        values_parasites[0] = UtilsData.parasiteCurrent;
+        values_parasites[1] = UtilsData.parasiteTotal;
+
 
         List<RowItem_CountsNtexts> rowItemCellCount = new ArrayList<RowItem_CountsNtexts>();
         for (int i = 0; i < values_parasites.length; i++) {
-            RowItem_CountsNtexts item = new RowItem_CountsNtexts(values_title[i], values_parasites[i], values_wbcs[i], R.string.parasites, R.string.wbcs);
+            RowItem_CountsNtexts item = new RowItem_CountsNtexts(values_title[i], values_wbcs[i], values_parasites[i], R.string.wbcs, R.string.parasites);
             rowItemCellCount.add(item);
         }
 
@@ -207,7 +211,7 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
         progressBar.setMax(totalWBCNeeded);
         progressText.setText(UtilsData.WBCTotal + "/" + totalWBCNeeded);
 
-        numOfImageText.setText("Image: " + bundle.getInt("imgCount"));
+        numOfImageText.setText("Image: " + im_num);
 
         UtilsCustom.oriSizeMat.release();
 
@@ -230,6 +234,7 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
         UtilsData.addParasiteCount_GT(parasiteCount[0]);
     }
 
+    @Override
     public void onBackPressed() {
 
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
@@ -258,6 +263,10 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
                     UtilsData.removeParasiteCount();
                     UtilsData.removeWBCCount();
                     UtilsData.resetCurrentCounts_thick();
+
+                    // remove last element in image confidence
+                    int lastIndex = UtilsCustom.pos_confs_im.size() - 1;
+                    UtilsCustom.pos_confs_im.remove(lastIndex);
 
                 }
 
@@ -383,6 +392,8 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
 
         } else if (id == R.id.action_endSession) {
 
+            get_slide_pred(im_num);
+
             writeLogFile();
 
             setManualCounts();
@@ -464,30 +475,36 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
     }
 
     /*
-    *   Calculate the confidence for current slide. Reset variables.
-    * */
-    private boolean get_slide_pred(){
+     *   Calculate the confidence for current slide. Reset variables.
+     * */
+    private void get_slide_pred(int im_num){
 
         float slide_conf = 0;
-        float slide_th = 0.9f;
+        float slide_th = 0.41f;
 
-        for (float conf : UtilsCustom.pos_confs_im){
-            Log.d(TAG, "image confidence: " + conf);
-            if (conf > slide_conf){
-                slide_conf = conf;
+        if (!UtilsCustom.pos_confs_im.isEmpty()) {
+            for (float conf : UtilsCustom.pos_confs_im) {
+                slide_conf += conf;
+                Log.d(TAG, "image conf: " + conf);
             }
+            slide_conf = slide_conf / (float) im_num;
         }
+
+        Log.d(TAG, "slide_conf: " + slide_conf);
 
         UtilsCustom.pos_confs_im.clear();
         Log.d(TAG, "UtilsCustom.confs_im size: " + UtilsCustom.pos_confs_im.size());
 
+        String slide_res_str;
         if (slide_conf > slide_th){
+            slide_res_str = "Positive";
             Log.d(TAG, "Positive.");
         } else {
+            slide_res_str = "Negative";
             Log.d(TAG, "Negative.");
         }
 
-        return true;
+        bundle.putString("slide_result", slide_res_str);
     }
 
 }

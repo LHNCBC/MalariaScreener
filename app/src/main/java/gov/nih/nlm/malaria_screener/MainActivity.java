@@ -45,6 +45,7 @@ import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
 import gov.nih.nlm.malaria_screener.camera.CameraActivity;
+import gov.nih.nlm.malaria_screener.custom.Utils.UtilsCustom;
 import gov.nih.nlm.malaria_screener.database.DatabasePage;
 import gov.nih.nlm.malaria_screener.tutorial.About;
 import gov.nih.nlm.malaria_screener.tutorial.Diagram;
@@ -139,6 +140,9 @@ public class MainActivity extends AppCompatActivity {
 
                 Intent infoIntent = new Intent(v.getContext(), CameraActivity.class);
                 startActivityForResult(infoIntent, REQUEST_CAM);
+
+                // reset image confidence for new session
+                UtilsCustom.pos_confs_im.clear();
 
             }
         });

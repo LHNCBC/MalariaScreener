@@ -152,10 +152,11 @@ public abstract class SummarySheetBaseActivity extends AppCompatActivity{
         listView_patient.setAdapter(adapter_p);
 
         // slide
-        slide_txt = new String[3];
-        slide_txt[0] = countStr_1;
-        slide_txt[1] = countStr_2;
-        slide_txt[2] = ParasitaemiaStr;
+        slide_txt = new String[4];
+        slide_txt[0] = extras.getString("slide_result");
+        slide_txt[1] = countStr_1;
+        slide_txt[2] = countStr_2;
+        slide_txt[3] = ParasitaemiaStr;
 
         for (int i = 0; i < slide_item.length; i++) {
             RowItem item = new RowItem(slide_item[i], slide_txt[i]);

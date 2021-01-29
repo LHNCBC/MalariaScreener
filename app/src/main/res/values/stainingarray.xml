@@ -21,15 +21,17 @@
     </string-array>
 
     <string-array name="slide_item">
-        <item>Total cell count</item>
-        <item>Infected cell count</item>
-        <item>Parasitemia</item>
+        <item>Slide Result</item>
+        <item>Potential Total cell count</item>
+        <item>Potential Infected cell count</item>
+        <item>Estimated Parasitemia</item>
     </string-array>
 
     <string-array name="slide_item_thick">
-        <item>White blood cell count</item>
-        <item>Parasite count</item>
-        <item>Parasitemia</item>
+        <item>Slide Result</item>
+        <item>Potential White blood cell count</item>
+        <item>Potential Parasite count</item>
+        <item>Estimated Parasitemia</item>
     </string-array>
 
     <string-array name="more_item">

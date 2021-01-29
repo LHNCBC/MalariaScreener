@@ -56,8 +56,8 @@
 
     <string name="category2">OTHERS</string>
     <string name="Sensitivity_level_title">Sensitivity Level</string>
-    <string name="Classifier_Th_summary">Adjust classifier sensitivity level. Default value for DL:50. Default value for SVM:35.</string>
-    <string name="Classifier_Th_summary_thick">Adjust classifier sensitivity level. Default value :50.</string>
+    <string name="Classifier_Th_summary">Adjust classifier sensitivity level. Default value for DL:25. Default value for SVM:35.</string>
+    <string name="Classifier_Th_summary_thick">Adjust classifier sensitivity level. Default value :30.</string>
 
     <string name="celltotal">Total Cells Needed</string>
     <string name="celltotal_summary">Number of Cells that should be counted for each patient. Default value: 1000</string>
@@ -208,9 +208,9 @@
     <string name="result_image_switch">Tap for result image</string>
 
     <string name="cells">Cells</string>
-    <string name="infectedcells">Infected Cells</string>
+    <string name="infectedcells">Infected Cell Candidates</string>
 
-    <string name="parasites">Parasites</string>
+    <string name="parasites">Parasite Candidates</string>
     <string name="wbcs">WBCs</string>
 
     <!-- Strings for DatabasePage-->

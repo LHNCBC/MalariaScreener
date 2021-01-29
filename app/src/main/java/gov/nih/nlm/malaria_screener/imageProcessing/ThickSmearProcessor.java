@@ -213,16 +213,17 @@ public class ThickSmearProcessor {
         }
 
         // get image confidence
-        float conf_im = 0;
-        for (int i=0; i <patch_num; i++) {
+        if (parasiteCount>0) {
+            float conf_im = 0;
+            for (int i = 0; i < patch_num; i++) {
 
-            if (UtilsCustom.results.get(i) == 1) {
-                if (UtilsCustom.confs_patch.get(i) > conf_im){
-                    conf_im = UtilsCustom.confs_patch.get(i);
+                if (UtilsCustom.results.get(i) == 1) {
+                    conf_im += UtilsCustom.confs_patch.get(i);
                 }
             }
+            conf_im = conf_im / (float) parasiteCount;
+            UtilsCustom.pos_confs_im.add(conf_im);
         }
-        UtilsCustom.pos_confs_im.add(conf_im);
 
         int[] res = new int[2];
 
