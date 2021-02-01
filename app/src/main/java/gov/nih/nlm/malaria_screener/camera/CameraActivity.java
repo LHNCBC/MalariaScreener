@@ -275,10 +275,13 @@ public class CameraActivity extends AppCompatActivity {
 
 
                         // thin smear
-                        String modelNameStr_thin = "malaria_thinsmear_44.h5.pb";
+                        //String modelNameStr_thin = "malaria_thinsmear_44.h5.pb";
+                        String modelNameStr_thin = "malaria_thinsmear_44_retrainSudan.pb";
                         int TF_input_size_thin = 44;
-                        String inputLayerNameStr_thin = "conv2d_20_input";
-                        String outputLayerNameStr_thin = "output_node0";
+                        //String inputLayerNameStr_thin = "conv2d_20_input";
+                        String inputLayerNameStr_thin = "conv2d_1_input";
+                        //String outputLayerNameStr_thin = "output_node0";
+                        String outputLayerNameStr_thin = "dense_1/Softmax";
 
                         UtilsCustom.tensorFlowClassifier_thin = TensorFlowClassifier.create(context.getAssets(), modelNameStr_thin, TF_input_size_thin, TF_input_size_thin, inputLayerNameStr_thin, outputLayerNameStr_thin);
                         //UtilsCustom.tensorFlowClassifier_thin = TensorFlowClassifier.create(context.getAssets(), "malaria_thinsmear.h5.pb", UtilsCustom.TF_input_size, "input_2", "output_node0");

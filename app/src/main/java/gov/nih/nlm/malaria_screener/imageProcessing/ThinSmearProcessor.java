@@ -97,7 +97,7 @@ public class ThinSmearProcessor {
 
             long startTime_C = System.currentTimeMillis();
 
-            Cells c = new Cells();
+            Cells c = new Cells(pictureFileCopy);
             c.runCells(watershed.watershed_result, watershed.output_WBCMask);
 
             watershed = null;
@@ -133,13 +133,14 @@ public class ThinSmearProcessor {
                 for (int i = 0; i < cellCount; i++) {
 
                     if (UtilsCustom.results.get(i) == 1) {
+                        //Log.d(TAG, "confs_patch " + i + ": " + UtilsCustom.confs_patch.get(i));
                         conf_im += UtilsCustom.confs_patch.get(i);
                     }
                 }
-                conf_im = conf_im / (float) infectedCount;
+                //conf_im = conf_im / (float) infectedCount;
+                conf_im = conf_im / (float) cellCount;  // change denominator to totalCell count
                 UtilsCustom.pos_confs_im.add(conf_im);
             }
-
 
             int[] res = new int[2];
 

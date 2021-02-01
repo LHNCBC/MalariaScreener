@@ -69,6 +69,14 @@ public class Cells {
     private int height;
     private int width;
 
+    File file;
+    public Cells (File file){
+        this.file = file;
+    }
+
+    String imageName;
+    String slideName;
+
     public void runCells(Mat mask, Mat WBC_Mask) {
 
         long startTime = System.currentTimeMillis();
@@ -205,6 +213,11 @@ public class Cells {
                 labelChip.release();
 
                 Core.divide(cleanedChip, cleanedChip, cleanedChip);
+
+                // dialate mask to show the cell boundary in cell chips
+                Mat kernel7x7 = Imgproc.getStructuringElement(Imgproc.CV_SHAPE_RECT, new Size(7, 7));
+                Imgproc.dilate(cleanedChip, cleanedChip, kernel7x7);
+
                 cleanedChip.convertTo(cleanedChip, CvType.CV_8U);
 
                 cellLoca.append(minRow + h / 2);
@@ -326,6 +339,33 @@ public class Cells {
             long totalTime_NN = endTime_NN - startTimeNN;
             Log.d(TAG, "Deep learning Time, TF mobile: " + totalTime_NN);
 
+            //output cell chips
+            //Log.d(TAG, "Image File path: " + file);
+
+            String[] parts = file.toString().split("/");
+            //Log.d(TAG, "parts 2: " + parts[parts.length-2]);
+            slideName = parts[parts.length-2];
+
+            // get image name
+            String imgStr = file.toString().substring(file.toString().lastIndexOf("/") + 1);
+            int endIndex = imgStr.lastIndexOf(".");
+            imageName = imgStr.substring(0, endIndex);
+            //Log.d(TAG, "imageName: " + imageName);
+
+            for (int i=0;i<cellChip.size();i++){
+
+                if (i%5==0) {
+
+                    Mat singlechip = cellChip.get(i).clone();
+
+                    singlechip.convertTo(singlechip, CvType.CV_8U);
+
+                    Imgproc.resize(singlechip, singlechip, new Size(width, height), 0, 0, Imgproc.INTER_CUBIC);
+
+                    outputChipFiles(singlechip, i + 1);
+                }
+            }
+
             //--------------------------------------------------------
             // TF Lite
             /*List<Bitmap> bitmapList = new ArrayList<>();
@@ -395,7 +435,7 @@ public class Cells {
         Mat singlechip;
         int[] intPixels = new int[width * height];
 
-        singlechip = cellChip.get(i * batchSize + n);
+        singlechip = cellChip.get(i * batchSize + n).clone();
 
         singlechip.convertTo(singlechip, CvType.CV_8U);
 
@@ -501,7 +541,7 @@ public class Cells {
 
     }
 
-    public void outputChipFiles(Mat chipMat) {
+    public void outputChipFiles(Mat chipMat, int index) {
 
         Bitmap bitmap = Bitmap.createBitmap(chipMat.cols(), chipMat.rows(), Bitmap.Config.ARGB_8888);
         Utils.matToBitmap(chipMat, bitmap);
@@ -509,7 +549,7 @@ public class Cells {
         File imgFile = null;
 
         try {
-            imgFile = createChipFile();
+            imgFile = createChipFile(index);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -546,15 +586,15 @@ public class Cells {
         return imgFile;
     }
 
-    private File createChipFile() throws IOException {
+    private File createChipFile(int index) throws IOException {
 
-        File Dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "Chip");
+        File Dir = new File(Environment.getExternalStorageDirectory(), "Chip_thin_36p/" + slideName + "/" + imageName);
 
         if (!Dir.exists()) {
             Dir.mkdirs();
         }
 
-        File imgFile = new File(Dir, "chip_" + cellCount + ".PNG");
+        File imgFile = new File(Dir, "chip_" + index + ".PNG");
 
         //chipIndex++;
 

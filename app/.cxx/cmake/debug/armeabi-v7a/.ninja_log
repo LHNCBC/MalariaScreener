@@ -10,3 +10,5 @@
 >>>>>>> master
 2	1556	1611779992	CMakeFiles/native-lib.dir/src/main/cpp/native-lib.cpp.o	3e9e0a07a1e3c2ac
 1556	1795	1611779992	../../../../build/intermediates/cmake/debug/obj/armeabi-v7a/libnative-lib.so	9f9c642f0462cc1a
+0	1478	1611962047	CMakeFiles/native-lib.dir/src/main/cpp/native-lib.cpp.o	3e9e0a07a1e3c2ac
+1478	1596	1611962047	../../../../build/intermediates/cmake/debug/obj/armeabi-v7a/libnative-lib.so	9f9c642f0462cc1a

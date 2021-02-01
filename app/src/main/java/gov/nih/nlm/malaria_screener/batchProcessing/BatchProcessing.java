@@ -56,7 +56,7 @@ public class BatchProcessing extends AppCompatActivity {
 
         context = this;
 
-        UtilsCustom.Th = 0.75;
+        UtilsCustom.Th = 0.5;
         UtilsCustom.Th_thick = 0.7;
         // read pre-trained SVM data structure & TF deep learning model // put read SVM data structure & TF model here to reduce processing time
         readSVMHandler.sendEmptyMessage(0);
@@ -306,7 +306,7 @@ public class BatchProcessing extends AppCompatActivity {
         long startTime_w = System.currentTimeMillis();
 
         ThinSmearProcessor thinSmearProcessor = new ThinSmearProcessor(getApplicationContext());
-        int[] res = thinSmearProcessor.processImage(resizedMat, 0, RV, false, new File(""));
+        int[] res = thinSmearProcessor.processImage(resizedMat, 0, RV, false, file);
 
         long endTime_w = System.currentTimeMillis();
         long totalTime_w = endTime_w - startTime_w;
@@ -439,10 +439,13 @@ public class BatchProcessing extends AppCompatActivity {
 
 
                         // thin smear
-                        String modelNameStr_thin = "malaria_thinsmear_44.h5.pb";
+                        //String modelNameStr_thin = "malaria_thinsmear_44.h5.pb";
+                        String modelNameStr_thin = "malaria_thinsmear_44_retrainSudan.pb";
                         int TF_input_size_thin = 44;
-                        String inputLayerNameStr_thin = "conv2d_20_input";
-                        String outputLayerNameStr_thin = "output_node0";
+                        //String inputLayerNameStr_thin = "conv2d_20_input";
+                        String inputLayerNameStr_thin = "conv2d_1_input";
+                        //String outputLayerNameStr_thin = "output_node0";
+                        String outputLayerNameStr_thin = "dense_1/Softmax";
 
                         UtilsCustom.tensorFlowClassifier_thin = TensorFlowClassifier.create(context.getAssets(), modelNameStr_thin, TF_input_size_thin, TF_input_size_thin, inputLayerNameStr_thin, outputLayerNameStr_thin);
                         //UtilsCustom.tensorFlowClassifier_thin = TensorFlowClassifier.create(context.getAssets(), "malaria_thinsmear.h5.pb", UtilsCustom.TF_input_size, "input_2", "output_node0");
@@ -534,7 +537,7 @@ public class BatchProcessing extends AppCompatActivity {
 
     private File createTextFile() throws IOException {
 
-        File imgFile = new File(Environment.getExternalStorageDirectory(), "p_level_allIm_thin_0.75.txt");
+        File imgFile = new File(Environment.getExternalStorageDirectory(), "p_level_thick_0.5_retrain.txt");
         if (!imgFile.exists()) {
             imgFile.createNewFile();
         }

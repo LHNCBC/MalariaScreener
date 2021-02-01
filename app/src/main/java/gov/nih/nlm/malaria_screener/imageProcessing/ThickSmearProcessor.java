@@ -33,6 +33,7 @@ import org.opencv.core.Mat;
 import org.opencv.core.Rect;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DecimalFormat;
 
@@ -61,6 +62,9 @@ public class ThickSmearProcessor {
     Mat extra_Mat = new Mat();
 
     Context context;
+
+    String imageName;
+    String slideName;
 
     public ThickSmearProcessor(Context context, Mat oriSizeMat) {
 
@@ -152,6 +156,33 @@ public class ThickSmearProcessor {
 
             UtilsCustom.tensorFlowClassifier_thick.recongnize_batch_thick(floatPixels, batch_size);
         }
+
+        //output cell chips
+            /*Log.d(TAG, "Image File path: " + file);
+
+            String[] parts = file.toString().split("/");
+            Log.d(TAG, "parts 2: " + parts[parts.length-2]);
+            slideName = parts[parts.length-2];
+
+            // get image name
+            String imgStr = file.toString().substring(file.toString().lastIndexOf("/") + 1);
+            int endIndex = imgStr.lastIndexOf(".");
+            imageName = imgStr.substring(0, endIndex);
+            Log.d(TAG, "imageName: " + imageName);
+
+            for (int i=0;i<cellChip.size();i++){
+
+                if (i%5==0) {
+
+                    Mat singlechip = cellChip.get(i).clone();
+
+                    singlechip.convertTo(singlechip, CvType.CV_8U);
+
+                    Imgproc.resize(singlechip, singlechip, new Size(width, height), 0, 0, Imgproc.INTER_CUBIC);
+
+                    outputChipFiles(singlechip, i + 1);
+                }
+            }*/
 
         // ------------------------------------ TF Lite -----------------------------------
         /*List<Bitmap> bitmapList = new ArrayList<>();
@@ -330,6 +361,55 @@ public class ThickSmearProcessor {
         return imgFile;
     }
 
-
     public native int processThickImage(long mat, long result, int[] x, int[] y, long extraMat);
+
+    public void outputChipFiles(Mat chipMat, int index) {
+
+        Bitmap bitmap = Bitmap.createBitmap(chipMat.cols(), chipMat.rows(), Bitmap.Config.ARGB_8888);
+        Utils.matToBitmap(chipMat, bitmap);
+
+        File imgFile = null;
+
+        try {
+            imgFile = createChipFile(index);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (imgFile != null) {
+            FileOutputStream out = null;
+
+            try {
+                out = new FileOutputStream(imgFile);
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (out != null) {
+                        out.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+    }
+
+    private File createChipFile(int index) throws IOException {
+
+        File Dir = new File(Environment.getExternalStorageDirectory(), "Chip_1/" + slideName + "/" + imageName);
+
+        if (!Dir.exists()) {
+            Dir.mkdirs();
+        }
+
+        File imgFile = new File(Dir, "chip_" + index + ".PNG");
+
+        //chipIndex++;
+
+        return imgFile;
+    }
 }
