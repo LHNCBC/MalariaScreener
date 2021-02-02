@@ -80,6 +80,8 @@ public class ResultDisplayer extends ResultDisplayerBaseActivity {
 
     String classifierType;
 
+    int im_num;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -143,7 +145,7 @@ public class ResultDisplayer extends ResultDisplayerBaseActivity {
         Intent intent = getIntent();
         bundle = intent.getExtras();
         picFile = bundle.getString("picFile");
-        final int im_num = bundle.getInt("imgCount");
+        im_num = bundle.getInt("imgCount");
 
         WB = intent.getStringExtra("WB");
         processingTime = Long.valueOf(intent.getStringExtra("time"));
@@ -244,6 +246,7 @@ public class ResultDisplayer extends ResultDisplayerBaseActivity {
         UtilsData.addinfectedCount_GT(infectedCount[0]);
     }
 
+    @Override
     public void onBackPressed() {
 
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
@@ -273,6 +276,9 @@ public class ResultDisplayer extends ResultDisplayerBaseActivity {
                     UtilsData.removeInfectedCount();
                     UtilsData.resetCurrentCounts();
 
+                    // remove last element in image confidence
+                    int lastIndex = UtilsCustom.pos_confs_im.size() - 1;
+                    UtilsCustom.pos_confs_im.remove(lastIndex);
                 }
 
                 releaseMemory();
@@ -397,6 +403,8 @@ public class ResultDisplayer extends ResultDisplayerBaseActivity {
 
         } else if (id == R.id.action_endSession) {
 
+            get_slide_pred(im_num);
+
             writeLogFile();
 
             setManualCounts();
@@ -481,14 +489,15 @@ public class ResultDisplayer extends ResultDisplayerBaseActivity {
     /*
      *   Calculate the confidence for current slide. Reset variables.
      * */
-    private boolean get_slide_pred(int im_num){
+    private void get_slide_pred(int im_num){
 
         float slide_conf = 0;
-        float slide_th = 0.5f;
+        float slide_th = 0.9f;
 
         if (!UtilsCustom.pos_confs_im.isEmpty()) {
             for (float conf : UtilsCustom.pos_confs_im) {
                 slide_conf += conf;
+                Log.d(TAG, "image conf: " + conf);
             }
             slide_conf = slide_conf / (float) im_num;
         }
@@ -498,13 +507,16 @@ public class ResultDisplayer extends ResultDisplayerBaseActivity {
         UtilsCustom.pos_confs_im.clear();
         Log.d(TAG, "UtilsCustom.confs_im size: " + UtilsCustom.pos_confs_im.size());
 
+        String slide_res_str;
         if (slide_conf > slide_th){
+            slide_res_str = "Positive";
             Log.d(TAG, "Positive.");
         } else {
+            slide_res_str = "Negative";
             Log.d(TAG, "Negative.");
         }
 
-        return true;
+        bundle.putString("slide_result", slide_res_str);
     }
 
 }

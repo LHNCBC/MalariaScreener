@@ -260,13 +260,15 @@ public class ThickSmearProcessor {
         if (parasiteCount >0) {
             float conf_im = 0;
             for (int i = 0; i < patch_num; i++) {
+
                 if (UtilsCustom.results.get(i) == 1) {
                     conf_im += UtilsCustom.confs_patch.get(i);
                 }
             }
-            UtilsCustom.pos_confs_im.add(conf_im / (float) parasiteCount);
-        }
 
+            conf_im = conf_im / (float) parasiteCount;
+            UtilsCustom.pos_confs_im.add(conf_im);
+        }
 
         int[] res = new int[2];
 

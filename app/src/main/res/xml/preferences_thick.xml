@@ -24,7 +24,7 @@
         android:title="@string/category2">
 
         <gov.nih.nlm.malaria_screener.custom.SeekBarPreference
-            android:defaultValue="50"
+            android:defaultValue="30"
             android:key="Th_thick"
             android:summary="@string/Classifier_Th_summary_thick"
             android:title="@string/Sensitivity_level_title"/>

@@ -58,7 +58,7 @@ public class CustomAdapter_SlideDB extends BaseSwipeAdapter {
         this.context = context;
         this.rowItemSlides = rowItemSlides;
 
-        dbHandler = new MyDBHandler(context, null, null, 1);
+        dbHandler = new MyDBHandler(context, null, null, 2);
     }
 
     @Override
@@ -80,6 +80,7 @@ public class CustomAdapter_SlideDB extends BaseSwipeAdapter {
         TextView slideID;
         TextView time;
         TextView date;
+        TextView result;
     }
 
     @Override
@@ -257,6 +258,7 @@ public class CustomAdapter_SlideDB extends BaseSwipeAdapter {
         holder.slideID = (TextView) convertView.findViewById(R.id.textView_slideID);
         holder.time = (TextView) convertView.findViewById(R.id.textView_time);
         holder.date = (TextView) convertView.findViewById(R.id.textView_date);
+        holder.result = (TextView) convertView.findViewById(R.id.textView_result);
 
         convertView.setTag(holder);
 
@@ -265,6 +267,7 @@ public class CustomAdapter_SlideDB extends BaseSwipeAdapter {
         holder.slideID.setText(row_pos.getSlideID());
         holder.time.setText(row_pos.getTime());
         holder.date.setText(row_pos.getDate());
+        holder.result.setText(row_pos.getResult());
 
     }
 
