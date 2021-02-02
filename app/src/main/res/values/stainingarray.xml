@@ -22,14 +22,14 @@
 
     <string-array name="slide_item">
         <item>Slide Result</item>
-        <item>Potential Total cell count</item>
+        <item>Total cell count</item>
         <item>Potential Infected cell count</item>
         <item>Estimated Parasitemia</item>
     </string-array>
 
     <string-array name="slide_item_thick">
         <item>Slide Result</item>
-        <item>Potential White blood cell count</item>
+        <item>White blood cell count</item>
         <item>Potential Parasite count</item>
         <item>Estimated Parasitemia</item>
     </string-array>
@@ -55,7 +55,7 @@
         <item>Staining method</item>
         <item>HCT</item>
         <item>Total cell count ( auto )</item>
-        <item>Infected cell count ( auto )</item>
+        <item>Potential Infected cell count ( auto )</item>
         <item>Parasitemia ( auto )</item>
         <item>Total cell count ( manual )</item>
         <item>Infected cell count ( manual )</item>
@@ -72,7 +72,7 @@
         <item>Staining method</item>
         <item>HCT</item>
         <item>Total WBC count ( auto )</item>
-        <item>Parasite count ( auto )</item>
+        <item>Potential Parasite count ( auto )</item>
         <item>Parasitemia ( auto )</item>
         <item>Total WBC count ( manual )</item>
         <item>Parasite count ( manual )</item>

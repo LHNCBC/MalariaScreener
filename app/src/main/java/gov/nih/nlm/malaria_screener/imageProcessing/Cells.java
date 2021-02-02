@@ -205,6 +205,9 @@ public class Cells {
                 labelChip.release();
 
                 Core.divide(cleanedChip, cleanedChip, cleanedChip);
+                // dilate to include cell boundary in extracted patches
+                Mat kernel7x7 = Imgproc.getStructuringElement(Imgproc.CV_SHAPE_RECT, new Size(7, 7));
+                Imgproc.dilate(cleanedChip, cleanedChip, kernel7x7);
                 cleanedChip.convertTo(cleanedChip, CvType.CV_8U);
 
                 cellLoca.append(minRow + h / 2);

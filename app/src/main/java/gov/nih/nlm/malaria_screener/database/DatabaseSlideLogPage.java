@@ -63,7 +63,7 @@ public class DatabaseSlideLogPage extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         itemPIDStr = extras.getString("itemPID");
 
-        dbHandler = new MyDBHandler(this, null, null, 1);
+        dbHandler = new MyDBHandler(this, null, null, 2);
 
         rowItem_slidesLog = new ArrayList<RowItem_Slide>();
 
@@ -176,8 +176,9 @@ public class DatabaseSlideLogPage extends AppCompatActivity {
                     String pIDStr = cursor.getString(cursor.getColumnIndex("patient_id"));
                     String timeStr = cursor.getString(cursor.getColumnIndex("time"));
                     String dateStr = cursor.getString(cursor.getColumnIndex("date"));
+                    String resultStr = cursor.getString(cursor.getColumnIndex("slide_result"));
 
-                    RowItem_Slide item = new RowItem_Slide(slideIDStr, pIDStr, timeStr, dateStr);
+                    RowItem_Slide item = new RowItem_Slide(slideIDStr, pIDStr, timeStr, dateStr, resultStr);
                     rowItem_slidesLog.add(item);
                 }
 
@@ -205,8 +206,9 @@ public class DatabaseSlideLogPage extends AppCompatActivity {
                     String pIDStr = cursor.getString(cursor.getColumnIndex("patient_id"));
                     String timeStr = cursor.getString(cursor.getColumnIndex("time"));
                     String dateStr = cursor.getString(cursor.getColumnIndex("date"));
+                    String resultStr = cursor.getString(cursor.getColumnIndex("slide_result"));
 
-                    RowItem_Slide item = new RowItem_Slide(slideIDStr, pIDStr, timeStr, dateStr);
+                    RowItem_Slide item = new RowItem_Slide(slideIDStr, pIDStr, timeStr, dateStr, resultStr);
                     rowItem_slidesLog_thick.add(item);
                 }
 

@@ -71,6 +71,7 @@ public abstract class SummarySheetBaseActivity extends AppCompatActivity{
     public String operatorStr;
     public String stainingStr;
     public String hctStr;
+    public String slideResultStr;
     public String ParasitaemiaStr;
 
     public String imageName[];
@@ -125,6 +126,7 @@ public abstract class SummarySheetBaseActivity extends AppCompatActivity{
         operatorStr = extras.getString("operator");
         stainingStr = extras.getString("staining");
         hctStr = extras.getString("hct");
+        slideResultStr = extras.getString("slide_result");
 
         newPatient = Boolean.valueOf(extras.getString("newPatient"));
         newSlide = Boolean.valueOf(extras.getString("newSlide"));
@@ -153,7 +155,7 @@ public abstract class SummarySheetBaseActivity extends AppCompatActivity{
 
         // slide
         slide_txt = new String[4];
-        slide_txt[0] = extras.getString("slide_result");
+        slide_txt[0] = slideResultStr;
         slide_txt[1] = countStr_1;
         slide_txt[2] = countStr_2;
         slide_txt[3] = ParasitaemiaStr;

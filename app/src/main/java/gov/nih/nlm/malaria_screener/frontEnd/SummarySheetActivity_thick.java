@@ -84,7 +84,7 @@ public class SummarySheetActivity_thick extends SummarySheetBaseActivity {
                         }
 
                         if (newSlide) {
-                            Slides slides = new Slides(patientIDStr, slideIDStr, dateStr, timeStr, siteStr, preparatorStr, operatorStr, stainingStr, hctStr, "", ParasitaemiaStr);
+                            Slides slides = new Slides(patientIDStr, slideIDStr, dateStr, timeStr, siteStr, preparatorStr, operatorStr, stainingStr, hctStr, slideResultStr, "", ParasitaemiaStr);
                             dbHandler.addSlide(slides);
                         }
 

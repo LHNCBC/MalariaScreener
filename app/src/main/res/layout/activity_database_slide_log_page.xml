@@ -5,6 +5,98 @@
     android:layout_height="match_parent"
     tools:context="gov.nih.nlm.malaria_screener.database.DatabaseSlideLogPage">
 
+    <Button
+        android:id="@+id/buttonGraph"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:background="#d95891ec"
+        android:text="@string/show_graph"
+        android:textColor="#FFFFFF"
+        android:textSize="17dp" />
+
+
+    <ListView
+        android:id="@+id/listView_slideLog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView_thin"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp" />
+
+    <ListView
+        android:id="@+id/listView_slideLog_thick"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/buttonGraph"
+        android:layout_below="@+id/textView_thick"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/navigate_bar_slide_logDB"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="7dp"
+        android:text="@string/slide_id_db"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/navigate_bar_slide_logDB"
+        android:layout_marginStart="130dp"
+        android:layout_marginTop="7dp"
+        android:text="@string/time"
+        android:textStyle="bold" />
+
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/navigate_bar_slide_logDB"
+        android:layout_marginStart="210dp"
+        android:layout_marginTop="7dp"
+        android:text="@string/date"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/navigate_bar_slide_logDB"
+        android:layout_marginStart="290dp"
+        android:layout_marginTop="7dp"
+        android:text="@string/slide_result"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView_thin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/textView"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="15dp"
+        android:text="@string/thin"
+        android:textStyle="bold|italic" />
+
+    <TextView
+        android:id="@+id/textView_thick"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/listView_slideLog"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="50dp"
+        android:text="@string/thick"
+        android:textStyle="bold|italic" />
+
     <androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/navigate_bar_slide_logDB"
         android:layout_width="match_parent"
@@ -12,87 +104,5 @@
         android:layout_alignParentTop="true"
         android:background="#1F568a"
         android:textAlignment="center"></androidx.appcompat.widget.Toolbar>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/slide_id_db"
-        android:id="@+id/textView"
-        android:layout_below="@+id/navigate_bar_slide_logDB"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="7dp"
-        android:textStyle="bold"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/time"
-        android:id="@+id/textView3"
-        android:layout_below="@+id/navigate_bar_slide_logDB"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="7dp"
-        android:textStyle="bold"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/date"
-        android:id="@+id/textView6"
-        android:layout_marginEnd="35dp"
-        android:layout_below="@+id/navigate_bar_slide_logDB"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="7dp"
-        android:textStyle="bold"/>
-
-    <TextView
-        android:id="@+id/textView_thin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:text="@string/thin"
-        android:layout_below="@+id/textView"
-        android:layout_marginTop="5dp"
-        android:textStyle="bold|italic"
-        />
-
-    <ListView
-        android:id="@+id/listView_slideLog"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/textView_thin"
-        android:layout_marginTop="5dp"
-        />
-
-    <TextView
-        android:id="@+id/textView_thick"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:text="@string/thick"
-        android:layout_below="@+id/listView_slideLog"
-        android:layout_marginTop="50dp"
-        android:textStyle="bold|italic"/>
-
-    <ListView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/listView_slideLog_thick"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/textView_thick"
-        android:layout_above="@+id/buttonGraph"
-        android:layout_marginTop="5dp"/>
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/show_graph"
-        android:id="@+id/buttonGraph"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:background="#d95891ec"
-        android:textColor="#FFFFFF"
-        android:textSize="17dp"/>
 
 </RelativeLayout>

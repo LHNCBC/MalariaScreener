@@ -33,10 +33,11 @@ public class Slides {
     private String _operator;
     private String _staining;
     private String _hct;
+    private String _slide_result;
     private String _parasitemia;
     private String _parasitemia_thick;
 
-    public Slides(String _idPatient, String _idSlide, String _date , String _time, String _site, String _preparator, String _operator, String _staining, String _hct, String _parasitemia, String _parasitemia_thick) {
+    public Slides(String _idPatient, String _idSlide, String _date , String _time, String _site, String _preparator, String _operator, String _staining, String _hct, String _slide_result, String _parasitemia, String _parasitemia_thick) {
         this._idPatient = _idPatient;
         this._idSlide = _idSlide;
         this._date = _date;
@@ -48,6 +49,7 @@ public class Slides {
         this._hct = _hct;
         this._parasitemia = _parasitemia;
         this._parasitemia_thick = _parasitemia_thick;
+        this._slide_result = _slide_result;
     }
 
     public String get_parasitemia_thick() {
@@ -138,4 +140,11 @@ public class Slides {
         this._operator = _operator;
     }
 
+    public String get_slide_result() {
+        return _slide_result;
+    }
+
+    public void set_slide_result(String _slide_result) {
+        this._slide_result = _slide_result;
+    }
 }

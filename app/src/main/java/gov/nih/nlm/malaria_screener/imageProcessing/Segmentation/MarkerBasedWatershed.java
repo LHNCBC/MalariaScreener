@@ -152,7 +152,8 @@ public class MarkerBasedWatershed {
             im_e.release();
 
             Mat kernel4x4 = Imgproc.getStructuringElement(Imgproc.MORPH_ELLIPSE, new Size(4, 4));
-            Imgproc.morphologyEx(cropped, cropped, Imgproc.MORPH_ERODE, kernel4x4);
+            //Imgproc.morphologyEx(cropped, cropped, Imgproc.MORPH_ERODE, kernel4x4);
+            Imgproc.erode(cropped, cropped, kernel4x4);
             kernel4x4.release();
 
             cropped.convertTo(cropped, R.type());
@@ -183,7 +184,8 @@ public class MarkerBasedWatershed {
 
             //imdilate
             Mat kernel1x1 = Imgproc.getStructuringElement(Imgproc.MORPH_ELLIPSE, new Size(2, 2));
-            Imgproc.morphologyEx(WBCMask, WBCMask, Imgproc.MORPH_DILATE, kernel1x1);
+            //Imgproc.morphologyEx(WBCMask, WBCMask, Imgproc.MORPH_DILATE, kernel1x1);
+            Imgproc.dilate(WBCMask, WBCMask, kernel1x1);
             kernel1x1.release();
 
             // imfill
@@ -215,7 +217,8 @@ public class MarkerBasedWatershed {
             im2.release();
 
             Mat kernel2x2 = Imgproc.getStructuringElement(Imgproc.MORPH_ELLIPSE, new Size(2, 2));
-            Imgproc.morphologyEx(WBCMask, WBCMask, Imgproc.MORPH_ERODE, kernel2x2);
+            //Imgproc.morphologyEx(WBCMask, WBCMask, Imgproc.MORPH_ERODE, kernel2x2);
+            Imgproc.erode(WBCMask, WBCMask, kernel2x2);
             kernel2x2.release();
 
             // bwareaopen

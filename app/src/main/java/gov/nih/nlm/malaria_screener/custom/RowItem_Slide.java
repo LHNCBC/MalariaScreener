@@ -28,12 +28,14 @@ public class RowItem_Slide {
     private String patientID;
     private String time;
     private String date;
+    private String result;
 
-    public RowItem_Slide(String slideID, String patientID, String time, String date) {
+    public RowItem_Slide(String slideID, String patientID, String time, String date, String result) {
         this.slideID = slideID;
         this.patientID = patientID;
         this.time = time;
         this.date = date;
+        this.result =result;
     }
 
     public String getPatientID() {
@@ -68,4 +70,11 @@ public class RowItem_Slide {
         this.date = date;
     }
 
+    public String getResult() {
+        return result;
+    }
+
+    public void setResult(String result) {
+        this.result = result;
+    }
 }

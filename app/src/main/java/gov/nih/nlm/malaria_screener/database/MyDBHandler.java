@@ -41,7 +41,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
 
     private static final String TAG = "MyDebug";
 
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     private static final String DATABASE_NAME = "patients.db";
 
     // columns of patient table
@@ -63,6 +63,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
     public static final String COLUMN_OPERATOR = "operator";
     public static final String COLUMN_STAINING = "stainingMethod";
     public static final String COLUMN_HCT = "hct";
+    public static final String COLUMN_SLIDE_RESULT = "slide_result";
     public static final String COLUMN_PARASITEMIA_THIN = "parasitemia_thin";
     public static final String COLUMN_PARASITEMIA_THICK = "parasitemia_thick";
 
@@ -134,6 +135,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
                 COLUMN_OPERATOR + " TEXT, " +
                 COLUMN_STAINING + " TEXT, " +
                 COLUMN_HCT + " TEXT, " +
+                COLUMN_SLIDE_RESULT + " TEXT, " +
                 COLUMN_PARASITEMIA_THIN + " TEXT, " +
                 COLUMN_PARASITEMIA_THICK + " TEXT, " +
                 "PRIMARY KEY (" + COLUMN_PATIENT_ID + ", " + COLUMN_SLIDE_ID + ")" +
@@ -180,10 +182,12 @@ public class MyDBHandler extends SQLiteOpenHelper {
         // export old database to a csv file
         export_old_version_DB(db);
 
-        // drop all tables of the old database
-        drop_all_tables(db);
+        // alter table
+        add_column_to_slide_table(db);
 
-        onCreate(db);
+        // drop all tables of the old database
+        /*drop_all_tables(db);
+        onCreate(db);*/
     }
 
     // Add a new row to patient table
@@ -210,6 +214,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         values.put(COLUMN_OPERATOR, slides.get_operator());
         values.put(COLUMN_STAINING, slides.get_staining());
         values.put(COLUMN_HCT, slides.get_hct());
+        values.put(COLUMN_SLIDE_RESULT, slides.get_slide_result());
         values.put(COLUMN_PARASITEMIA_THIN, slides.get_parasitemia());
         values.put(COLUMN_PARASITEMIA_THICK, slides.get_parasitemia_thick());
         SQLiteDatabase db = getWritableDatabase();
@@ -688,6 +693,18 @@ public class MyDBHandler extends SQLiteOpenHelper {
 
             db.execSQL(" DROP TABLE IF EXISTS " + table_name);
         }
+    }
+
+    /*
+    *   This function adds a new column (slide result) to the slide table
+    *   @param db: SQLiteDatabase object
+    *   @return
+    * */
+    private void add_column_to_slide_table(SQLiteDatabase db){
+
+        String alterTable = "ALTER TABLE " + TABLE_SLIDES + " ADD COLUMN " + COLUMN_SLIDE_RESULT + " TEXT";
+
+        db.execSQL(alterTable);
     }
 
 
