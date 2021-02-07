@@ -276,7 +276,7 @@ public class CameraActivity extends AppCompatActivity {
 
                         // thin smear
                         //String modelNameStr_thin = "malaria_thinsmear_44.h5.pb";
-                        String modelNameStr_thin = "malaria_thinsmear_44_retrainSudan.pb";
+                        String modelNameStr_thin = "malaria_thinsmear_44_retrainSudan_20P_4000C_separate.pb";
                         int TF_input_size_thin = 44;
                         //String inputLayerNameStr_thin = "conv2d_20_input";
                         String inputLayerNameStr_thin = "conv2d_1_input";
@@ -289,9 +289,11 @@ public class CameraActivity extends AppCompatActivity {
 
                         //thick smear
                         String modelNameStr_thick = "ThickSmearModel.h5.pb";
+                        //String modelNameStr_thick = "ThickSmear_3LayerConv_200P_retrainSudan_20P.pb";
                         int TF_input_size_thick = 44;
                         String inputLayerNameStr_thick = "conv2d_1_input";
                         String outputLayerNameStr_thick = "output_node0";
+                        //String outputLayerNameStr_thick = "dense_2/Softmax";
 
                         UtilsCustom.tensorFlowClassifier_thick = TensorFlowClassifier.create(context.getAssets(), modelNameStr_thick, TF_input_size_thick, TF_input_size_thick, inputLayerNameStr_thick, outputLayerNameStr_thick);
 
@@ -937,7 +939,7 @@ public class CameraActivity extends AppCompatActivity {
         long startTime_w = System.currentTimeMillis();
 
         ThickSmearProcessor thickSmearProcessor = new ThickSmearProcessor(getApplicationContext(), UtilsCustom.oriSizeMat);
-        int[] res = thickSmearProcessor.processImage();
+        int[] res = thickSmearProcessor.processImage(pictureFileCopy);
 
         saveResults_thick(res[0], res[1]);
 

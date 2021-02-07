@@ -339,10 +339,10 @@ public class Cells {
             long totalTime_NN = endTime_NN - startTimeNN;
             Log.d(TAG, "Deep learning Time, TF mobile: " + totalTime_NN);
 
-            //output cell chips
+            //output cell chips ------------------------ added for ROC
             //Log.d(TAG, "Image File path: " + file);
 
-            String[] parts = file.toString().split("/");
+            /*String[] parts = file.toString().split("/");
             //Log.d(TAG, "parts 2: " + parts[parts.length-2]);
             slideName = parts[parts.length-2];
 
@@ -354,7 +354,7 @@ public class Cells {
 
             for (int i=0;i<cellChip.size();i++){
 
-                if (i%5==0) {
+                if (i%2==0) {
 
                     Mat singlechip = cellChip.get(i).clone();
 
@@ -364,7 +364,7 @@ public class Cells {
 
                     outputChipFiles(singlechip, i + 1);
                 }
-            }
+            }*/
 
             //--------------------------------------------------------
             // TF Lite
@@ -577,18 +577,9 @@ public class Cells {
     }
 
 
-    private File createTextFile() throws IOException {
-
-        File Dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-        File imgFile = new File(Dir, "temp" + ".txt");
-
-
-        return imgFile;
-    }
-
     private File createChipFile(int index) throws IOException {
 
-        File Dir = new File(Environment.getExternalStorageDirectory(), "Chip_thin_36p/" + slideName + "/" + imageName);
+        File Dir = new File(Environment.getExternalStorageDirectory(), "Chip_thin_20p/" + slideName + "/" + imageName);
 
         if (!Dir.exists()) {
             Dir.mkdirs();

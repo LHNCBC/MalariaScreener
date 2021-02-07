@@ -57,7 +57,7 @@ public class BatchProcessing extends AppCompatActivity {
         context = this;
 
         UtilsCustom.Th = 0.5;
-        UtilsCustom.Th_thick = 0.7;
+        UtilsCustom.Th_thick = 0.5;
         // read pre-trained SVM data structure & TF deep learning model // put read SVM data structure & TF model here to reduce processing time
         readSVMHandler.sendEmptyMessage(0);
 
@@ -109,6 +109,8 @@ public class BatchProcessing extends AppCompatActivity {
                 @Override
                 public void run() {
 
+                    int image_num = 0;
+
                     for (File slideFile : slideListing) {
 
                         totalCount = 0;
@@ -122,10 +124,14 @@ public class BatchProcessing extends AppCompatActivity {
                             //Log.d(TAG, "imgFile: " + imgFile);
 
                             process_image(imgFile);
+
+                            //writeLogFile_imageList(imgFile.toString(), "thin");
+
+                            image_num +=1;
                         }
 
                         //get total image number & positive image number
-                        int imageNum = 0;
+                        /*int imageNum = 0;
                         if (!UtilsCustom.pos_confs_im.isEmpty()){
                             imageNum = UtilsCustom.pos_confs_im.size();
                         }
@@ -140,10 +146,12 @@ public class BatchProcessing extends AppCompatActivity {
                         } else if (slideFile.toString().contains("negative")){
                             slideLabel = 0;
                         }
-                        Log.d(TAG, "slideLabel: " + slideLabel);
+                        Log.d(TAG, "slideLabel: " + slideLabel);*/
 
-                        writeLogFile(slideFile.toString(), slideLabel, slide_conf, imageNum, imageTotal);
+                        //writeLogFile(slideFile.toString(), slideLabel, slide_conf, imageNum, imageTotal);
                     }
+
+                    Log.d(TAG, "image_num: " + image_num);
 
                     inProgress.dismiss();
                 }
@@ -172,6 +180,8 @@ public class BatchProcessing extends AppCompatActivity {
                 @Override
                 public void run() {
 
+                    int image_num = 0;
+
                     for (File slideFile : slideListing) {
 
                         Log.d(TAG, "slideFile: " + slideFile);
@@ -183,10 +193,14 @@ public class BatchProcessing extends AppCompatActivity {
                             //Log.d(TAG, "imgFile: " + imgFile);
 
                             process_image_thick(imgFile);
+
+                            writeLogFile_imageList(imgFile.toString(), "thick");
+
+                            image_num +=1;
                         }
 
                         //get total image number & positive image number
-                        int imageNum = 0;
+                        /*int imageNum = 0;
                         if (!UtilsCustom.pos_confs_im.isEmpty()){
                             imageNum = UtilsCustom.pos_confs_im.size();
                         }
@@ -201,10 +215,12 @@ public class BatchProcessing extends AppCompatActivity {
                         } else if (slideFile.toString().contains("negative")){
                             slideLabel = 0;
                         }
-                        Log.d(TAG, "slideLabel: " + slideLabel);
+                        Log.d(TAG, "slideLabel: " + slideLabel);*/
 
-                        writeLogFile(slideFile.toString(), slideLabel, slide_conf, imageNum, imageTotal);
+                        //writeLogFile(slideFile.toString(), slideLabel, slide_conf, imageNum, imageTotal);
                     }
+
+                    Log.d(TAG, "image_num: " + image_num);
 
                     inProgress.dismiss();
                 }
@@ -337,7 +353,7 @@ public class BatchProcessing extends AppCompatActivity {
         long startTime_w = System.currentTimeMillis();
 
         ThickSmearProcessor thickSmearProcessor = new ThickSmearProcessor(getApplicationContext(), UtilsCustom.oriSizeMat);
-        int[] res = thickSmearProcessor.processImage();
+        int[] res = thickSmearProcessor.processImage(file);
 
         long endTime_w = System.currentTimeMillis();
         long totalTime_w = endTime_w - startTime_w;
@@ -440,7 +456,7 @@ public class BatchProcessing extends AppCompatActivity {
 
                         // thin smear
                         //String modelNameStr_thin = "malaria_thinsmear_44.h5.pb";
-                        String modelNameStr_thin = "malaria_thinsmear_44_retrainSudan.pb";
+                        String modelNameStr_thin = "malaria_thinsmear_44_retrainSudan_20P_4000C_separate.pb";
                         int TF_input_size_thin = 44;
                         //String inputLayerNameStr_thin = "conv2d_20_input";
                         String inputLayerNameStr_thin = "conv2d_1_input";
@@ -452,10 +468,12 @@ public class BatchProcessing extends AppCompatActivity {
                         //UtilsCustom.tfClassifier_lite = TFClassifier_Lite.create(context.getAssets(), "thinSmear_100_quantized.tflite", UtilsCustom.TF_input_size);
 
                         //thick smear
+                        //String modelNameStr_thick = "ThickSmear_3LayerConv_200P_retrainSudan_20P.pb";
                         String modelNameStr_thick = "ThickSmearModel.h5.pb";
                         int TF_input_size_thick = 44;
                         String inputLayerNameStr_thick = "conv2d_1_input";
                         String outputLayerNameStr_thick = "output_node0";
+                        //String outputLayerNameStr_thick = "dense_2/Softmax";
 
                         UtilsCustom.tensorFlowClassifier_thick = TensorFlowClassifier.create(context.getAssets(), modelNameStr_thick, TF_input_size_thick, TF_input_size_thick, inputLayerNameStr_thick, outputLayerNameStr_thick);
 
@@ -513,7 +531,7 @@ public class BatchProcessing extends AppCompatActivity {
                     outText.write(("\n").getBytes());
                 }
 
-                // get image name
+                // get slide name
                 String slideNameStr = string.substring(string.lastIndexOf("/") + 1);
 
                 outText.write((slideNameStr + "," + slideLabel + "," + slideConf + "," + imageNum + "/" + imageTotal + "," + totalCount).getBytes());
@@ -537,12 +555,84 @@ public class BatchProcessing extends AppCompatActivity {
 
     private File createTextFile() throws IOException {
 
-        File imgFile = new File(Environment.getExternalStorageDirectory(), "p_level_thick_0.5_retrain.txt");
+        File imgFile = new File(Environment.getExternalStorageDirectory(), "p_level_thin_0.5_retrain_20P.txt");
         if (!imgFile.exists()) {
             imgFile.createNewFile();
         }
 
         return imgFile;
     }
+
+    // write image list
+    private void writeLogFile_imageList(String im_path, String type) {
+
+        File textFile = null;
+
+        try {
+            textFile = createTextFile_imageList(type);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (textFile != null) {
+            FileOutputStream outText = null;
+
+            try {
+
+                outText = new FileOutputStream(textFile, true);
+
+                if (textFile.length() == 0) {
+                    outText.write(("SlideName,ImageName,SlideLabel").getBytes());
+                    outText.write(("\n").getBytes());
+                }
+
+                // get slide name
+                String[] parts = im_path.split("/");
+                Log.d(TAG, "slideName: " + parts[parts.length-2]);
+                String slideNameStr = parts[parts.length-2];
+
+                // get image name
+                String imgStr = im_path.substring(im_path.lastIndexOf("/") + 1);
+                int endIndex = imgStr.lastIndexOf(".");
+                String imageName = imgStr.substring(0, endIndex);
+                Log.d(TAG, "imageName: " + imageName);
+
+                // get slide true label
+                int slideLabel = 0;
+                if (im_path.contains("positive")){
+                    slideLabel = 1;
+                } else if (im_path.contains("negative")){
+                    slideLabel = 0;
+                }
+
+                outText.write((slideNameStr + "," + imageName + "," + slideLabel).getBytes());
+                //outText.write((imageName + "," + WB + "," + processingTime).getBytes());
+                outText.write(("\n").getBytes());
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (outText != null) {
+                        outText.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+    }
+
+    private File createTextFile_imageList(String smearTypeStr) throws IOException {
+
+        File imgFile = new File(Environment.getExternalStorageDirectory(), "imageList_" + smearTypeStr + "_for_20P.txt");
+        if (!imgFile.exists()) {
+            imgFile.createNewFile();
+        }
+
+        return imgFile;
+    }
+
 
 }

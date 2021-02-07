@@ -36,6 +36,7 @@ import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 import gov.nih.nlm.malaria_screener.R;
@@ -128,7 +129,7 @@ public class ThinSmearProcessor {
             //saveMaskImageHandler.sendEmptyMessage(0);
 
             // get image confidence
-            if (infectedCount > 0) {
+            /*if (infectedCount > 0) {
                 float conf_im = 0;
                 for (int i = 0; i < cellCount; i++) {
 
@@ -137,9 +138,18 @@ public class ThinSmearProcessor {
                         conf_im += UtilsCustom.confs_patch.get(i);
                     }
                 }
-                //conf_im = conf_im / (float) infectedCount;
-                conf_im = conf_im / (float) cellCount;  // change denominator to totalCell count
+                conf_im = conf_im / (float) infectedCount;
+                //conf_im = conf_im / (float) cellCount;  // change denominator to totalCell count
                 UtilsCustom.pos_confs_im.add(conf_im);
+            }*/
+
+            // output patch conf ----------------------- added for ROC
+            if (infectedCount > 0) {
+                for (int i = 0; i < cellCount; i++) {
+                    if (UtilsCustom.results.get(i) == 1) {
+                        writeLogFile(pictureFileCopy.toString(), UtilsCustom.confs_patch.get(i));
+                    }
+                }
             }
 
             int[] res = new int[2];
@@ -251,6 +261,76 @@ public class ThinSmearProcessor {
         String imageName = imgStr.substring(0, endIndex);
 
         File imgFile = new File(new File(Environment.getExternalStorageDirectory(), "NLM_Malaria_Screener/New"), imageName + "_mask.png");
+
+        return imgFile;
+    }
+
+    private void writeLogFile(String im_path, float patch_conf) {
+
+        File textFile = null;
+
+        try {
+            textFile = createTextFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (textFile != null) {
+            FileOutputStream outText = null;
+
+            try {
+
+                outText = new FileOutputStream(textFile, true);
+
+                if (textFile.length() == 0) {
+                    outText.write(("SlideName,SlideLabel,ImageName,patch_conf").getBytes());
+                    outText.write(("\n").getBytes());
+                }
+
+                // get slide name
+                String[] parts = im_path.split("/");
+                //Log.d(TAG, "parts 2: " + parts[parts.length-2]);
+                String slideNameStr = parts[parts.length-2];
+
+                // get image name
+                String imgStr = im_path.substring(im_path.lastIndexOf("/") + 1);
+                int endIndex = imgStr.lastIndexOf(".");
+                String imageName = imgStr.substring(0, endIndex);
+                //Log.d(TAG, "imageName: " + imageName);
+
+                // get slide true label
+                int slideLabel = 0;
+                if (im_path.contains("positive")){
+                    slideLabel = 1;
+                } else if (im_path.contains("negative")){
+                    slideLabel = 0;
+                }
+
+                outText.write((slideNameStr + "," + slideLabel + "," + imageName + "," + patch_conf).getBytes());
+                //outText.write((imageName + "," + WB + "," + processingTime).getBytes());
+                outText.write(("\n").getBytes());
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (outText != null) {
+                        outText.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+    }
+
+    private File createTextFile() throws IOException {
+
+        File imgFile = new File(Environment.getExternalStorageDirectory(), "patch_conf_thin_0.5_retrain_36P_4000C_final.txt");
+        if (!imgFile.exists()) {
+            imgFile.createNewFile();
+        }
 
         return imgFile;
     }

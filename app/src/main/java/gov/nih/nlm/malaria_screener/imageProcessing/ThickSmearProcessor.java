@@ -31,6 +31,8 @@ import org.opencv.android.Utils;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.Rect;
+import org.opencv.core.Size;
+import org.opencv.imgproc.Imgproc;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -69,10 +71,10 @@ public class ThickSmearProcessor {
     public ThickSmearProcessor(Context context, Mat oriSizeMat) {
 
         this.oriSizeMat = oriSizeMat;
-        this.context =context;
+        this.context = context;
     }
 
-    public int[] processImage() {
+    public int[] processImage(File file) {
 
         // reset current parasites and WBC counts
         UtilsData.resetCurrentCounts_thick();
@@ -127,7 +129,7 @@ public class ThickSmearProcessor {
         UtilsCustom.results.clear();
         UtilsCustom.confs_patch.clear();
 
-        int patch_num = candi_patches.height()/inputSize;
+        int patch_num = candi_patches.height() / inputSize;
 
         int iteration = patch_num / batch_size;
         int lastBatchSize = patch_num % batch_size;
@@ -158,31 +160,33 @@ public class ThickSmearProcessor {
         }
 
         //output cell chips
-            /*Log.d(TAG, "Image File path: " + file);
+        /*Log.d(TAG, "Image File path: " + file);
 
-            String[] parts = file.toString().split("/");
-            Log.d(TAG, "parts 2: " + parts[parts.length-2]);
-            slideName = parts[parts.length-2];
+        String[] parts = file.toString().split("/");
+        Log.d(TAG, "parts 2: " + parts[parts.length - 2]);
+        slideName = parts[parts.length - 2];
 
-            // get image name
-            String imgStr = file.toString().substring(file.toString().lastIndexOf("/") + 1);
-            int endIndex = imgStr.lastIndexOf(".");
-            imageName = imgStr.substring(0, endIndex);
-            Log.d(TAG, "imageName: " + imageName);
+        // get image name
+        String imgStr = file.toString().substring(file.toString().lastIndexOf("/") + 1);
+        int endIndex = imgStr.lastIndexOf(".");
+        imageName = imgStr.substring(0, endIndex);
+        Log.d(TAG, "imageName: " + imageName);
 
-            for (int i=0;i<cellChip.size();i++){
+        for (int i = 0; i < num_th; i++) {
 
-                if (i%5==0) {
+            if (UtilsCustom.results.get(i) == 1) {
 
-                    Mat singlechip = cellChip.get(i).clone();
+                Rect rect = new Rect(0, i * inputSize, inputSize, inputSize);
+                Mat singlechip = new Mat(candi_patches, rect);
 
-                    singlechip.convertTo(singlechip, CvType.CV_8U);
+                singlechip.convertTo(singlechip, CvType.CV_8U);
 
-                    Imgproc.resize(singlechip, singlechip, new Size(width, height), 0, 0, Imgproc.INTER_CUBIC);
+                //Imgproc.resize(singlechip, singlechip, new Size(inputSize, inputSize), 0, 0, Imgproc.INTER_CUBIC);
 
-                    outputChipFiles(singlechip, i + 1);
-                }
-            }*/
+                outputChipFiles(singlechip, i + 1);
+            }
+
+        }*/
 
         // ------------------------------------ TF Lite -----------------------------------
         /*List<Bitmap> bitmapList = new ArrayList<>();
@@ -217,9 +221,9 @@ public class ThickSmearProcessor {
         // --------------------------------------------------------------------------------
 
         // draw results on image
-        for (int i=0; i <patch_num; i++){
+        for (int i = 0; i < patch_num; i++) {
 
-            if (UtilsCustom.results.get(i)==1) {
+            if (UtilsCustom.results.get(i) == 1) {
                 parasiteCount++;
 
                 //Log.d(TAG, "conf: " + UtilsCustom.confs.get(i));
@@ -228,15 +232,15 @@ public class ThickSmearProcessor {
                 paint.setStrokeWidth(6);
 
                 //draw color according to confidence level
-                if (UtilsCustom.confs_patch.get(i) > 0.5 && UtilsCustom.confs_patch.get(i) <= 0.6){             // level 1
+                if (UtilsCustom.confs_patch.get(i) > 0.5 && UtilsCustom.confs_patch.get(i) <= 0.6) {             // level 1
                     paint.setColor(context.getResources().getColor(R.color.level_1));
-                } else if (UtilsCustom.confs_patch.get(i) > 0.6 && UtilsCustom.confs_patch.get(i) <= 0.7){      // level 2
+                } else if (UtilsCustom.confs_patch.get(i) > 0.6 && UtilsCustom.confs_patch.get(i) <= 0.7) {      // level 2
                     paint.setColor(context.getResources().getColor(R.color.level_2));
-                } else if (UtilsCustom.confs_patch.get(i) > 0.7 && UtilsCustom.confs_patch.get(i) <= 0.8){      // level 3
+                } else if (UtilsCustom.confs_patch.get(i) > 0.7 && UtilsCustom.confs_patch.get(i) <= 0.8) {      // level 3
                     paint.setColor(context.getResources().getColor(R.color.level_3));
-                } else if (UtilsCustom.confs_patch.get(i) > 0.8 && UtilsCustom.confs_patch.get(i) <= 0.9){      // level 4
+                } else if (UtilsCustom.confs_patch.get(i) > 0.8 && UtilsCustom.confs_patch.get(i) <= 0.9) {      // level 4
                     paint.setColor(context.getResources().getColor(R.color.level_4));
-                } else if (UtilsCustom.confs_patch.get(i) > 0.9 && UtilsCustom.confs_patch.get(i) <= 1.0){      // level 4
+                } else if (UtilsCustom.confs_patch.get(i) > 0.9 && UtilsCustom.confs_patch.get(i) <= 1.0) {      // level 4
                     paint.setColor(context.getResources().getColor(R.color.level_5));
                 } else {
                     paint.setColor(context.getResources().getColor(R.color.level_0));
@@ -248,7 +252,7 @@ public class ThickSmearProcessor {
                 String text = new DecimalFormat("##.##").format(UtilsCustom.confs_patch.get(i));
                 paint.setStrokeWidth(5);
                 paint.setTextSize(50);
-                canvas.drawText(text, x[i]-50, y[i]-50, paint);
+                canvas.drawText(text, x[i] - 50, y[i] - 50, paint);
 
             } else {
                     /*paint.setColor(Color.BLUE);
@@ -257,7 +261,7 @@ public class ThickSmearProcessor {
         }
 
         // get image confidence
-        if (parasiteCount >0) {
+        /*if (parasiteCount > 0) {
             float conf_im = 0;
             for (int i = 0; i < patch_num; i++) {
 
@@ -268,6 +272,15 @@ public class ThickSmearProcessor {
 
             conf_im = conf_im / (float) parasiteCount;
             UtilsCustom.pos_confs_im.add(conf_im);
+        }*/
+
+        // output patch conf ----------------------- added for ROC
+        if (parasiteCount > 0) {
+            for (int i = 0; i < patch_num; i++) {
+                if (UtilsCustom.results.get(i) == 1) {
+                    writeLogFile(file.toString(), UtilsCustom.confs_patch.get(i));
+                }
+            }
         }
 
         int[] res = new int[2];
@@ -402,7 +415,7 @@ public class ThickSmearProcessor {
 
     private File createChipFile(int index) throws IOException {
 
-        File Dir = new File(Environment.getExternalStorageDirectory(), "Chip_1/" + slideName + "/" + imageName);
+        File Dir = new File(Environment.getExternalStorageDirectory(), "Chip_thick_20p/" + slideName + "/" + imageName);
 
         if (!Dir.exists()) {
             Dir.mkdirs();
@@ -411,6 +424,76 @@ public class ThickSmearProcessor {
         File imgFile = new File(Dir, "chip_" + index + ".PNG");
 
         //chipIndex++;
+
+        return imgFile;
+    }
+
+    private void writeLogFile(String im_path, float patch_conf) {
+
+        File textFile = null;
+
+        try {
+            textFile = createTextFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (textFile != null) {
+            FileOutputStream outText = null;
+
+            try {
+
+                outText = new FileOutputStream(textFile, true);
+
+                if (textFile.length() == 0) {
+                    outText.write(("SlideName,SlideLabel,ImageName,patch_conf").getBytes());
+                    outText.write(("\n").getBytes());
+                }
+
+                // get slide name
+                String[] parts = im_path.split("/");
+                //Log.d(TAG, "parts 2: " + parts[parts.length-2]);
+                String slideNameStr = parts[parts.length-2];
+
+                // get image name
+                String imgStr = im_path.substring(im_path.lastIndexOf("/") + 1);
+                int endIndex = imgStr.lastIndexOf(".");
+                String imageName = imgStr.substring(0, endIndex);
+                //Log.d(TAG, "imageName: " + imageName);
+
+                // get slide true label
+                int slideLabel = 0;
+                if (im_path.contains("positive")){
+                    slideLabel = 1;
+                } else if (im_path.contains("negative")){
+                    slideLabel = 0;
+                }
+
+                outText.write((slideNameStr + "," + slideLabel + "," + imageName + "," + patch_conf).getBytes());
+                //outText.write((imageName + "," + WB + "," + processingTime).getBytes());
+                outText.write(("\n").getBytes());
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (outText != null) {
+                        outText.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+    }
+
+    private File createTextFile() throws IOException {
+
+        File imgFile = new File(Environment.getExternalStorageDirectory(), "patch_conf_thick_0.5_original.txt");
+        if (!imgFile.exists()) {
+            imgFile.createNewFile();
+        }
 
         return imgFile;
     }
