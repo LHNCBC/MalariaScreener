@@ -26,6 +26,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Environment;
 import android.util.Log;
+import android.view.Surface;
 
 import org.opencv.android.Utils;
 import org.opencv.core.CvType;
@@ -67,7 +68,7 @@ public class ThickSmearProcessor {
         this.context =context;
     }
 
-    public int[] processImage() {
+    public int[] processImage(int orientation, boolean takenFromCam) {
 
         // reset current parasites and WBC counts
         UtilsData.resetCurrentCounts_thick();
@@ -205,7 +206,28 @@ public class ThickSmearProcessor {
                     paint.setColor(context.getResources().getColor(R.color.level_0));
                 }
 
+                //paint.setStrokeWidth(6);
                 canvas.drawCircle(x[i], y[i], 25, paint);
+                /*canvas.save();
+
+                if (takenFromCam) { // test this canvas rotate
+                    // draw texts according to phone rotation while image was taken
+                    if (orientation == Surface.ROTATION_0) {                //portrait
+                        canvas.rotate(270, x[i], y[i]);
+                    } else if (orientation == Surface.ROTATION_270) {      //reverse landscape
+                        canvas.rotate(180, x[i], y[i]);
+                    } else if (orientation == Surface.ROTATION_180) {      //reverse portrait
+                        canvas.rotate(90, x[i], y[i]);
+                    } else if (orientation == Surface.ROTATION_90) {       //landscape
+                        canvas.rotate(0, x[i], y[i]);
+                    }
+                }
+
+                paint.setTextSize(50);
+                paint.setStrokeWidth(4);
+                canvas.drawText(String.valueOf(parasiteCount), x[i]-50, y[i]-50, paint);
+                canvas.restore();*/
+
             } else {
                     /*paint.setColor(Color.BLUE);
                     canvas.drawCircle(x[i], y[i], 20, paint);*/
@@ -213,8 +235,8 @@ public class ThickSmearProcessor {
         }
 
         // get image confidence
+        float conf_im = 0;
         if (parasiteCount>0) {
-            float conf_im = 0;
             for (int i = 0; i < patch_num; i++) {
 
                 if (UtilsCustom.results.get(i) == 1) {
@@ -222,8 +244,8 @@ public class ThickSmearProcessor {
                 }
             }
             conf_im = conf_im / (float) parasiteCount;
-            UtilsCustom.pos_confs_im.add(conf_im);
         }
+        UtilsCustom.pos_confs_im.add(conf_im);
 
         int[] res = new int[2];
 

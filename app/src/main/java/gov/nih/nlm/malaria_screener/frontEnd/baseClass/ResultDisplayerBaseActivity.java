@@ -19,17 +19,22 @@ limitations under the License.
 
 package gov.nih.nlm.malaria_screener.frontEnd.baseClass;
 
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.os.Bundle;
 import android.os.Environment;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.Surface;
 import android.widget.CompoundButton;
 import android.widget.Switch;
+
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
@@ -51,6 +56,23 @@ public abstract class ResultDisplayerBaseActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display);
+
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean firstTime = settings.getBoolean("firstTime_resultPage", true);
+        if (firstTime) {
+
+            PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("firstTime_resultPage", false).apply();
+
+            ShowcaseView sv = new ShowcaseView.Builder(this)
+                    .withMaterialShowcase()
+                    .setTarget(new ViewTarget(R.id.imageView_scale, this))
+                    .setContentTitle(R.string.result_scale_bar_title)
+                    .setContentText(R.string.result_scale_bar)
+                    .setStyle(R.style.CustomShowcaseTheme2)
+                    .build();
+
+            sv.show();
+        }
 
     }
 

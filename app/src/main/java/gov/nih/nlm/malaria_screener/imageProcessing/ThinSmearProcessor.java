@@ -37,6 +37,8 @@ import org.opencv.imgcodecs.Imgcodecs;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 
 import gov.nih.nlm.malaria_screener.R;
 import gov.nih.nlm.malaria_screener.custom.Utils.UtilsCustom;
@@ -128,17 +130,7 @@ public class ThinSmearProcessor {
             //saveMaskImageHandler.sendEmptyMessage(0);
 
             // get image confidence
-            if (infectedCount > 0) {
-                float conf_im = 0;
-                for (int i = 0; i < cellCount; i++) {
-
-                    if (UtilsCustom.results.get(i) == 1) {
-                        conf_im += UtilsCustom.confs_patch.get(i);
-                    }
-                }
-                conf_im = conf_im / (float) infectedCount;
-                UtilsCustom.pos_confs_im.add(conf_im);
-            }
+            cal_image_conf();
 
             int[] res = new int[2];
 
@@ -148,6 +140,41 @@ public class ThinSmearProcessor {
             return res;
         }
 
+    }
+
+    //calculate  image confidence
+    private void cal_image_conf(){
+
+        // average
+            /*if (infectedCount > 0) {
+                float conf_im = 0;
+                for (int i = 0; i < cellCount; i++) {
+
+                    if (UtilsCustom.results.get(i) == 1) {
+                        conf_im += UtilsCustom.confs_patch.get(i);
+                    }
+                }
+                conf_im = conf_im / (float) infectedCount;
+                UtilsCustom.pos_confs_im.add(conf_im);
+            }*/
+
+        // median
+        float conf_im = 0;
+        if (infectedCount > 0) {
+            // get confs of positive patches
+            ArrayList<Float> confs_pos_patch = new ArrayList<>();
+            for (int i = 0; i < cellCount; i++) {
+
+                if (UtilsCustom.results.get(i) == 1) {
+                    confs_pos_patch.add(UtilsCustom.confs_patch.get(i));
+                }
+            }
+
+            // get the median
+            conf_im = UtilsCustom.cal_median(confs_pos_patch);
+        }
+        // add to image conf list
+        UtilsCustom.pos_confs_im.add(conf_im);
     }
 
     public void drawAll(int orientation, float RV, boolean takenFromCam) {

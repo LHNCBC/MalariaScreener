@@ -265,8 +265,10 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
                     UtilsData.resetCurrentCounts_thick();
 
                     // remove last element in image confidence
-                    int lastIndex = UtilsCustom.pos_confs_im.size() - 1;
-                    UtilsCustom.pos_confs_im.remove(lastIndex);
+                    if (!UtilsCustom.pos_confs_im.isEmpty()) {
+                        int lastIndex = UtilsCustom.pos_confs_im.size() - 1;
+                        UtilsCustom.pos_confs_im.remove(lastIndex);
+                    }
 
                 }
 
@@ -480,28 +482,23 @@ public class ResultDisplayer_thickSmear extends ResultDisplayerBaseActivity {
     private void get_slide_pred(int im_num){
 
         float slide_conf = 0;
-        float slide_th = 0.41f;
+        float slide_th = 0.45f;
 
         if (!UtilsCustom.pos_confs_im.isEmpty()) {
             for (float conf : UtilsCustom.pos_confs_im) {
                 slide_conf += conf;
-                Log.d(TAG, "image conf: " + conf);
+
             }
             slide_conf = slide_conf / (float) im_num;
         }
 
-        Log.d(TAG, "slide_conf: " + slide_conf);
-
         UtilsCustom.pos_confs_im.clear();
-        Log.d(TAG, "UtilsCustom.confs_im size: " + UtilsCustom.pos_confs_im.size());
 
         String slide_res_str;
         if (slide_conf > slide_th){
             slide_res_str = "Positive";
-            Log.d(TAG, "Positive.");
         } else {
             slide_res_str = "Negative";
-            Log.d(TAG, "Negative.");
         }
 
         bundle.putString("slide_result", slide_res_str);

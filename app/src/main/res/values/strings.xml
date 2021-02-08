@@ -56,8 +56,8 @@
 
     <string name="category2">OTHERS</string>
     <string name="Sensitivity_level_title">Sensitivity Level</string>
-    <string name="Classifier_Th_summary">Adjust classifier sensitivity level. Default value for DL:25. Default value for SVM:35.</string>
-    <string name="Classifier_Th_summary_thick">Adjust classifier sensitivity level. Default value :30.</string>
+    <string name="Classifier_Th_summary">Adjust classifier sensitivity level. Default value for DL:50. Default value for SVM:35.</string>
+    <string name="Classifier_Th_summary_thick">Adjust classifier sensitivity level. Default value :50.</string>
 
     <string name="celltotal">Total Cells Needed</string>
     <string name="celltotal_summary">Number of Cells that should be counted for each patient. Default value: 1000</string>
@@ -342,7 +342,8 @@
     <string name="smeartype_btn_text">Press the "SmearType" widget to switch between thin and thick smear processing mode</string>
     <string name="upload_title">Upload new session</string>
     <string name="upload_text">For registered users, Malaria Screener automatically attempts to upload your data to the server when a session is finished.\n\nYou can also go to Database page to upload your data at any time.</string>
-
+    <string name="result_scale_bar_title">Confidence for detected parasites</string>
+    <string name="result_scale_bar">The higher the confidence, the darker the pin for the parasite.</string>
 
     <!-- Strings for skip input info-->
     <string name="skip_title">Skip input pages</string>

@@ -273,12 +273,13 @@ public class CameraActivity extends AppCompatActivity {
                         /*UtilsCustom.tensorFlowClassifier_thin_lite = Classifier_Lite.create(context, Classifier_Lite.Model.FLOAT_THINSMEAR, Classifier_Lite.Device.CPU, 4);
                         UtilsCustom.tensorFlowClassifier_thick_lite = Classifier_Lite.create(context, Classifier_Lite.Model.FLOAT_THICKSMEAR, Classifier_Lite.Device.CPU, 4);*/
 
-
                         // thin smear
-                        String modelNameStr_thin = "malaria_thinsmear_44.h5.pb";
+                        String modelNameStr_thin = "malaria_thinsmear_44_retrainSudan_20P_4000C_separate.pb";
                         int TF_input_size_thin = 44;
-                        String inputLayerNameStr_thin = "conv2d_20_input";
-                        String outputLayerNameStr_thin = "output_node0";
+                        //String inputLayerNameStr_thin = "conv2d_20_input";
+                        String inputLayerNameStr_thin = "conv2d_1_input";
+                        //String outputLayerNameStr_thin = "output_node0";
+                        String outputLayerNameStr_thin = "dense_1/Softmax";
 
                         UtilsCustom.tensorFlowClassifier_thin = TensorFlowClassifier.create(context.getAssets(), modelNameStr_thin, TF_input_size_thin, TF_input_size_thin, inputLayerNameStr_thin, outputLayerNameStr_thin);
                         //UtilsCustom.tensorFlowClassifier_thin = TensorFlowClassifier.create(context.getAssets(), "malaria_thinsmear.h5.pb", UtilsCustom.TF_input_size, "input_2", "output_node0");
@@ -293,7 +294,6 @@ public class CameraActivity extends AppCompatActivity {
                         UtilsCustom.tensorFlowClassifier_thick = TensorFlowClassifier.create(context.getAssets(), modelNameStr_thick, TF_input_size_thick, TF_input_size_thick, inputLayerNameStr_thick, outputLayerNameStr_thick);
 
                         //UtilsCustom.tensorFlowClassifier_thick = TensorFlowClassifier.create(context.getAssets(), "ThickSmearModel_7LayerConv.h5.pb", UtilsCustom.TF_input_size, "conv2d_1_input", "output_node0");
-
 
                         //for blur detection
                         //UtilsCustom.tensorFlowClassifier_fMeasure_thin = TensorFlowClassifier.create(context.getAssets(), "ThinSmear_7LayerConv_fMeasure_115x85.h5.pb", UtilsCustom.TF_input_width, UtilsCustom.TF_input_height, "conv2d_1_input", "output_node0");
@@ -802,7 +802,6 @@ public class CameraActivity extends AppCompatActivity {
                                     if (imageAcquisition) {
                                         ImageAcquisition();
                                     } else {
-
                                         ProcessThinSmearImage();
                                     }
                                 } else if (smearType.equals("Thick")) {
@@ -910,7 +909,7 @@ public class CameraActivity extends AppCompatActivity {
             Log.d(TAG, "Single Image Processing Time: " + totalTime);
             processingTime = totalTime;
 
-            //save image to file
+            //save ori image to file
             //saveOriImage(); // taken out of handler, otherwise original image not saved before needed in next activity. 09/26/2017
             saveImageHandler.sendMessage(generateTakenFromCamMsg(takenFromCam));
             // put in handler again, original image is copied for saving, display in result page using image in memory. 03/12/2019
@@ -934,7 +933,7 @@ public class CameraActivity extends AppCompatActivity {
         long startTime_w = System.currentTimeMillis();
 
         ThickSmearProcessor thickSmearProcessor = new ThickSmearProcessor(getApplicationContext(), UtilsCustom.oriSizeMat);
-        int[] res = thickSmearProcessor.processImage();
+        int[] res = thickSmearProcessor.processImage(orientation, takenFromCam);
 
         saveResults_thick(res[0], res[1]);
 
@@ -943,6 +942,7 @@ public class CameraActivity extends AppCompatActivity {
         Log.d(TAG, "One image time: " + totalTime_w);
         processingTime = totalTime_w;
 
+        //save ori image to file
         saveImageHandler.sendMessage(generateTakenFromCamMsg(takenFromCam));
 
         // save result image

@@ -34,6 +34,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import gov.nih.nlm.malaria_screener.imageProcessing.SVM_Classifier;
 import gov.nih.nlm.malaria_screener.imageProcessing.TensorFlowClassifier;
@@ -60,8 +61,8 @@ public final class UtilsCustom {
     public static TensorFlowClassifier tensorFlowClassifier_fMeasure_thin;
 
     public static int whichClassifier = 0; // 0 is DL, 1 is SVM
-    public static double Th = 0.75;
-    public static double Th_thick = 0.7;
+    public static double Th = 0.5;
+    public static double Th_thick = 0.5;
 
     // Cell global variables
     public static ArrayList<Integer> results = new ArrayList<>();   // pred label for each patch
@@ -155,6 +156,18 @@ public final class UtilsCustom {
         return imgFile;
     }
 
+    public static float cal_median(ArrayList<Float> values) {
+        Collections.sort(values);
+
+        if (values.size() % 2 == 1)
+            return values.get((values.size() + 1) / 2 - 1);
+        else {
+            float lower = values.get(values.size() / 2 - 1);
+            float upper = values.get(values.size() / 2);
+
+            return (lower + upper) / (float)2.0;
+        }
+    }
 
 
 }
