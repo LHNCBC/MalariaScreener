@@ -8,11 +8,12 @@ Services, United States Government.
 # Contents
 
 1. [Introduction](#introduction)
-1. [Device Compatibility](#device-compatibility)
-1. [Features](#features)
-1. [Getting Started with Development](#getting-started-with-development)
-1. [Substitute Components in Parasite Detection Module](#substitute-components-in-parasite-detection-module)
-1. [User Guideline](#user-guideline)
+2. [Device Compatibility](#device-compatibility)
+3. [Features](#features)
+4. [Getting Started with Development](#getting-started-with-development)
+5. [Substitute Components in Parasite Detection Module](#substitute-components-in-parasite-detection-module)
+6. [User Guideline](#user-guideline)
+7. [Citation](#citation)
 
 
 # Introduction
@@ -182,3 +183,21 @@ try {
 # User Guideline
 
 User Guideline is attached as a PDF file (User_guideline.pdf) in the source code package. 
+
+# Citation
+This repository is the code for our paper [Malaria Screener: a smartphone application for automated malaria screening](https://bmcinfectdis.biomedcentral.com/articles/10.1186/s12879-020-05453-1#citeas). If you find this work useful in your research, please cite:
+```
+@article{yu2020malaria,
+  title={Malaria Screener: a smartphone application for automated malaria screening},
+  author={Yu, Hang and Yang, Feng and Rajaraman, Sivaramakrishnan and Ersoy, Ilker and Moallem, Golnaz and Poostchi, Mahdieh and Palaniappan, Kannappan and Antani, Sameer and Maude, Richard J and Jaeger, Stefan},
+  journal={BMC Infectious Diseases},
+  volume={20},
+  number={1},
+  pages={1--8},
+  year={2020},
+  publisher={BioMed Central}
+}
+```
+
+
+
